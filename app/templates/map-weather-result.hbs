@@ -1,0 +1,48 @@
+<tr>
+    <td class="title">Time (hhmm)</td>
+    <td>{{weather.time}}</td>
+</tr>
+<tr>
+    <td class="title">Icon</td>
+    <td><img width="24" {{bind-attr src=weather.weatherIconUrl}} alt="Logo"/></td>
+</tr>
+<tr>
+    <td class="title">Feels Like Temperature</td>
+    <td>{{ weather.FeelsLikeC }} °C</td>
+</tr>
+<tr>
+    <td class="title">Wind Direction Arrow</td>
+    <td class="wind-direction"><img src="assets/images/arrow-right.png"/></td>
+</tr>
+<tr>
+    <td class="title">Humidity</td>
+    <td>{{ weather.humidity }} %</td>
+</tr>
+<tr>
+    <td class="title">Precipitations</td>
+    <td>{{ weather.precipMM }} mm</td>
+</tr>
+<tr>
+    <td class="title">Wind Speed</td>
+    <td>{{ weather.windspeedKmph }} km/h</td>
+</tr>
+<tr>
+    <td class="title">Temperature</td>
+    <td>{{weather.tempC}} °C</td>
+</tr>
+<tr>
+    <td class="title">Wind Direction</td>
+    <td>{{weather.winddir16Point}}</td>
+</tr>
+<tr>
+    <td class="title">Visibility</td>
+    <td>{{ weather.visibility }} km</td>
+</tr>
+<tr>
+    <td class="title">Pressure</td>
+    <td>{{ weather.pressure }} millibars</td>
+</tr>
+<tr>
+    <td class="title">Cloud Coverage</td>
+    <td>{{ weather.cloudcover }} %</td>
+</tr>
