@@ -6,6 +6,8 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
+  this.route('map');
+  this.route('/beta/map');
 });
 
 export default Router;

@@ -3,7 +3,7 @@
  */
 import Ember from 'ember';
 
-export default Ember.Handlebars.helper('strsub', function(str, length) {
+export default Ember.Handlebars.makeBoundHelper(function(str, length) {
   if (str.length > length) {
     str = str.substring(0, length);
     str += "...";

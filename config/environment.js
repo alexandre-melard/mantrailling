@@ -16,6 +16,15 @@ module.exports = function(environment) {
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
+    },
+    contentSecurityPolicy: {
+      'default-src': "'none'",
+      'script-src': "'self' 'unsafe-inline' 'unsafe-eval' use.typekit.net maps.googleapis.com maps.gstatic.com api.worldweatheronline.com wxs.ign.fr",
+      'font-src': "'self' data: use.typekit.net",
+      'connect-src': "'self' wxs.ign.fr",
+      'img-src': "'self' *.opencyclemap.org *.ign.fr *.mapquest.com *.mqcdn.com data: cdn.worldweatheronline.net",
+      'style-src': "'self' 'unsafe-inline'",
+      'frame-src': ""
     }
   };
 
@@ -40,7 +49,7 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-
+    ENV.baseURL = '/beta';
   }
 
   return ENV;
