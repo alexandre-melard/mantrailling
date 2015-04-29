@@ -1,0 +1,19 @@
+<h3>mtg-data-items</h3>
+<div>
+    n°{{index}}
+  {{input placeholder="location" value=location}}
+  {{input placeholder="position" value=position}}
+  {{input placeholder="type" value=type}}
+  {{input placeholder="description" value=description}}
+    <button type="button" class="btn btn-default btn-sm" {{action 'addItem'}}>
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+    </button>
+</div>
+<ol>
+  {{#each item in items}}
+      <li>
+        {{mtg-data-item model=item}}
+      </li>
+  {{/each}}
+</ol>
+

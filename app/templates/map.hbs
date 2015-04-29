@@ -1,19 +1,8 @@
-<div class="row">
-    <div class="col-lg-4">
-      {{render "mapDraw" mapDraw}}
-    </div>
-    <div class="col-lg-4 col-lg-offset-1">
-      {{render "mapData" mapData}}
-      {{render "mapWeather" mapWeather}}
-      {{view "mapLayers"}}
-    </div>
-    <div class="col-lg-2 col-lg-offset-1">
-      {{render "mapLocation" mapLocation}}
-    </div>
+<div class="map-draw">
+  {{map-draw}}
 </div>
-<div class="row">
-    <div class="col-lg-12">
-      {{view id="map"}}
-    </div>
+<div class="map-data">
+  {{map-data}}
 </div>
-
+{{mtg-data}}
+{{map-app id="map" center="5.1475,45.6329" zoom="15"}}

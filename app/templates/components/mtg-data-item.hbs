@@ -1,0 +1,14 @@
+<div class="btn-group">
+  n°{{model.index}}
+  {{model.location}}
+  {{model.position}}
+  {{model.type}}
+  {{model.description}}
+
+    <button type="button" class="btn btn-info btn-sm" {{action 'updateItem'}}>
+        <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" {{action 'deleteItem'}}>
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+    </button>
+</div>

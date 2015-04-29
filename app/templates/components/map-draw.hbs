@@ -1,0 +1,35 @@
+<div class="btn-group-vertical map-draw">
+    <button type="button" data-toggle="tooltip" title="Add description"
+            class="btn btn-marker btn-sm map-draw-marker" {{action 'toggleDraw' 'Marker'}}>
+        <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
+    </button>
+    {{map-draw-point}}
+    <button type="button" data-toggle="tooltip" title="Draw a Zone"
+            class="btn btn-primary btn-sm map-draw-polygon" {{action 'toggleDraw' 'Polygon'}}>
+        <span class="glyphicon glyphicon-retweet" aria-hidden="true"></span>
+    </button>
+    <button type="button" data-toggle="tooltip" title="Draw the Trailer's Trail"
+            class="btn btn-success btn-sm map-draw-trailer" {{action 'toggleDraw' 'Trailer'}}>
+        <img src="assets/images/walk.png" class="inverted" width="16" height="16" />
+    </button>
+    <button type="button" data-toggle="tooltip" title="Draw the Team's Trail"
+            class="btn btn-warning btn-sm map-draw-team" {{action 'toggleDraw' 'Team'}}>
+        <img src="assets/images/track.png" class="inverted" width="16" height="16" />
+    </button>
+    <button type="button" data-toggle="tooltip" data-original-title="{{followPathModeTitle}}"
+            class="btn btn-brown-red btn-sm map-draw-follow-path" {{action 'toggleFollowPathMode'}}>
+        <span class="glyphicon glyphicon-{{followPathModeIcon}}" aria-hidden="true"></span>
+    </button>
+    <button type="button" class="btn btn-info btn-sm mtg-modify" data-toggle="tooltip" title="Click on an item to modify it" {{action 'toggleModify'}}>
+        <img src="assets/images/hand.png" width="16" height="16" />
+    </button>
+</div><ol>
+    <li>
+    </li>
+    <li>
+      {{map-draw-polygon}}
+    </li>
+    <li>
+      {{map-draw-linestring}}
+    </li>
+</ol>

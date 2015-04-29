@@ -5,9 +5,18 @@ var Router = Ember.Router.extend({
   location: config.locationType
 });
 
-Router.map(function() {
-  this.route('map');
-  this.route('/beta/map');
+export default Router.map(function() {
+  this.route('map', function() {
+    this.route('data', function() {
+      this.route('trails', function() {
+        this.route('trail');
+      });
+      this.route('items', function() {
+        this.route('item');
+      });
+      this.route('levels', function() {
+        this.route('level');
+      });
+    });
+  });
 });
-
-export default Router;

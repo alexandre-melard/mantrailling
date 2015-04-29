@@ -1,0 +1,10 @@
+<h3>mtg-data-levels</h3>
+{{input value=name action="addLevel"}}
+<button type="button" class="btn btn-default btn-sm" {{action 'addLevel'}}>
+    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+</button>
+<ol>
+  {{#each level in levels}}
+      <li>{{mtg-data-level model=level}}</li>
+  {{/each}}
+</ol>

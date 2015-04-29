@@ -22,19 +22,7 @@ var app = new EmberApp();
 app.import('bower_components/ol3/build/ol-debug.js');
 app.import('bower_components/ol3/css/ol.css');
 
-app.import('bower_components/jquery-rotate/jquery.rotate.js');
-
-app.import('bower_components/bootstrap/js/tooltip.js');
-app.import('bower_components/bootstrap/js/popover.js');
-app.import('bower_components/x-editable/dist/bootstrap3-editable/js/bootstrap-editable.js');
-
-app.import('bower_components/x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css');
-app.import('bower_components/x-editable/dist/bootstrap3-editable/img/loading.gif', {
-  destDir: 'assets/images'
-});
-app.import('bower_components/x-editable/dist/bootstrap3-editable/img/clear.png', {
-  destDir: 'assets/images'
-});
+app.import('bower_components/right-resizable-src/index.js');
 
 app.import('bower_components/bootstrap/dist/css/bootstrap.css');
 app.import('bower_components/bootstrap/dist/css/bootstrap.css.map', {
@@ -46,7 +34,5 @@ var bootstrapFonts = pickFiles('bower_components/bootstrap/dist/', {
   files: ['*'],
   destDir: '/fonts'
 });
-
-
 
 module.exports = mergeTrees([app.toTree(), bootstrapFonts]);

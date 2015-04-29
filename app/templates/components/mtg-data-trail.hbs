@@ -1,0 +1,13 @@
+{{trail.name}}
+  {{view "select" content=levels optionValuePath="content" optionLabelPath="content.name" value=trail.level}}
+<button type="button" class="btn btn-default btn-sm" {{action 'updateTrail'}}>
+    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+</button>
+<button type="button" class="btn btn-default btn-sm" {{action 'deleteTrail'}}>
+    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+</button>
+<ol>
+    <li>
+      {{mtg-data-items items=trail.items}}
+    </li>
+</ol>
