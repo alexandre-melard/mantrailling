@@ -22,7 +22,8 @@ var app = new EmberApp();
 app.import('bower_components/ol3/build/ol-debug.js');
 app.import('bower_components/ol3/css/ol.css');
 
-app.import('bower_components/right-resizable-src/index.js');
+app.import('bower_components/jquery.splitter/css/jquery.splitter.css');
+app.import('bower_components/jquery.splitter/js/jquery.splitter-0.14.0.js');
 
 app.import('bower_components/bootstrap/dist/css/bootstrap.css');
 app.import('bower_components/bootstrap/dist/css/bootstrap.css.map', {

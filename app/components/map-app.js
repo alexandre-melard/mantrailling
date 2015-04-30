@@ -3,7 +3,7 @@ import Ember from 'ember';
 export default Ember.Component.extend({
   map: null,
 
-  loadMap: function() {
+  loadMap: function () {
     var me = this;
 
     // Fix Ember to resize the map fullscreen
@@ -12,11 +12,22 @@ export default Ember.Component.extend({
     });
 
     // Get layers and draw map
-    this.mapLayerService.getWMTSLayers().then(function(layers) {
+    this.mapLayerService.getWMTSLayers().then(function (layers) {
       var center = me.get('center').split(',');
       center[0] = parseFloat(center[0]);
       center[1] = parseFloat(center[1]);
       me.set('map', me.mapService.createMap(me.get('id'), center, me.get('zoom'), layers));
+    });
+
+    $('#splitter-map-mtg-data').split({
+      orientation: 'vertical',
+      position: '80%',
+      limit: 100,
+      onDrag: function() {
+        if (me.get('map') !== null) {
+          me.get('map').updateSize();
+        }
+      }
     });
   }.on('didInsertElement')
 

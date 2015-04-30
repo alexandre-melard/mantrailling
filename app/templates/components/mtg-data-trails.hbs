@@ -1,18 +1,11 @@
-<h3>mtg-data-trails</h3>
-<div>
-    n°{{index}}
-  {{input placeholder="name" value=name}}
-  {{input placeholder="address" value=address}}
-  {{input placeholder="date" value=date}}
+<div class="form-inline form-group">
+  {{view "select" class="form-control input-sm" content=trails optionValuePath="content" optionLabelPath="content.name" selection=trail}}
     <button type="button" class="btn btn-default btn-sm" {{action 'addTrail'}}>
         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
     </button>
 </div>
-<ol>
-  {{#each trail in trails}}
-      <li>
-        {{mtg-data-trail trail=trail levels=levels}}
-      </li>
-  {{/each}}
-</ol>
+{{#if trail}}
+  {{mtg-data-trail trail=trail levels=levels}}
+{{/if}}
+
 

@@ -16,7 +16,6 @@
   "devDependencies": {
     "bootstrap": "~3.3.4",
     "ol3": "~3.4.0",
-    "resizable": "http://github.com/rightjs/rightjs-ui/tree/master/src/resizable",
-    "right-resizable-src": "http://rightjs.org/builds/ui/right-resizable-src.js"
+    "jquery.splitter": "~0.14.0"
   }
 }

@@ -1,11 +1,16 @@
-{{trail.name}}
-  {{view "select" content=levels optionValuePath="content" optionLabelPath="content.name" value=trail.level}}
+<div class="form-inline form-group">
+  {{input class="form-control input-sm" placeholder="trail's name" value=trail.name}}
+{{view "select" class="form-control input-sm" content=levels optionValuePath="content" optionLabelPath="content.name" value=trail.level}}
 <button type="button" class="btn btn-default btn-sm" {{action 'updateTrail'}}>
     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 </button>
 <button type="button" class="btn btn-default btn-sm" {{action 'deleteTrail'}}>
     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
 </button>
+</div>
+<div style="width: 100%; height: 15px">
+  {{map-draw}}
+</div>
 <ol>
     <li>
       {{mtg-data-items items=trail.items}}

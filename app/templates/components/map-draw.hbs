@@ -1,4 +1,4 @@
-<div class="btn-group-vertical map-draw">
+<div class="btn-group">
     <button type="button" data-toggle="tooltip" title="Add description"
             class="btn btn-marker btn-sm map-draw-marker" {{action 'toggleDraw' 'Marker'}}>
         <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
@@ -23,13 +23,4 @@
     <button type="button" class="btn btn-info btn-sm mtg-modify" data-toggle="tooltip" title="Click on an item to modify it" {{action 'toggleModify'}}>
         <img src="assets/images/hand.png" width="16" height="16" />
     </button>
-</div><ol>
-    <li>
-    </li>
-    <li>
-      {{map-draw-polygon}}
-    </li>
-    <li>
-      {{map-draw-linestring}}
-    </li>
-</ol>
+</div>

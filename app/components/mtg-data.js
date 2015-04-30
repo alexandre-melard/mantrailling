@@ -2,21 +2,23 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
   classNames: "mtg-data",
-  trails: [],
-  levels: [],
+  //attributeBindings: ['trails', 'levels'],
+  //trails: [],
+  //levels: [],
 
-  loadLevels: function() {
-    var me = this;
-    this.levelService.getLevels().then(function(levels) {
-      me.set('levels',levels);
-    });
-  }.on('init'),
-
+  //loadLevels: function() {
+  //  var me = this;
+  //  this.levelService.getLevels().then(function(levels) {
+  //    me.set('levels',levels);
+  //  });
+  //}.on('didInsertElement'),
+  //
   loadTrails: function() {
     var me = this;
-    this.trailService.getTrails().then(function(trails){
-      me.set('trails',trails);
-    });
-  }.on('init')
+    console.log('trails: ' + this.get('trails'));
+    //this.trailService.getTrails().then(function(trails){
+    //  me.set('trails',trails);
+    //});
+  }.on('didInsertElement')
 
 });
