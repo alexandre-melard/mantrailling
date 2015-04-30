@@ -57,13 +57,13 @@
                           {{input type="text" class="form-control input-sm" value=itemAtPoint.model.item.description placeholder="Item description" size="14"}}
                         </td>
                         <td class="btn-group">
-                            <button type="button" class="btn btn-success btn-sm" {{action 'positionItem' item}}>
+                            <button type="button" class="btn btn-success btn-sm" {{bind-attr disabled=isPositionDisabled}} {{action 'positionItem' itemAtPoint.model.item}}>
                                 <span class="glyphicon glyphicon-record" aria-hidden="true"></span>
                             </button>
-                            <button type="button" class="btn btn-info btn-sm" {{action 'saveItem' item}}>
+                            <button type="button" class="btn btn-info btn-sm" {{action 'saveItem' itemAtPoint.model.item}}>
                                 <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
                             </button>
-                            <button type="button" class="btn btn-danger btn-sm" {{action 'deleteItem' item}}>
+                            <button type="button" class="btn btn-danger btn-sm" {{action 'deleteItem' itemAtPoint.model.item}}>
                                  <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                             </button>
                         </td>

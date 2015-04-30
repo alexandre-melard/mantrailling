@@ -4,34 +4,25 @@
 import Ember from 'ember';
 
 export default Ember.Controller.extend({
-  visible: function(key, value){
-    var model = this.get('model');
+  needs: ["mapDraw"],
 
-    if (value === undefined) {
-      // property being used as a getter
-      return model.get('visible');
-    } else {
-      // property being used as a setter
-      model.set('visible', value);
-      model.get('layer').setVisible(value);
-      model.save();
-      return value;
+  isPositionDisabled: false,
+  actions: {
+    positionItem: function (item) {
+      var me = this;
+      var options = {
+        radius: 15,
+        color: "#ffffff",
+        key: "PointType",
+        value: "Item",
+        label: item.get('index') + ":" + item.get('position')
+      };
+      if (item.get('feature') === undefined || item.get('feature') === null) {
+        this.mapDrawService.drawPoint(options).then(function(feature) {
+          item.set("feature", feature);
+          me.set('isPositionDisabled', true);
+        });
+      }
     }
-  }.property('model.visible'),
-
-  opacity: function(key, value){
-    var model = this.get('model');
-
-    if (value === undefined) {
-      // property being used as a getter
-      console.log("get layer opacity: " + model.get('opacity'));
-      return model.get('opacity') * 100;
-    } else {
-      // property being used as a setter
-      model.set('opacity', value / 100);
-      model.get('layer').setOpacity(value / 100);
-      model.save();
-      return value;
-    }
-  }.property('model.opacity')
+  }
 });

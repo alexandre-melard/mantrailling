@@ -57,10 +57,12 @@ export default Ember.Controller.extend({
       if (type === MARKER) {
         return markerStyle(geometry, feature);
       } else {
+        var radius = feature.get('radius') || 10;
+        var label = feature.get('label') || "";
         var rgb = getRGBColor(getColor('#ac2925', feature));
         return [new ol.style.Style({
           image: new ol.style.Circle({
-            radius: 10,
+            radius: radius,
             fill: new ol.style.Fill({
               color: 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 0.5)'
             }),
@@ -68,8 +70,21 @@ export default Ember.Controller.extend({
               color: 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 0.8)',
               width: 2
             })
+          }),
+          text: new ol.style.Text({
+            //offsetX: -radius,
+            font: '18px Calibri,sans-serif',
+            text: label,
+            fill: new ol.style.Fill({
+              color: getColor('#286090', feature)
+            }),
+            stroke: new ol.style.Stroke({
+              color: (calcBrightness(rgb) < 220) ? "#FFFFFF" : "#000000",
+              width: 3
+            })
           })
-        })];
+        })
+        ];
       }
     };
 

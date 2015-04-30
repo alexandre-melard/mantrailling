@@ -260,16 +260,6 @@ export default Ember.Controller.extend({
   },
 
   actions: {
-    positionItem: function(item) {
-      var color = this.get('draw').get('color');
-      console.log('current color: ' + color);
-      $('.color-picker[title="#ffffff"]').click();
-      $('.map-draw-point').click();
-      if (color !== undefined) {
-        this.get('draw').set('color', color);
-      }
-
-    },
     changeTrack: function (trail) {
       this.changeActiveTrail(trail);
     },

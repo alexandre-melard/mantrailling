@@ -35,11 +35,13 @@ export default Ember.Controller.extend({
   select: null,
   modify: null,
   mtgDrawState: null,
+  onDrawEnd: null,
   moveListenerKey: null,
   sketch: null,
   sketchLastState: null,
   color: null,
   colors: COLORS,
+  resetColor: null,
   popups: [],
   followPathMode: false,
   followPathModeTitle: "Draw with straight lines",
@@ -189,6 +191,9 @@ export default Ember.Controller.extend({
       this.set('mtgDrawState', null);
       $('#map').off('mouseup');
       $('#map').off('keyup');
+      if(this.get('onDrawEnd') !== null) {
+        this.get('onDrawEnd')(e.feature);
+      }
     }, this);
     return this.get('olDraw');
   },
@@ -215,10 +220,7 @@ export default Ember.Controller.extend({
         this.get('popups').pushObject(popup);
       }
     }
-  }
-
-    .
-    observes('sketch'),
+  }.observes('sketch'),
 
   init: function () {
     this._super();
@@ -227,6 +229,47 @@ export default Ember.Controller.extend({
     });
     this.get('controllers.map').addObserver('currentLayer', this, function (sender) {
       this.set('currentLayer', sender.get('currentLayer'));
+    });
+    this.mapDrawService.register(this);
+  },
+
+  drawPoint: function(options) {
+    var me = this;
+    return new Promise(function(resolve, error) {
+      var color = me.get('color');
+      me.changeColor(options.color);
+      me.set('resetColor', color);
+      me.set('mtgDrawState', POINT);
+      me.set('onDrawEnd', function(feature) {
+        if (me.get('resetColor') !== null) {
+          me.changeColor(me.get('resetColor'));
+          me.set('resetColor', null);
+        }
+        feature.set("label", options.label);
+        feature.set("radius", options.radius);
+
+        resolve(feature);
+      });
+    });
+  },
+
+  changeColor: function(color) {
+    this.set('color', color);
+    console.log("color modified:" + color);
+
+    var setBtnColor = function (color) {
+      var brigthness = calcBrightness(getRGB(color));
+      $('.btn-Color').css("background-color", color);
+      $('.btn-Color').css("color", (brigthness < 220) ? "#ffffff" : "#000000");
+      console.log("color modified:" + color + " (brightness: " + brigthness + ")");
+    };
+
+    setBtnColor(color);
+    var darker = colorLuminance(color, -0.5);
+    $('.btn-Color').hover(function () {
+      setBtnColor(darker);
+    }, function () {
+      setBtnColor(color);
     });
   },
 
@@ -261,23 +304,7 @@ export default Ember.Controller.extend({
     },
 
     changeColor: function (color) {
-      this.set('color', color);
-      console.log("color modified:" + color);
-
-      var setBtnColor = function (color) {
-        var brigthness = calcBrightness(getRGB(color));
-        $('.btn-Color').css("background-color", color);
-        $('.btn-Color').css("color", (brigthness < 220) ? "#ffffff" : "#000000");
-        console.log("color modified:" + color + " (brightness: " + brigthness + ")");
-      };
-
-      setBtnColor(color);
-      var darker = colorLuminance(color, -0.5);
-      $('.btn-Color').hover(function () {
-        setBtnColor(darker);
-      }, function () {
-        setBtnColor(color);
-      });
+      this.changeColor(color);
     }
   }
 });
