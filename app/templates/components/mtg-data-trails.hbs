@@ -1,11 +1,11 @@
 <div class="form-inline form-group">
-  {{view "select" class="form-control input-sm" content=trails optionValuePath="content" optionLabelPath="content.name" selection=trail}}
+  {{view "select" class="form-control input-sm" content=trails optionValuePath="content" optionLabelPath="content.name" selection=selectedTrail}}
     <button type="button" class="btn btn-default btn-sm" {{action 'addTrail'}}>
         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
     </button>
 </div>
-{{#if trail}}
-  {{mtg-data-trail trail=trail levels=levels}}
+{{#if selectedTrail}}
+  {{mtg-data-trail trail=selectedTrail levels=levels}}
 {{/if}}
 
 

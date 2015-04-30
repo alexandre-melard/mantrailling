@@ -1,4 +1,8 @@
-<div id="splitter-map-mtg-data">
-  {{map-app id="map" center="5.1475,45.6329" zoom="15"}}
-  <div>{{mtg-data trails=model.trails}}</div>
+{{map-app id="map" center="5.1475,45.6329" zoom="15"}}
+{{#if trail}}
+  {{map-draw trail=trail.id}}
+{{/if}}
+<div class="top-container">
+  {{map-data}}
+  {{mtg-data trails=trails}}
 </div>

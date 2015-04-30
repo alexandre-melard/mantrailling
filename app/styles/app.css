@@ -9,32 +9,51 @@ html, body, #map {
 .map-draw {
   z-index: 100;
   background: rgba(0, 0, 0, 0);
-  width: 250px;
-  height: 32px;
-  margin-left: auto;
-  margin-right: auto;
-  position: absolute;
-  left: 0; right: 0;
-}
-
-.map-data {
-  z-index: 100;
-  background: rgba(0, 0, 0, 0.7);
-  width: 500px;
-  height: 32px;
-  margin-left: auto;
-  margin-right: auto;
+  width: 32px;
+  height: 250px;
+  margin-top: auto;
+  margin-bottom: auto;
   position: absolute;
   top: 0; left: 0; bottom: 0; right: 0;
+}
+.top-container {
+  position: absolute;
+  width: 100%;
+  top: 0; left: 0;
+}
+.map-data {
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.7);
+  float: right;
+  margin-right: 10%;
 }
 
 .mtg-data {
   z-index: 100;
   background: rgba(255, 255, 255, 0.7);
-  width: 100%;
-  height: 100%;
-  padding: 5px;
+  float: left;
 }
+
+div.map-data-weather, div.map-data-location, div.map-data-layers, div.mtg-data-trails, div.mtg-data-trail, div.mtg-data-levels {
+  display: inline;
+}
+
+.map-data-weather td {
+  padding-left: 5px;
+  padding-right: 5px;
+  text-align: left;
+}
+
+.map-data-weather .dropdown-menu {
+  display: block;
+  width: 300px;
+}
+
+.map-data-weather .wind-direction {
+  height: 32px;
+  width: 32px;
+}
+
 
 .table > tbody > tr > td {
   vertical-align: middle;
@@ -53,9 +72,9 @@ ul.map-layers-dropdown {
   width: 320px;
 }
 
-.map-data ul.dropdown-menu {
-  width: 452px;
-}
+/*.map-data ul.dropdown-menu {*/
+  /*width: 452px;*/
+/*}*/
 
 .map-items-dropdown ul.dropdown-menu {
   width: 450px;
@@ -125,22 +144,6 @@ ul.dropdown-menu li {
 
 .hidden {
   visibility: hidden;
-}
-
-.map-weather td {
-  padding-left: 5px;
-  padding-right: 5px;
-  text-align: left;
-}
-
-.map-weather .dropdown-menu {
-  display: block;
-  width: 300px;
-}
-
-.map-weather .wind-direction {
-  height: 32px;
-  width: 32px;
 }
 
 section {
