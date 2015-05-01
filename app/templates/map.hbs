@@ -1,19 +1,9 @@
-<div class="row">
-    <div class="col-lg-4">
-      {{render "mapDraw" mapDraw}}
-    </div>
-    <div class="col-lg-4 col-lg-offset-1">
-      {{render "mapData" mapData}}
-      {{render "mapWeather" mapWeather}}
-      {{view "mapLayers"}}
-    </div>
-    <div class="col-lg-2 col-lg-offset-1">
-      {{render "mapLocation" mapLocation}}
-    </div>
+{{render "mapDraw" mapDraw}}
+<div class="top-container">
+  {{render "mapData" mapData}}
+  {{render "mapWeather" mapWeather}}
+  {{view "mapLayers"}}
 </div>
-<div class="row">
-    <div class="col-lg-12">
-      {{view id="map"}}
-    </div>
-</div>
+{{render "mapLocation" mapLocation}}
+{{view id="map"}}
 

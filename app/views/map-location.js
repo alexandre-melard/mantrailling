@@ -6,7 +6,7 @@ import autocomplete from '../utils/google-geocoder-autocomplete.js';
 
 export default Ember.View.extend({
   templateName: "mapLocation",
-  classNames: ["map-location"],
+  classNames: ["input-group", "input-group-sm", "map-location"],
   autocomplete: function() {
     var auto = autocomplete($(".map-location-search-input")[0]);
     console.log(auto);

@@ -28,18 +28,18 @@ export default Ember.Controller.extend({
 
   /**
    * Return the selected Trail in Trails' array.
-   * If trial param is set, set trails to unselected and provided trail to selected.
+   * If trail param is set, set trails to unselected and provided trail to selected.
    * @param trail
    * @param context
    * @returns {*}
    */
-  selectedTrail: function(key, value, previousValue) {
+  selectedTrail: function (key, value, previousValue) {
     if (this.get('trails').length === 0) {
       console.log("no trail has been defined yet, please create a trail first");
       return false;
     }
     if (arguments.length <= 1) {
-      return this.get('trails').findBy('selected', true);
+      value = this.get('trails').findBy('selected', true);
     } else {
       this.get('trails').forEach(function (t) {
         if (t === value) {
@@ -49,46 +49,10 @@ export default Ember.Controller.extend({
         }
         t.save();
       }, this);
-      return value;
     }
+    return value;
   }.property('trails.@each.selected'),
 
-
-  create: function (store, model, values) {
-    var record = store.createRecord(model, values);
-    record.save().then(function () {
-      console.log(model + ".save :: success");
-    }).catch(function (e) {
-      console.log(model + ".save :: failure: " + e);
-    });
-    return record;
-  },
-  createOrUpdate: function (store, model, select, values) {
-    var record = null;
-    var records = store.find(model, select);
-    return records
-      .then(function (records) {
-        var record = records.get("firstObject");
-        $.each(values, function (key, value) {
-          record.set(key, value);
-        });
-        record.save().then(function () {
-          console.log(model + ".save :: success");
-        }).catch(function (e) {
-          console.log(model + ".save :: failure: " + e);
-        });
-        return record;
-      })
-      .catch(function () {
-        record = store.createRecord(model, values);
-        record.save().then(function () {
-          console.log(model + ".save :: success");
-        }).catch(function (e) {
-          console.log(model + ".save :: failure: " + e);
-        });
-        return record;
-      });
-  },
 
   getData: function (formatName, layer) {
     // define a format the data shall be converted to
@@ -107,74 +71,18 @@ export default Ember.Controller.extend({
   },
 
   addTrail: function () {
-    var trail = this.create(
-      this.store, 'mtgTrail',
-      {
-        name: this.addTrailName,
-        selected: true
-      });
+    var trail = this.store.createRecord('mtgTrail', {
+      name: this.get('addTrailName')
+    });
+    trail.save().then(function () {
+      console.log(model + ".save :: success");
+    }).catch(function (e) {
+      console.log(model + ".save :: failure: " + e);
+    });
     this.trails.pushObject(trail);
+    trail.set('selected', true);
     trail = this.changeActiveTrail(trail);
     return trail;
-  },
-
-  saveTrail: function (trail) {
-    var layer = trail.layer;
-    var me = this;
-    var createOrUpdate = this.createOrUpdate;
-    var store = this.store;
-    var data = this.getData(this.selectedFormat, layer);
-    var trails = this.trails;
-    var mtgPoint = createOrUpdate(store, 'mtgPoint',
-      {long: "0", lat: "0"},
-      {long: "42", lat: "3"});
-    mtgPoint.then(function (mtgPoint) {
-      var mtgItem = createOrUpdate(store, 'mtgItem',
-        {
-          name: "chaussette",
-          material: "tissu"
-        },
-        {
-          name: "chaussette",
-          material: "tissu",
-          description: "carré de tissus de la taille d'un mouchoir"
-        }
-      );
-      mtgItem.then(function (mtgItem) {
-        var mtgItemAtPoint = createOrUpdate(store, 'mtgItemAtPoint',
-          {item: mtgItem, position: mtgPoint},
-          {item: mtgItem, position: mtgPoint});
-        mtgItemAtPoint.then(function (mtgItemAtPoint) {
-          var select;
-          if (trail.id !== undefined && trail.id !== null) {
-            select = {id: trail.id};
-          } else {
-            select = {name: trail.get("name")};
-          }
-          var mtgTrail = createOrUpdate(store, 'mtgTrail',
-            select,
-            {
-              name: trail.get("name"),
-              address: 'route du soleil 34555 tes',
-              date: '2015-02-11',
-              level: 'motivation 1 aveugle',
-              features: data
-            });
-          mtgTrail.then(function (mtgTrail) {
-            mtgTrail.get("itemAtPoints").pushObject(mtgItemAtPoint);
-            mtgTrail.save().then(function () {
-              console.log("mtgTrail.save :: success");
-              if (!trails.contains(mtgTrail)) {
-                trails.pushObject(mtgTrail);
-                me.changeActiveTrail(mtgTrail, me);
-              }
-            }).catch(function (e) {
-                console.log("mtgTrail.save :: failure: " + e);
-            });
-          });
-        });
-      });
-    });
   },
 
   exportTrail: function (trail, format) {
@@ -224,6 +132,7 @@ export default Ember.Controller.extend({
       this.get('map').removeLayer(trail.layer);
     }
     this.get('trails').removeObject(trail);
+    this.set('selectedTrail', this.get('trails').get('firstObject'));
     trail.destroyRecord();
   },
 
@@ -242,19 +151,17 @@ export default Ember.Controller.extend({
     });
   },
 
-  addItem: function() {
-    var itemAtPoints = this.get('selectedTrail').get('itemAtPoints');
-    this.get('currentItem').index = (itemAtPoints.get('length') + 1);
+  addItem: function () {
+    var items = this.get('selectedTrail').get('items');
+    this.get('currentItem').index = (items.get('length') + 1);
     var mtgItem = this.store.createRecord('mtgItem', this.get('currentItem'));
     mtgItem.save();
-    var mtgItemAtPoint = this.store.createRecord('mtgItemAtPoint', {item: mtgItem});
-    mtgItemAtPoint.save();
-    this.get('selectedTrail').get('itemAtPoints').pushObject(mtgItemAtPoint);
+    this.get('selectedTrail').get('items').pushObject(mtgItem);
     console.log('new item created ' + mtgItem.get('index'));
     this.set('currentItem', {});
   },
 
-  deleteItem: function(item) {
+  deleteItem: function (item) {
     item.destroyRecord();
     this.get('selectedTrail').get('itemAtPoints').removeObject(item);
   },
@@ -276,7 +183,7 @@ export default Ember.Controller.extend({
       this.deleteItem(item);
     },
     saveTrail: function (trail) {
-      this.saveTrail(trail);
+      trail.save();
     },
     exportTrail: function (format, trail) {
       this.exportTrail(format, trail);

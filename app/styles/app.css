@@ -6,6 +6,37 @@ html, body, #map {
   overflow: hidden;
 }
 
+.map-draw {
+  z-index: 100;
+  background: rgba(0, 0, 0, 0);
+  width: 50px;
+  height: 250px;
+  margin-top: auto;
+  margin-bottom: auto;
+  position: absolute;
+  top: 0; bottom: 0; right: 5px;
+}
+.map-draw button {
+  height: 30px;
+}
+
+.top-container {
+  z-index: 100;
+  position: absolute;
+  width: 380px;
+  margin-left: auto;
+  margin-right: auto;
+  top:5px; right:0; left: 0;
+}
+
+.map-location {
+  z-index: 100;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 200px;
+}
+
 .table > tbody > tr > td {
   vertical-align: middle;
 }
@@ -24,11 +55,11 @@ ul.map-layers-dropdown {
 }
 
 .map-data ul.dropdown-menu {
-  width: 452px;
+  width: 454px;
 }
 
-.map-items-dropdown ul.dropdown-menu {
-  width: 450px;
+.map-data ul.map-items-dropdown {
+  width: 460px;
 }
 
 .map-items-dropdown .mtg-item-position-container {

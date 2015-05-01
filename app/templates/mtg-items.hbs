@@ -32,38 +32,38 @@
                 </tr>
                 </thead>
                 <tbody>
-                {{#each itemAtPoint in selectedTrail.itemAtPoints itemController="mtgItem"}}
+                {{#each item in selectedTrail.items itemController="mtgItem"}}
                     <tr>
                         <td class="mtg-item-index-container">
-                            {{itemAtPoint.model.item.index}}
+                            {{item.model.index}}
                         </td>
                         <td class="mtg-item-position-container">
                             <div class="btn-group">
                                 <label class="btn btn-default btn-sm mtg-item-position" data-toggle="tooltip" title="On the ground">
-                                  {{radio-button name=itemAtPoint.model.item.id value='P' groupValue=itemAtPoint.model.item.position }}G
+                                  {{radio-button name=item.model.id value='P' groupValue=item.model.position }}G
                                 </label>
                                 <label class="btn btn-default btn-sm mtg-item-position" data-toggle="tooltip" title="Suspended">
-                                  {{radio-button name=itemAtPoint.model.item.id value='S' groupValue=itemAtPoint.model.item.position }}S
+                                  {{radio-button name=item.model.id value='S' groupValue=item.model.position }}S
                                 </label>
                                 <label class="btn btn-default btn-sm mtg-item-position" data-toggle="tooltip" title="Hidden">
-                                  {{radio-button name=itemAtPoint.model.item.id value='C' groupValue=itemAtPoint.model.item.position }}H
+                                  {{radio-button name=item.model.id value='C' groupValue=item.model.position }}H
                                 </label>
                             </div>
                         </td>
                         <td class="item-type">
-                          {{view "select" class="form-control input-sm" content=itemTypes value=itemAtPoint.model.item.type}}
+                          {{view "select" class="form-control input-sm" content=itemTypes value=item.model.type}}
                         </td>
                         <td>
-                          {{input type="text" class="form-control input-sm" value=itemAtPoint.model.item.description placeholder="Item description" size="14"}}
+                          {{input type="text" class="form-control input-sm" value=item.model.description placeholder="Item description" size="14"}}
                         </td>
                         <td class="btn-group">
-                            <button type="button" class="btn btn-success btn-sm" {{bind-attr disabled=isPositionDisabled}} {{action 'positionItem' itemAtPoint.model.item}}>
+                            <button type="button" class="btn btn-success btn-sm" {{bind-attr disabled=isPositionDisabled}} {{action 'positionItem' item.model}}>
                                 <span class="glyphicon glyphicon-record" aria-hidden="true"></span>
                             </button>
-                            <button type="button" class="btn btn-info btn-sm" {{action 'saveItem' itemAtPoint.model.item}}>
+                            <button type="button" class="btn btn-info btn-sm" {{action 'saveItem' item.model}}>
                                 <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
                             </button>
-                            <button type="button" class="btn btn-danger btn-sm" {{action 'deleteItem' itemAtPoint.model.item}}>
+                            <button type="button" class="btn btn-danger btn-sm" {{action 'deleteItem' item.model}}>
                                  <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                             </button>
                         </td>

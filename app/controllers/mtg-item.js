@@ -15,7 +15,7 @@ export default Ember.Controller.extend({
         color: "#ffffff",
         key: "PointType",
         value: "Item",
-        label: item.get('index') + ":" + item.get('position')
+        label: item.get('index') + item.get('position')
       };
       if (item.get('feature') === undefined || item.get('feature') === null) {
         this.mapDrawService.drawPoint(options).then(function(feature) {

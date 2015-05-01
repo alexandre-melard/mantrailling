@@ -1,66 +1,20 @@
-<div class="btn-group">
-  {{#dropdown-list selected=selected item="Tracks"}}
-      <ul class="dropdown-menu map-data-trail-dropdown">
-          <li class="header">
-              <div class="input-group input-group-sm">
-                {{input type="text" action='addTrail' class="form-control" value=addTrailName placeholder="Trail Name" size="8"}}
-                  <span class="input-group-btn">
-                <button type="button" class="btn btn-default" {{action 'addTrail'}}>
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                </button>
-              </span>
-              </div>
-          </li>
-          <li>
-              <table class="table table-striped table-condensed table-hover">
-                  <tbody>
-                  {{#each trail in trails}}
-                      <tr class="{{if trail.selected 'success' ''}}">
-                          <td class="title" {{action 'changeTrack' trail }}>{{trail.name}}</td>
-                          <td>
-                              <div class="btn-group">
-                                  <div class="btn-group">
-                                      <button type="button" class="btn btn-default btn-sm" {{action 'saveTrail' trail}}>
-                                          <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
-                                      </button>
-                                      <button type="button"
-                                              class="btn btn-warning btn-sm" {{action 'deleteTrail' trail}}>
-                                          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                                      </button>
-                                    {{#dropdown-list selected=selected item="Export" icon="export" resetView="false"}}
-                                        <ul class="dropdown-menu map-data-export-dropdown">
-                                          {{#each format in formats}}
-                                              <li><a {{action 'exportTrail' format trail}}>{{format}}</a></li>
-                                          {{/each}}
-                                        </ul>
-                                    {{/dropdown-list}}
-                                  </div>
-                              </div>
-                          </td>
-                      </tr>
-                  {{/each}}
-                  </tbody>
-              </table>
-          </li>
-      </ul>
-  {{/dropdown-list}}
-  {{#dropdown-list selected=selectedLevel item="Level" img="assets/images/rocket.png"}}
-      <ul class="dropdown-menu map-data-level-dropdown">
-          <li class="header">
-              <div class="input-group input-group-sm">
-                {{input type="text" class="form-control" value=levelName placeholder="Level name" size="8"}}
-                  <span class="input-group-btn">
-                  <button type="button" class="btn btn-default" {{action 'addLevel'}}>
-                      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                  </button>
-                </span>
-              </div>
-          </li>
-        {{#each level in levels}}
-            <li><a  {{action 'changeLevel' level }}>{{level}}</a></li>
+<form class="form-inline btn-group">
+  {{view "select" class="form-control input-sm btn-group" content=trails optionValuePath="content" optionLabelPath="content.name" selection=selectedTrail}}
+  {{view 'mtgLevels'}}
+  {{view 'mtgItems'}}
+  {{#dropdown-list selected=selected item="Export" icon="export" resetView="false"}}
+      <ul class="dropdown-menu map-data-export-dropdown">
+        {{#each format in formats}}
+            <li><a {{action 'exportTrail' format selectedTrail}}>{{format}}</a></li>
         {{/each}}
       </ul>
   {{/dropdown-list}}
-  {{view 'mtgItems'}}
-</div>
+    <button type="button"
+            class="btn btn-warning btn-sm" {{action 'deleteTrail' selectedTrail}}>
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+    </button>
+    <button type="button" class="btn btn-default btn-sm" {{action 'saveTrail' selectedTrail}}>
+        <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+    </button>
+</form>
 

@@ -6,9 +6,8 @@ import DS from 'ember-data';
 let Trail = DS.Model.extend({
   name: DS.attr('string'),
   address: DS.attr('string'),
-  date: DS.attr('date'),
   level: DS.attr('string'),
-  itemAtPoints: DS.hasMany('mtgItemAtPoint', { async: true }),
+  items: DS.hasMany('mtgItem', { async: true }),
   features: DS.attr('string'),
   selected: DS.attr('boolean', {defaultValue: false}),
   createdAt: DS.attr('string', {
