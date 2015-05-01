@@ -16,8 +16,14 @@ html, body, #map {
   position: absolute;
   top: 0; bottom: 0; right: 5px;
 }
+
 .map-draw button {
   height: 30px;
+}
+
+.map-draw ul.map-draw-color-dropdown {
+  margin-top: -32px!important;
+  margin-left: -200px!important;
 }
 
 .top-container {
