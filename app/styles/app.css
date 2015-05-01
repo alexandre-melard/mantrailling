@@ -23,7 +23,7 @@ html, body, #map {
 .top-container {
   z-index: 100;
   position: absolute;
-  width: 380px;
+  width: 580px;
   margin-left: auto;
   margin-right: auto;
   top:5px; right:0; left: 0;
@@ -60,6 +60,10 @@ ul.map-layers-dropdown {
 
 .map-data ul.map-items-dropdown {
   width: 460px;
+}
+
+.map-data input, .map-data select {
+  width: 100px!important;
 }
 
 .map-items-dropdown .mtg-item-position-container {

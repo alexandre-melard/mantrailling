@@ -1,4 +1,8 @@
 <form class="form-inline btn-group">
+  {{input class="form-control input-sm btn-group" placeholder="trail's name" value=addTrailName}}
+  <button type="button" class="btn btn-default btn-sm" {{action 'addTrail'}}>
+      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+  </button>
   {{view "select" class="form-control input-sm btn-group" content=trails optionValuePath="content" optionLabelPath="content.name" selection=selectedTrail}}
   {{view 'mtgLevels'}}
   {{view 'mtgItems'}}
