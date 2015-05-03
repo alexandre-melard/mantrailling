@@ -58,13 +58,17 @@ export default Ember.Controller.extend({
         return markerStyle(geometry, feature);
       } else {
         var radius = feature.get('radius') || 10;
+        console.log('using radius:' + radius);
+        var opacity = parseFloat(feature.get('opacity')) || 0.5;
+        console.log('using opacity:' + opacity);
         var label = feature.get('label') || "";
+        console.log('using label:' + label);
         var rgb = getRGBColor(getColor('#ac2925', feature));
         return [new ol.style.Style({
           image: new ol.style.Circle({
             radius: radius,
             fill: new ol.style.Fill({
-              color: 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 0.5)'
+              color: 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', ' + opacity + ')'
             }),
             stroke: new ol.style.Stroke({
               color: 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 0.8)',

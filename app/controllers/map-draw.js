@@ -170,7 +170,7 @@ export default Ember.Controller.extend({
             if (len > 1) {
               var start = coords[len - 2];
               var end = coords[len - 1];
-              getRoute(start, end).then(function(route) {
+              getRoute(start, end).then(function (route) {
                 coords = coords.slice(0, len - 1);
                 coords = coords.concat(route);
                 geom.setCoordinates(coords);
@@ -191,7 +191,7 @@ export default Ember.Controller.extend({
       this.set('mtgDrawState', null);
       $('#map').off('mouseup');
       $('#map').off('keyup');
-      if(this.get('onDrawEnd') !== null) {
+      if (this.get('onDrawEnd') !== null) {
         this.get('onDrawEnd')(e.feature);
       }
     }, this);
@@ -233,27 +233,45 @@ export default Ember.Controller.extend({
     this.mapDrawService.register(this);
   },
 
-  drawPoint: function(options) {
+  drawPoint: function (options) {
     var me = this;
-    return new Promise(function(resolve, error) {
-      var color = me.get('color');
-      me.changeColor(options.color);
-      me.set('resetColor', color);
-      me.set('mtgDrawState', POINT);
-      me.set('onDrawEnd', function(feature) {
-        if (me.get('resetColor') !== null) {
-          me.changeColor(me.get('resetColor'));
-          me.set('resetColor', null);
+    return new Promise(function (resolve, error) {
+      if (options.location !== undefined) {
+        var feature = new ol.Feature({
+          geometry: new ol.geom.Point(options.location),
+          name: 'GPS Tracker'
+        });
+        if (options.removeFeature !== undefined) {
+          me.get('currentLayer').getSource().removeFeature(options.removeFeature);
         }
+        me.get('currentLayer').getSource().addFeature(feature);
+        feature.set('color', options.color);
         feature.set("label", options.label);
         feature.set("radius", options.radius);
+        feature.set("opacity", options.opacity);
 
         resolve(feature);
-      });
+      } else {
+        var color = me.get('color');
+        me.changeColor(options.color);
+        me.set('resetColor', color);
+        me.set('mtgDrawState', POINT);
+        me.set('onDrawEnd', function (feature) {
+          if (me.get('resetColor') !== null) {
+            me.changeColor(me.get('resetColor'));
+            me.set('resetColor', null);
+          }
+          feature.set("label", options.label);
+          feature.set("radius", options.radius);
+          feature.set("opacity", options.opacity);
+          me.set('onDrawEnd', null);
+        });
+      }
+      resolve(feature);
     });
   },
 
-  changeColor: function(color) {
+  changeColor: function (color) {
     this.set('color', color);
     console.log("color modified:" + color);
 
@@ -287,7 +305,7 @@ export default Ember.Controller.extend({
         this.set('mtgDrawState', 'Modify');
       }
     },
-    toggleFollowPathMode: function() {
+    toggleFollowPathMode: function () {
       this.toggleProperty('followPathMode');
       if (this.get('followPathMode')) {
         this.set('followPathModeTitle', "Follow the roads and path");

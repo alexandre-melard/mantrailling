@@ -4,8 +4,6 @@
 import Ember from 'ember';
 
 export default Ember.Controller.extend({
-  needs: ["mapDraw"],
-
   isPositionDisabled: false,
   actions: {
     positionItem: function (item) {

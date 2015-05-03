@@ -34,28 +34,41 @@ export default Ember.Controller.extend({
     var location = this.locationSearch;
     console.log("lookup location:" + location);
     var panToCoords = this.panToCoords;
-    getLatLng(location).then(function(latLng) {
-        var lat = parseFloat(latLng.lat);
-        var lon = parseFloat(latLng.lng);
-        var center = ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857');
-        panToCoords(map, center);
-    }, function(reason) {
+    getLatLng(location).then(function (latLng) {
+      var lat = parseFloat(latLng.lat);
+      var lon = parseFloat(latLng.lng);
+      var center = ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857');
+      panToCoords(map, center);
+    }, function (reason) {
       console.log(reason);
     });
   },
 
   gpsLocation: function () {
+    var me = this;
     var map = this.get('controllers.map.map');
     console.log("gps location");
-    var panToCoords = this.panToCoords;
-    geoLoc().then(function(position) {
+    geoLoc().then(function (position) {
       var lat = parseFloat(position.coords.latitude);
       var lon = parseFloat(position.coords.longitude);
       var center = ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857');
-      var view = map.getView().setCenter(coords);
-      view.setZoom(17);
-      return duration;
-    }, function(reason) {
+      var view = map.getView();
+      view.setCenter(center);
+      view.setZoom(16);
+      var options = {
+        radius: 10,
+        color: "#0000ff",
+        opacity: "0.3",
+        key: "PointType",
+        value: "GPS",
+        label: "",
+        location: center,
+        removeFeature: me.get('gpsPoint')
+      };
+      me.mapDrawService.drawPoint(options).then(function (feature) {
+        me.set('gpsPoint', feature)
+      });
+    }, function (reason) {
       console.log(reason);
     });
   },
@@ -63,6 +76,9 @@ export default Ember.Controller.extend({
   actions: {
     findLocation: function () {
       this.findLocation();
+    },
+    gpsLocation: function () {
+      this.gpsLocation();
     }
   }
 
