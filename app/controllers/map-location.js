@@ -3,6 +3,7 @@
  */
 import Ember from 'ember';
 import getLatLng from '../utils/google-geocoder-latlng.js';
+import geoLoc from '../utils/geocoding-watch-position.js';
 
 export default Ember.Controller.extend({
   needs: ['map'],
@@ -38,6 +39,22 @@ export default Ember.Controller.extend({
         var lon = parseFloat(latLng.lng);
         var center = ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857');
         panToCoords(map, center);
+    }, function(reason) {
+      console.log(reason);
+    });
+  },
+
+  gpsLocation: function () {
+    var map = this.get('controllers.map.map');
+    console.log("gps location");
+    var panToCoords = this.panToCoords;
+    geoLoc().then(function(position) {
+      var lat = parseFloat(position.coords.latitude);
+      var lon = parseFloat(position.coords.longitude);
+      var center = ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857');
+      var view = map.getView().setCenter(coords);
+      view.setZoom(17);
+      return duration;
     }, function(reason) {
       console.log(reason);
     });
