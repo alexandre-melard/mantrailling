@@ -53,19 +53,20 @@ export default Ember.Controller.extend({
   }.on('init'),
 
   onCommandChange: function () {
-    var command = this.get('commands').get('lastObject');
-    if (command !== undefined) {
-      if (command.get('key') === 'map.draw.point') {
-        this.drawPoint(command.get('options'))
+    var commands = this.get('commands');
+    if (commands.get('length') > 0) {
+      var command = commands.toArray().get('lastObject');
+      if (command.key === 'map.draw.point') {
+        this.drawPoint(command.options)
           .then(function (feature) {
-            command.get('value').success(feature);
+            command.options.success(feature);
           })
           .fail(function (reason) {
-            command.get('value').fail(reason);
+            command.options.fail(reason);
           });
       }
     }
-  }.observes('commands'),
+  }.observes('commands.@each'),
 
   onMapCreated: function () {
     this.set('select', this.createSelect());
