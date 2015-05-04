@@ -29,6 +29,7 @@ export default Ember.Controller.extend({
 
   needs: ['map', 'mapData'],
   state: null,
+  commands: null,
   map: null,
   currentLayer: null,
   olDraw: null,
@@ -46,6 +47,25 @@ export default Ember.Controller.extend({
   followPathMode: false,
   followPathModeTitle: "Draw with straight lines",
   followPathModeIcon: "plane",
+
+  bindCommand: function () {
+    this.set('commands', this.store.all('mtgCommand'));
+  }.on('init'),
+
+  onCommandChange: function () {
+    var command = this.get('commands').get('lastObject');
+    if (command !== undefined) {
+      if (command.get('key') === 'map.draw.point') {
+        this.drawPoint(command.get('options'))
+          .then(function (feature) {
+            command.get('value').success(feature);
+          })
+          .fail(function (reason) {
+            command.get('value').fail(reason);
+          });
+      }
+    }
+  }.observes('commands'),
 
   onMapCreated: function () {
     this.set('select', this.createSelect());

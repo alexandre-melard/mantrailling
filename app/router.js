@@ -6,6 +6,7 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
+  this.route('mobile');
   this.route('map');
   this.route('/beta/map');
 });

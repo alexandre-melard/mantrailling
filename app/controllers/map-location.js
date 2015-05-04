@@ -9,6 +9,25 @@ export default Ember.Controller.extend({
   needs: ['map'],
   locationSearch: null,
 
+  state: function (value) {
+    if (arguments > 1) {
+      var state = this.get('state');
+      state.set('state', value);
+      state.save();
+    } else {
+      return this.store.all('mtgState');
+    }
+  },
+
+  command: function (options) {
+    var commands = this.store.all('mtgCommand');
+    commands.pushObject({
+      key: options.key,
+      options: options.value
+    });
+    console.log('sending command :' + options.key);
+  },
+
   panToCoords: function (map, coords) {
     var view = map.getView();
     var duration = 2000;
@@ -47,6 +66,14 @@ export default Ember.Controller.extend({
   gpsLocation: function () {
     var me = this;
     var map = this.get('controllers.map.map');
+    this.state( {
+        map: {
+          location: {
+            gps: 'start'
+          }
+        }
+      }
+    );
     console.log("gps location");
     geoLoc().then(function (position) {
       var lat = parseFloat(position.coords.latitude);
@@ -65,6 +92,12 @@ export default Ember.Controller.extend({
         location: center,
         removeFeature: me.get('gpsPoint')
       };
+      me.command({
+          key: 'map.draw.point',
+          value: options
+        }
+      );
+
       me.mapDrawService.drawPoint(options).then(function (feature) {
         me.set('gpsPoint', feature)
       });
