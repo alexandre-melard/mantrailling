@@ -10,7 +10,6 @@ export default function googleRouteBetween(s, f) {
     destination: gLatLngDst,
     travelMode: google.maps.TravelMode.WALKING
   };
-  var me = this;
   var directionsService = new google.maps.DirectionsService();
   var promise = new Promise(function(resolve, reject) {
     directionsService.route(request, function (result, status) {

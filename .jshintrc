@@ -3,8 +3,10 @@
     "document",
     "window",
     "-Promise",
+    "Promise",
     "ol",
-    "$"
+    "$",
+    "google"
   ],
   "browser": true,
   "boss": true,

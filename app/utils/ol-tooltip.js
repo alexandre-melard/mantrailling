@@ -46,11 +46,11 @@ export default {
       var output = null;
       var geom = this.sketch.getGeometry();
       if (geom instanceof ol.geom.Polygon) {
-        output = formatArea(this.map, geom);
+        output = formatArea(this.map.getView().getProjection(), geom);
         helpMsg = continuePolygonMsg;
         tooltipCoord = geom.getInteriorPoint().getCoordinates();
       } else if (geom instanceof ol.geom.LineString) {
-        output = formatLength(this.map, geom);
+        output = formatLength(this.map.getView().getProjection(), geom);
         helpMsg = continueLineMsg;
         tooltipCoord = geom.getLastCoordinate();
       } else if (this.mtgDrawState === "Marker") {

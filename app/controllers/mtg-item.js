@@ -4,23 +4,28 @@
 import Ember from 'ember';
 
 export default Ember.Controller.extend({
-  isPositionDisabled: false,
   actions: {
     positionItem: function (item) {
-      var me = this;
       var options = {
-        radius: 15,
-        color: "#ffffff",
+        radius: 10,
+        color: "#0000ff",
+        opacity: "0.3",
         key: "PointType",
-        value: "Item",
-        label: item.get('index') + item.get('position')
-      };
-      if (item.get('feature') === undefined || item.get('feature') === null) {
-        this.mapDrawService.drawPoint(options).then(function(feature) {
+        value: "GPS",
+        label: "",
+        removeFeature: item.get("feature"),
+        success: function (feature) {
           item.set("feature", feature);
-          me.set('isPositionDisabled', true);
-        });
-      }
+        },
+        failure: function (reason) {
+          console.log('could not create item icon: ' + reason);
+        }
+      };
+      this.command.send({
+          key: 'map.draw.point',
+          value: options
+        }
+      );
     }
   }
 });

@@ -2,28 +2,12 @@
  * Created by alex on 04/04/2015.
  */
 import Ember from 'ember';
+import * as consts from '../utils/map-constants.js';
 import tooltip from '../utils/ol-tooltip';
 import getRGB from "../utils/color-get-rgb.js";
 import calcBrightness from "../utils/color-get-brightness.js";
 import colorLuminance from "../utils/color-get-luminance.js";
 import getRoute from "../utils/google-route-between-a-and-b.js";
-
-// Geometrie
-var TRAILER = "Trailer";
-var TEAM = "Team";
-var LINE_STRING = "LineString";
-var POLYGON = "Polygon";
-var MARKER = "Marker";
-var POINT = "Point";
-
-var COLORS = [
-  ["#ffffff", "#000000", "#eeece1", "#1f497d", "#4f81bd", "#c0504d", "#9bbb59", "#8064a2", "#4bacc6", "#f79646", "#ffff00"],
-  ["#f2f2f2", "#7f7f7f", "#ddd9c3", "#c6d9f0", "#dbe5f1", "#f2dcdb", "#ebf1dd", "#e5e0ec", "#dbeef3", "#fdeada", "#fff2ca"],
-  ["#d8d8d8", "#595959", "#c4bd97", "#8db3e2", "#b8cce4", "#e5b9b7", "#d7e3bc", "#ccc1d9", "#b7dde8", "#fbd5b5", "#ffe694"],
-  ["#bfbfbf", "#3f3f3f", "#938953", "#548dd4", "#95b3d7", "#d99694", "#c3d69b", "#b2a2c7", "#a5d0e0", "#fac08f", "#f2c314"],
-  ["#a5a5a5", "#262626", "#494429", "#17365d", "#366092", "#953734", "#76923c", "#5f497a", "#92cddc", "#e36c09", "#c09100"],
-  ["#7f7f7f", "#0c0c0c", "#1d1b10", "#0f243e", "#244061", "#632423", "#4f6128", "#3f3151", "#31859b", "#974806", "#7f6000"]
-];
 
 export default Ember.Controller.extend({
 
@@ -41,7 +25,7 @@ export default Ember.Controller.extend({
   sketch: null,
   sketchLastState: null,
   color: null,
-  colors: COLORS,
+  colors: consts.COLORS,
   resetColor: null,
   popups: [],
   followPathMode: false,
@@ -158,10 +142,10 @@ export default Ember.Controller.extend({
     var currentLayer = this.get('currentLayer');
     var source = currentLayer.getSource();
     var geometry = this.get('mtgDrawState');
-    if (this.get('mtgDrawState') === TRAILER || this.get('mtgDrawState') === TEAM) {
-      geometry = LINE_STRING;
-    } else if (this.get('mtgDrawState') === MARKER) {
-      geometry = POINT;
+    if (this.get('mtgDrawState') === consts.TRAILER || this.get('mtgDrawState') === consts.TEAM) {
+      geometry = consts.LINE_STRING;
+    } else if (this.get('mtgDrawState') === consts.MARKER) {
+      geometry = consts.POINT;
     }
     this.set('olDraw', new ol.interaction.Draw({
       source: source,
@@ -178,14 +162,14 @@ export default Ember.Controller.extend({
         tooltip.sketch = feature;
         $('#map').on('keyup', function (event) {
           if (event.keyCode === 27) {
-            if (geom.getType() === LINE_STRING) {
+            if (geom.getType() === consts.LINE_STRING) {
               geom.setCoordinates(geom.getCoordinates().slice(0, geom.getCoordinates().length - 1));
             }
           }
         });
         var me = this;
         $('#map').on('mouseup', function (event) {
-          if (geom.getType() === LINE_STRING && me.followPathMode) {
+          if (geom.getType() === consts.LINE_STRING && me.followPathMode) {
             var coords = geom.getCoordinates();
             var len = coords.length;
             if (len > 1) {
@@ -233,7 +217,7 @@ export default Ember.Controller.extend({
     // Wait for sketch to be drawn
     if (sketch === null) {
       sketch = this.get('sketchLastState');
-      if (this.get('mtgDrawState') === MARKER) {
+      if (this.get('mtgDrawState') === consts.MARKER) {
         var popup = this.container.lookup('component:map-popup', {singleton: false});
         popup.set('feature', sketch);
         popup.set('map', this.get('map'));
@@ -276,7 +260,7 @@ export default Ember.Controller.extend({
         var color = me.get('color');
         me.changeColor(options.color);
         me.set('resetColor', color);
-        me.set('mtgDrawState', POINT);
+        me.set('mtgDrawState', consts.POINT);
         me.set('onDrawEnd', function (feature) {
           if (me.get('resetColor') !== null) {
             me.changeColor(me.get('resetColor'));
@@ -286,9 +270,9 @@ export default Ember.Controller.extend({
           feature.set("radius", options.radius);
           feature.set("opacity", options.opacity);
           me.set('onDrawEnd', null);
+          resolve(feature);
         });
       }
-      resolve(feature);
     });
   },
 

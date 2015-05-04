@@ -2,15 +2,8 @@
  * Created by alex on 04/04/2015.
  */
 import Ember from 'ember';
-
-// Formats
-var GEO_JSON = "GeoJSON";
-var KML = "KML";
-var GPX = "GPX";
-var BREVET = "Basic";
-var LVL1 = "Intermediate";
-var LVL2 = "Advanced";
-var LVL3 = "Master";
+import * as consts from '../utils/map-constants.js';
+import getStyleFunction from "../utils/map-style.js";
 
 export default Ember.Controller.extend({
 
@@ -19,9 +12,9 @@ export default Ember.Controller.extend({
   map: null,
   addTrailName: null,
   trails: [],
-  formats: [GEO_JSON, KML, GPX],
-  selectedFormat: GEO_JSON,
-  levels: [BREVET, LVL1, LVL2, LVL3],
+  formats: [consts.GEO_JSON, consts.KML, consts.GPX],
+  selectedFormat: consts.GEO_JSON,
+  levels: [consts.BREVET, consts.LVL1, consts.LVL2, consts.LVL3],
   itemTypes: ['Cloth', 'Leather', 'Cardboard', 'Plastic'],
   currentItem: {},
   items: [],
@@ -63,7 +56,7 @@ export default Ember.Controller.extend({
       // convert the data of the vector_layer into the chosen format
       data = format.writeFeatures(layer.getSource().getFeatures());
     } catch (e) {
-      // at time of creation there is an error in the GPX format (18.7.2014)
+      // at time of creation there is an error in the consts.GPX format (18.7.2014)
       console.log(e.name + ": " + e.message);
       return;
     }
@@ -75,9 +68,9 @@ export default Ember.Controller.extend({
       name: this.get('addTrailName')
     });
     trail.save().then(function () {
-      console.log(model + ".save :: success");
+      console.log(trail.get('name') + ".save :: success");
     }).catch(function (e) {
-      console.log(model + ".save :: failure: " + e);
+      console.log(trail.get('name') + ".save :: failure: " + e);
     });
     this.trails.pushObject(trail);
     trail.set('selected', true);
@@ -105,7 +98,7 @@ export default Ember.Controller.extend({
         var features = JSON.parse(trail.get('features'));
         var vectorSource = mapController.createVectorSource(features);
         var vectorLayer = mapController.createVector(vectorSource);
-        vectorLayer.setStyle(mapController.getDefaultStyle());
+        vectorLayer.setStyle(getStyleFunction(me.get('map')));
         trail.set('layer', vectorLayer);
         if (trail.get('selected')) {
           me.changeActiveTrail(trail, me);

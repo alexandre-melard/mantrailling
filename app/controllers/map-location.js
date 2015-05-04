@@ -19,15 +19,6 @@ export default Ember.Controller.extend({
     }
   },
 
-  command: function (options) {
-    var commands = this.store.all('mtgCommand');
-    commands.pushObject({
-      key: options.key,
-      options: options.value
-    });
-    console.log('sending command :' + options.key);
-  },
-
   panToCoords: function (map, coords) {
     var view = map.getView();
     var duration = 2000;
@@ -92,7 +83,7 @@ export default Ember.Controller.extend({
         location: center,
         removeFeature: me.get('gpsPoint')
       };
-      me.command({
+      me.command.send({
           key: 'map.draw.point',
           value: options
         }
