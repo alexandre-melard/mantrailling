@@ -44,8 +44,7 @@ export default Ember.Controller.extend({
         this.drawPoint(command.options)
           .then(function (feature) {
             command.options.success(feature);
-          })
-          .fail(function (reason) {
+          }, function (reason) {
             command.options.fail(reason);
           });
       }
@@ -238,40 +237,51 @@ export default Ember.Controller.extend({
     this.mapDrawService.register(this);
   },
 
+  setFeatureStyle: function(feature, options) {
+    if (options.label !== undefined) {
+      feature.set("label", options.label);
+    }
+    if (options.radius !== undefined) {
+      feature.set("radius", options.radius);
+    }
+    if (options.opacity !== undefined) {
+      feature.set("opacity", options.opacity);
+    }
+    if (options.color !== undefined) {
+      feature.set("color", options.color);
+    }
+    return feature;
+  },
+
+  drawPointAtLocation: function (me, resolve, options) {
+    var feature = new ol.Feature({
+      geometry: new ol.geom.Point(options.location),
+      name: 'GPS Tracker'
+    });
+    me.get('currentLayer').getSource().addFeature(feature);
+    feature = me.setFeatureStyle(feature, options);
+    resolve(feature);
+  },
+
+  drawPointUI: function(me, resolve, options) {
+    me.set('mtgDrawState', consts.POINT);
+    me.set('onDrawEnd', function (feature) {
+      feature = me.setFeatureStyle(feature, options);
+      me.set('onDrawEnd', null);
+      resolve(feature);
+    });
+  },
+
   drawPoint: function (options) {
     var me = this;
     return new Promise(function (resolve, error) {
+      if (options.removeFeature !== undefined) {
+        me.get('currentLayer').getSource().removeFeature(options.removeFeature);
+      }
       if (options.location !== undefined) {
-        var feature = new ol.Feature({
-          geometry: new ol.geom.Point(options.location),
-          name: 'GPS Tracker'
-        });
-        if (options.removeFeature !== undefined) {
-          me.get('currentLayer').getSource().removeFeature(options.removeFeature);
-        }
-        me.get('currentLayer').getSource().addFeature(feature);
-        feature.set('color', options.color);
-        feature.set("label", options.label);
-        feature.set("radius", options.radius);
-        feature.set("opacity", options.opacity);
-
-        resolve(feature);
+        me.drawPointAtLocation(me, resolve, options);
       } else {
-        var color = me.get('color');
-        me.changeColor(options.color);
-        me.set('resetColor', color);
-        me.set('mtgDrawState', consts.POINT);
-        me.set('onDrawEnd', function (feature) {
-          if (me.get('resetColor') !== null) {
-            me.changeColor(me.get('resetColor'));
-            me.set('resetColor', null);
-          }
-          feature.set("label", options.label);
-          feature.set("radius", options.radius);
-          feature.set("opacity", options.opacity);
-          me.set('onDrawEnd', null);
-          resolve(feature);
-        });
+        me.drawPointUI(me, resolve, options);
       }
     });
   },

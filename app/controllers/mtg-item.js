@@ -7,12 +7,12 @@ export default Ember.Controller.extend({
   actions: {
     positionItem: function (item) {
       var options = {
-        radius: 10,
-        color: "#0000ff",
+        radius: 15,
+        color: "#00aa00",
         opacity: "0.3",
         key: "PointType",
-        value: "GPS",
-        label: "",
+        value: "Item",
+        label: item.get('index') + item.get('position'),
         removeFeature: item.get("feature"),
         success: function (feature) {
           item.set("feature", feature);
