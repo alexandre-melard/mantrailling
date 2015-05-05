@@ -1,2 +1,9 @@
+{{render "mapDraw" mapDraw}}
+{{render "mapLocation" mapLocation}}
 {{view id="map"}}
+<div class="top-container">
+  {{render "mapData" mapData}}
+  {{render "mapWeather" mapWeather}}
+  {{view "mapLayers"}}
+</div>
 

@@ -95,11 +95,15 @@ export default function (map) {
   };
 
   var lineStringStyle = function (geometry, feature) {
-    var label = formatLength(map.getView().getProjection(), feature.getGeometry());
+    if (geometry.getType() === consts.MULTILINE_STRING) {
+      // get the first path of the file
+      geometry = geometry.getLineStrings()[0];
+    }
+    var label = formatLength(map.getView().getProjection(), geometry);
     var type = feature.get('specificType');
     var styles = [];
     var color, rgb;
-    if (type === 'Team') {
+    if (type === consts.TEAM) {
       color = getColor('#ec971f', feature);
       rgb = getRGBColor(color);
       styles.push(new ol.style.Style({
@@ -191,7 +195,7 @@ export default function (map) {
       style = pointStyle(geometry, feature);
     } else if (geometry.getType() === consts.POLYGON) {
       style = polygonStyle(geometry, feature);
-    } else if (geometry.getType() === consts.LINE_STRING) {
+    } else if (geometry.getType() === consts.LINE_STRING || geometry.getType() === consts.MULTILINE_STRING) {
       style = lineStringStyle(geometry, feature);
     } else if (geometry.getType() === consts.MARKER) {
       style = markerStyle(geometry, feature);

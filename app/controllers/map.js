@@ -10,6 +10,24 @@ export default Ember.Controller.extend({
   tileLayers: [],
   selectedTileLayer: null,
   currentLayer: null,
+  commands: null,
+
+  bindCommand: function () {
+    this.set('commands', this.store.all('mtgCommand'));
+  }.on('init'),
+
+  onCommandChange: function () {
+    var commands = this.get('commands');
+    if (commands.get('length') > 0) {
+      var command = commands.toArray().get('lastObject');
+      if (command.key === 'map.view.extent.fit') {
+        var map = this.get('map');
+        var layer = this.get('currentLayer');
+        map.getView().fitExtent( layer.getSource().getExtent(), (map.getSize()));
+      }
+    }
+  }.observes('commands.@each'),
+
 
   createMap: function () {
     return new ol.Map({

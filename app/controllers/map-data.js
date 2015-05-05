@@ -89,11 +89,11 @@ export default Ember.Controller.extend({
   },
 
   mapImportTrailerFile: function (evt) {
-    this.importTrail("Trailer", this.get('selectedTrail'), evt);
+    this.importTrail(consts.TRAILER, this.get('selectedTrail'), evt);
   },
 
   mapImportTeamFile: function (evt) {
-    this.importTrail("Team", this.get('selectedTrail'), evt);
+    this.importTrail(consts.TEAM, this.get('selectedTrail'), evt);
   },
 
   importTrail: function (type, trail, evt) {
@@ -111,22 +111,26 @@ export default Ember.Controller.extend({
       console.log('importing ' + f.type + ' file as ' + type);
 
       var reader = new FileReader();
-
+      var me = this;
       // Closure to capture the file information.
       reader.onload = (function(theFile) {
         return function(e) {
-          var constructors = {
-            gpx: ol.format.GPX,
-            geojson: ol.format.GeoJSON,
-            igc: ol.format.IGC,
-            kml: ol.format.KML,
-            topojson: ol.format.TopoJSON
-          };
           var source = new ol.source.StaticVector({
-            format: new constructors[file.name.split('.').pop()](),
+            format: new ol.format.GPX(),
             projection: 'EPSG:3857'
           });
           var features = source.readFeatures(e.target.result);
+          var feature = features[0];
+          feature.set('specificType', type);
+          trail.get('layer').getSource().addFeature(feature);
+          var options = {
+            layer: trail.get('layer')
+          };
+          me.command.send({
+              key: 'map.view.extent.fit',
+              value: options
+            }
+          );
         };
       })(f);
       // Read in the image file as a text file.

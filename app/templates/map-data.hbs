@@ -3,6 +3,7 @@
     <button type="button" class="btn btn-default btn-sm" {{action 'addTrail'}}>
         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
     </button>
+  {{view "select" class="form-control input-sm btn-group" content=trails optionValuePath="content" optionLabelPath="content.name" selection=selectedTrail}}
   {{#dropdown-list item="Import" icon="import"}}
       <ul class="dropdown-menu map-data-import-dropdown">
           <li>
@@ -10,18 +11,17 @@
                       class="btn btn-success btn-sm map-data-import-trailer" {{action 'triggerImport' 'map-data-import-trailer-input'}}>
                   <img src="assets/images/walk.png" class="inverted" width="16" height="16"/>
               </button>
-              <input type="file" id="map-data-import-trailer-input" class="hidden"/>
+              <input type="file" id="map-data-import-trailer-input" class="hidden" accept=".gpx"/>
           </li>
           <li>
               <button type="button" data-toggle="tooltip" title="Import the Team's Trail"
                       class="btn btn-warning btn-sm map-data-import-team" {{action 'triggerImport' 'map-data-import-team-input'}}>
                   <img src="assets/images/track.png" class="inverted" width="16" height="16"/>
               </button>
-              <input type="file" id="map-data-import-team-input" class="hidden"/>
+              <input type="file" id="map-data-import-team-input" class="hidden" accept=".gpx"/>
           </li>
       </ul>
   {{/dropdown-list}}
-  {{view "select" class="form-control input-sm btn-group" content=trails optionValuePath="content" optionLabelPath="content.name" selection=selectedTrail}}
   {{view 'mtgLevels'}}
   {{view 'mtgItems'}}
   {{#dropdown-list selected=selected item="Export" icon="export"}}
