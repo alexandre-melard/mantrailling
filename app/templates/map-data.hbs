@@ -1,12 +1,30 @@
 <form class="form-inline btn-group">
   {{input class="form-control input-sm btn-group" placeholder="trail's name" value=addTrailName}}
-  <button type="button" class="btn btn-default btn-sm" {{action 'addTrail'}}>
-      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-  </button>
+    <button type="button" class="btn btn-default btn-sm" {{action 'addTrail'}}>
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+    </button>
+  {{#dropdown-list item="Import" icon="import"}}
+      <ul class="dropdown-menu map-data-import-dropdown">
+          <li>
+              <button type="button" data-toggle="tooltip" title="Import the Trailer's Trail"
+                      class="btn btn-success btn-sm map-data-import-trailer" {{action 'triggerImport' 'map-data-import-trailer-input'}}>
+                  <img src="assets/images/walk.png" class="inverted" width="16" height="16"/>
+              </button>
+              <input type="file" id="map-data-import-trailer-input" class="hidden"/>
+          </li>
+          <li>
+              <button type="button" data-toggle="tooltip" title="Import the Team's Trail"
+                      class="btn btn-warning btn-sm map-data-import-team" {{action 'triggerImport' 'map-data-import-team-input'}}>
+                  <img src="assets/images/track.png" class="inverted" width="16" height="16"/>
+              </button>
+              <input type="file" id="map-data-import-team-input" class="hidden"/>
+          </li>
+      </ul>
+  {{/dropdown-list}}
   {{view "select" class="form-control input-sm btn-group" content=trails optionValuePath="content" optionLabelPath="content.name" selection=selectedTrail}}
   {{view 'mtgLevels'}}
   {{view 'mtgItems'}}
-  {{#dropdown-list selected=selected item="Export" icon="export" resetView="false"}}
+  {{#dropdown-list selected=selected item="Export" icon="export"}}
       <ul class="dropdown-menu map-data-export-dropdown">
         {{#each format in formats}}
             <li><a {{action 'exportTrail' format selectedTrail}}>{{format}}</a></li>
