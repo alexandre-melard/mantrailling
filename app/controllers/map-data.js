@@ -109,17 +109,28 @@ export default Ember.Controller.extend({
       };
       console.log(file);
       console.log('importing ' + f.type + ' file as ' + type);
-      var constructors = {
-        gpx: ol.format.GPX,
-        geojson: ol.format.GeoJSON,
-        igc: ol.format.IGC,
-        kml: ol.format.KML,
-        topojson: ol.format.TopoJSON
-      };
-      var source = new ol.source.StaticVector({
-        url: URL.createObjectURL(f),
-        format: new constructors[file.name.split('.').pop()]
-      });
+
+      var reader = new FileReader();
+
+      // Closure to capture the file information.
+      reader.onload = (function(theFile) {
+        return function(e) {
+          var constructors = {
+            gpx: ol.format.GPX,
+            geojson: ol.format.GeoJSON,
+            igc: ol.format.IGC,
+            kml: ol.format.KML,
+            topojson: ol.format.TopoJSON
+          };
+          var source = new ol.source.StaticVector({
+            format: new constructors[file.name.split('.').pop()](),
+            projection: 'EPSG:3857'
+          });
+          var features = source.readFeatures(e.target.result);
+        };
+      })(f);
+      // Read in the image file as a text file.
+      reader.readAsText(f);
 
     } else {
       alert('The File APIs are not fully supported in this browser.');
