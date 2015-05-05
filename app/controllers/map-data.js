@@ -8,6 +8,7 @@ import getStyleFunction from "../utils/map-style.js";
 export default Ember.Controller.extend({
 
   needs: ['map', 'mapDraw'],
+  attributeBindings: ['name'],
   draw: Ember.computed.alias("controllers.mapDraw"),
   map: null,
   addTrailName: null,
@@ -78,13 +79,51 @@ export default Ember.Controller.extend({
     return trail;
   },
 
-  exportTrail: function (trail, format) {
+  exportTrail: function (format, trail) {
     var layer = trail.layer;
     var data = this.getData(format, layer);
     var a = document.createElement("a");
     a.href = window.URL.createObjectURL(new Blob([data], {type: 'application/mantralling'}));
     a.download = trail.name + '.' + format.toLowerCase();
     a.click();
+  },
+
+  mapImportTrailerFile: function (evt) {
+    this.importTrail("Trailer", this.get('selectedTrail'), evt);
+  },
+
+  mapImportTeamFile: function (evt) {
+    this.importTrail("Team", this.get('selectedTrail'), evt);
+  },
+
+  importTrail: function (type, trail, evt) {
+    // Check for the various File API support.
+    if (window.File && window.FileReader) {
+      // Great success! All the File APIs are supported.
+      var f = evt.target.files[0];
+      var file = {
+        name: f.name,
+        type: f.type || 'n/a',
+        size: f.size,
+        date: f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a'
+      };
+      console.log(file);
+      console.log('importing ' + f.type + ' file as ' + type);
+      var constructors = {
+        gpx: ol.format.GPX,
+        geojson: ol.format.GeoJSON,
+        igc: ol.format.IGC,
+        kml: ol.format.KML,
+        topojson: ol.format.TopoJSON
+      };
+      var source = new ol.source.StaticVector({
+        url: URL.createObjectURL(f),
+        format: new constructors[file.name.split('.').pop()]
+      });
+
+    } else {
+      alert('The File APIs are not fully supported in this browser.');
+    }
   },
 
   loadTrails: function () {
@@ -180,6 +219,10 @@ export default Ember.Controller.extend({
     },
     exportTrail: function (format, trail) {
       this.exportTrail(format, trail);
+    },
+    triggerImport: function (target) {
+      console.log('importing file: ' + target);
+      $('#' + target).click();
     }
   }
 });
