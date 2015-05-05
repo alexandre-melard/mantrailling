@@ -4,17 +4,54 @@
 import Ember from 'ember';
 
 export default Ember.Controller.extend({
+  commands: [],
+  registered: [],
 
-  loadStore: function() {
+  loadStore: function () {
     this.set('store', this.container.lookup('store:main'));
   }.on('init'),
 
-  send: function (options) {
-    var commands = this.store.all('mtgCommand');
-    commands.pushObject({
-      key: options.key,
-      options: options.value
+  unregister: function (who, what, callback) {
+
+  },
+
+  register: function (who, what, callback) {
+    var registered = this.get('registered');
+    registered.pushObject({
+      who: who,
+      what: what,
+      callback: callback
     });
-    console.log('sending command :' + options.key);
+  },
+
+  notify: function () {
+    var registered = this.get('registered');
+    var commands = this.get('commands');
+    var command = commands.get('lastObject');
+    registered.forEach(function (register) {
+      if (command.key === register.what) {
+        register.callback.apply(register.who, [command.options])
+          .then(function (result) {
+            if (command.resolve !== undefined) {
+              command.resolve(result);
+            }
+          }, function (reason) {
+            if (command.failure !== undefined) {
+              command.failure(reason);
+            }
+          });
+      }
+    });
+  }.observes('commands.@each'),
+
+  send: function (key, options, resolve, failure) {
+    var commands = this.get('commands');
+    commands.pushObject({
+      key: key,
+      options: options,
+      resolve: resolve,
+      failure: failure
+    });
+    console.log('sending command :' + key);
   }
 });

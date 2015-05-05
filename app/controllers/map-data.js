@@ -126,11 +126,7 @@ export default Ember.Controller.extend({
           var options = {
             layer: trail.get('layer')
           };
-          me.command.send({
-              key: 'map.view.extent.fit',
-              value: options
-            }
-          );
+          me.command.send('map.view.extent.fit', options);
         };
       })(f);
       // Read in the image file as a text file.

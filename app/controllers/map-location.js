@@ -57,7 +57,7 @@ export default Ember.Controller.extend({
   gpsLocation: function () {
     var me = this;
     var map = this.get('controllers.map.map');
-    this.state( {
+    this.state({
         map: {
           location: {
             gps: 'start'
@@ -83,17 +83,13 @@ export default Ember.Controller.extend({
         location: center,
         removeFeature: me.get('gpsPoint')
       };
-      me.command.send({
-          key: 'map.draw.point',
-          value: options
-        }
-      );
-
-      me.mapDrawService.drawPoint(options).then(function (feature) {
-        me.set('gpsPoint', feature)
-      });
-    }, function (reason) {
-      console.log(reason);
+      me.command.send('map.draw.point', options,
+        function (feature) {
+          me.set('gpsPoint', feature)
+        },
+        function (reason) {
+          console.log(reason);
+        });
     });
   },
 

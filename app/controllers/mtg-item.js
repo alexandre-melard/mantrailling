@@ -13,19 +13,15 @@ export default Ember.Controller.extend({
         key: "PointType",
         value: "Item",
         label: item.get('index') + item.get('position'),
-        removeFeature: item.get("feature"),
-        success: function (feature) {
+        removeFeature: item.get("feature")
+      };
+      this.command.send('map.draw.point', options,
+        function (feature) {
           item.set("feature", feature);
         },
-        failure: function (reason) {
+        function (reason) {
           console.log('could not create item icon: ' + reason);
-        }
-      };
-      this.command.send({
-          key: 'map.draw.point',
-          value: options
-        }
-      );
+        });
     }
   }
 });

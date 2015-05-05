@@ -13,7 +13,6 @@ export default Ember.Controller.extend({
 
   needs: ['map', 'mapData'],
   state: null,
-  commands: null,
   map: null,
   currentLayer: null,
   olDraw: null,
@@ -33,23 +32,8 @@ export default Ember.Controller.extend({
   followPathModeIcon: "plane",
 
   bindCommand: function () {
-    this.set('commands', this.store.all('mtgCommand'));
+    this.command.register(this, 'map.draw.point', this.drawPoint);
   }.on('init'),
-
-  onCommandChange: function () {
-    var commands = this.get('commands');
-    if (commands.get('length') > 0) {
-      var command = commands.toArray().get('lastObject');
-      if (command.key === 'map.draw.point') {
-        this.drawPoint(command.options)
-          .then(function (feature) {
-            command.options.success(feature);
-          }, function (reason) {
-            command.options.fail(reason);
-          });
-      }
-    }
-  }.observes('commands.@each'),
 
   onMapCreated: function () {
     this.set('select', this.createSelect());
