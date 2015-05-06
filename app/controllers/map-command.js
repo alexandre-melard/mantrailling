@@ -27,7 +27,7 @@ export default Ember.Controller.extend({
   notify: function () {
     var registered = this.get('registered');
     var commands = this.get('commands');
-    var command = commands.get('lastObject');
+    var command = commands.objectAt(commands.get('length') - 1);
     registered.forEach(function (register) {
       if (command.key === register.what) {
         register.callback.apply(register.who, [command.options])
@@ -46,12 +46,12 @@ export default Ember.Controller.extend({
 
   send: function (key, options, resolve, failure) {
     var commands = this.get('commands');
+    console.log('sending command: ' + key + ' with options: ' + JSON.stringify(options));
     commands.pushObject({
       key: key,
       options: options,
       resolve: resolve,
       failure: failure
     });
-    console.log('sending command :' + key);
   }
 });

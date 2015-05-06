@@ -1,18 +1,18 @@
 <div class="btn-group-vertical mtg-draw">
-    <button type="button" data-toggle="tooltip" title="Add description"
-            class="btn btn-marker btn-sm map-draw-marker" {{action 'toggleDraw' 'Marker'}}>
-        <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
-    </button>
     <button type="button" data-toggle="tooltip" title="Draw a Point"
             class="btn btn-danger btn-sm map-draw-point" {{action 'toggleDraw' 'Point'}}>
         <img src="assets/images/point.png" class="inverted" width="12" height="12" />
+    </button>
+    <button type="button" data-toggle="tooltip" title="Add description"
+            class="hidden btn btn-success btn-sm map-draw-marker" {{action 'toggleDraw' 'Marker'}}>
+        <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
     </button>
     <button type="button" data-toggle="tooltip" title="Draw a Zone"
             class="btn btn-primary btn-sm map-draw-polygon" {{action 'toggleDraw' 'Polygon'}}>
         <span class="glyphicon glyphicon-retweet" aria-hidden="true"></span>
     </button>
     <button type="button" data-toggle="tooltip" title="Draw the Trailer's Trail"
-            class="btn btn-success btn-sm map-draw-trailer" {{action 'toggleDraw' 'Trailer'}}>
+            class="btn btn-pink btn-sm map-draw-trailer" {{action 'toggleDraw' 'Trailer'}}>
         <img src="assets/images/walk.png" class="inverted" width="16" height="16" />
     </button>
     <button type="button" data-toggle="tooltip" title="Draw the Team's Trail"

@@ -165,7 +165,10 @@ export default Ember.Controller.extend({
     }
     var mapCtrl = me.get('controllers.map');
     trail.set('layer', mapCtrl.changeCurrentLayer(trail.get('layer')));
-    trail.set('selected', true);
+    this.set('selectedTrail', trail);
+    if (trail.get('layer').getSource().getFeatures().length > 0) {
+      this.command.send('map.view.extent.fit', options);
+    }
     return trail;
   },
 
@@ -184,7 +187,7 @@ export default Ember.Controller.extend({
     this.loadTrails();
     var mapCtrl = this.get('controllers.map');
     if (this.get('trails').length > 0) {
-      mapCtrl.set('currentLayer', this.trails.get('lastObject').get('layer'));
+      mapCtrl.set('currentLayer', this.trails.objectAt(this.trails.get('length') - 1).get('layer'));
     } else {
       // if no layers yet, create a new one :)
       mapCtrl.changeCurrentLayer(null);

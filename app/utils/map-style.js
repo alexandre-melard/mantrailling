@@ -34,9 +34,9 @@ export default function (map) {
       return markerStyle(geometry, feature);
     } else {
       var radius = feature.get('radius') || 10;
-      console.log('using radius:' + radius);
+//      console.log('using radius:' + radius);
       var opacity = parseFloat(feature.get('opacity')) || 0.5;
-      console.log('using opacity:' + opacity);
+//      console.log('using opacity:' + opacity);
       var label = feature.get('label') || "";
       console.log('using label:' + label);
       var rgb = getRGBColor(getColor('#ac2925', feature));
@@ -104,7 +104,7 @@ export default function (map) {
     var styles = [];
     var color, rgb;
     if (type === consts.TEAM) {
-      color = getColor('#ec971f', feature);
+      color = getColor(consts.TEAM_COLOR, feature);
       rgb = getRGBColor(color);
       styles.push(new ol.style.Style({
         stroke: new ol.style.Stroke({
@@ -116,7 +116,7 @@ export default function (map) {
           font: '18px Calibri,sans-serif',
           text: label,
           fill: new ol.style.Fill({
-            color: getColor('#ec971f', feature)
+            color: getColor(consts.TEAM_COLOR, feature)
           }),
           stroke: new ol.style.Stroke({
             color: (calcBrightness(rgb) < 220) ? "#FFFFFF" : "#000000",
@@ -125,7 +125,7 @@ export default function (map) {
         })
       }));
     } else {
-      color = getColor('#449d44', feature);
+      color = getColor(consts.TRAILER_COLOR, feature);
       rgb = getRGBColor(color);
       styles.push(new ol.style.Style({
         stroke: new ol.style.Stroke({
@@ -137,7 +137,7 @@ export default function (map) {
           font: '18px Calibri,sans-serif',
           text: label,
           fill: new ol.style.Fill({
-            color: getColor('#449d44', feature)
+            color: getColor(consts.TRAILER_COLOR, feature)
           }),
           stroke: new ol.style.Stroke({
             color: (calcBrightness(rgb) < 220) ? "#FFFFFF" : "#000000",
