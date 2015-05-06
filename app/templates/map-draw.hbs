@@ -2,27 +2,27 @@
     <ul class="dropdown-menu map-draw-dropdown">
         <li class="btn-group">
             <button type="button" data-toggle="tooltip" title="Draw a Point"
-                    class="btn btn-danger btn-sm map-draw-point" {{action 'toggleDraw' 'Point'}}>
+                    class="btn btn-danger map-draw-point" {{action 'toggleDraw' 'Point'}}>
                 <img src="assets/images/point.png" class="inverted" width="12" height="12"/>
             </button>
             <button type="button" data-toggle="tooltip" title="Add description"
-                    class="hidden btn btn-success btn-sm map-draw-marker" {{action 'toggleDraw' 'Marker'}}>
+                    class="hidden btn btn-success map-draw-marker" {{action 'toggleDraw' 'Marker'}}>
                 <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
             </button>
             <button type="button" data-toggle="tooltip" title="Draw a Zone"
-                    class="btn btn-primary btn-sm map-draw-polygon" {{action 'toggleDraw' 'Polygon'}}>
+                    class="btn btn-primary map-draw-polygon" {{action 'toggleDraw' 'Polygon'}}>
                 <span class="glyphicon glyphicon-retweet" aria-hidden="true"></span>
             </button>
             <button type="button" data-toggle="tooltip" title="Draw the Trailer's Trail"
-                    class="btn btn-pink btn-sm map-draw-trailer" {{action 'toggleDraw' 'Trailer'}}>
+                    class="btn btn-pink map-draw-trailer" {{action 'toggleDraw' 'Trailer'}}>
                 <img src="assets/images/walk.png" class="inverted" width="16" height="16"/>
             </button>
             <button type="button" data-toggle="tooltip" title="Draw the Team's Trail"
-                    class="btn btn-warning btn-sm map-draw-team" {{action 'toggleDraw' 'Team'}}>
+                    class="btn btn-warning map-draw-team" {{action 'toggleDraw' 'Team'}}>
                 <img src="assets/images/track.png" class="inverted" width="16" height="16"/>
             </button>
             <button type="button" data-toggle="tooltip" data-original-title="{{followPathModeTitle}}"
-                    class="btn btn-brown-red btn-sm map-draw-follow-path" {{action 'toggleFollowPathMode'}}>
+                    class="btn btn-brown-red map-draw-follow-path" {{action 'toggleFollowPathMode'}}>
                 <span class="glyphicon glyphicon-{{followPathModeIcon}}" aria-hidden="true"></span>
             </button>
           {{#dropdown-list selected=selectedColor item="Color" img="assets/images/palette.gif" }}
@@ -42,7 +42,7 @@
                   </li>
               </ul>
           {{/dropdown-list}}
-            <button type="button" class="btn btn-info btn-sm mtg-modify" data-toggle="tooltip"
+            <button type="button" class="btn btn-info mtg-modify" data-toggle="tooltip"
                     title="Click on an item to modify it" {{action 'toggleModify'}}>
                 <img src="assets/images/hand.png" width="16" height="16"/>
             </button>

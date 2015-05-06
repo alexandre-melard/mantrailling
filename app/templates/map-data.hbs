@@ -6,8 +6,8 @@
                 <thead>
                 <tr>
                     <th>
-                      {{input class="form-control input-sm btn-group" placeholder="trail's name" value=addTrailName}}
-                        <button type="button" class="btn btn-default btn-sm" {{action 'addTrail'}}>
+                      {{input class="form-control btn-group" placeholder="trail's name" value=addTrailName}}
+                        <button type="button" class="btn btn-default" {{action 'addTrail'}}>
                             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                         </button>
 
@@ -37,7 +37,7 @@
                           <tr>
                               <td {{action 'triggerImport' 'map-data-import-trailer-input'}}>
                                   <span type="button" data-toggle="tooltip" title="Import the Trailer's Trail"
-                                          class="btn btn-success btn-sm map-data-import-trailer">
+                                          class="btn btn-success map-data-import-trailer">
                                       <img src="assets/images/walk.png" class="inverted" width="16" height="16"/>
                                   </span>
                                   Import trailer's track
@@ -47,7 +47,7 @@
                           <tr>
                               <td {{action 'triggerImport' 'map-data-import-team-input'}}>
                                   <span type="button" data-toggle="tooltip" title="Import the Team's Trail"
-                                        class="btn btn-warning btn-sm map-data-import-team">
+                                        class="btn btn-warning map-data-import-team">
                                       <img src="assets/images/track.png" class="inverted" width="16" height="16"/>
                                   </span>
                                   Import team's track
@@ -69,10 +69,10 @@
               </ul>
           {{/dropdown-list}}
             <button type="button"
-                    class="btn btn-warning btn-sm" {{action 'deleteTrail' selectedTrail}}>
+                    class="btn btn-warning" {{action 'deleteTrail' selectedTrail}}>
                 <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
             </button>
-            <button type="button" class="btn btn-default btn-sm" {{action 'saveTrail' selectedTrail}}>
+            <button type="button" class="btn btn-default" {{action 'saveTrail' selectedTrail}}>
                 <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
             </button>
         </li>
