@@ -1,7 +1,11 @@
-{{input type="text" class="form-control map-location-search-input" value=locationSearch size="8" action='findLocation'}}
-<span class="input-group-btn">
-  <button type="button" data-hint="Place Lookup" class="btn btn-default hint--bottom" {{action 'findLocation'}}>Go</button>
-</span>
-<span class="input-group-btn">
-  <button type="button" data-hint="GPS" class="btn btn-default hint--bottom" {{action 'gpsLocation'}}>GPS</button>
-</span>
+<div class="input-group">
+    <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+  {{input type="text" class="form-control map-location-search-input" value=locationSearch action='findLocation'}}
+    <span class="input-group-btn">
+      <button type="button" data-hint="Place Lookup" class="btn btn-default hint--bottom" {{action 'findLocation'}}>Go
+      </button>
+      <button type="button" data-hint="Track GPS location"
+              class="btn btn-default hint--bottom" {{action 'gpsLocation'}}><span
+              class="glyphicon glyphicon-screenshot" aria-hidden="true"></span></button>
+    </span>
+</div>

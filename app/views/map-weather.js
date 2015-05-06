@@ -5,5 +5,5 @@ import Ember from 'ember';
 
 export default Ember.View.extend({
   templateName: "mapWeather",
-  classNames: ["map-weather"]
+  classNames: ["map-weather", "btn-group"]
 });

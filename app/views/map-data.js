@@ -5,7 +5,7 @@ import Ember from 'ember';
 
 export default Ember.View.extend({
   templateName: "mapData",
-  classNames: ["map-data"],
+  classNames: ["map-data", "btn-group"],
   handleFileEvents: function() {
     var ctrl = this.get('controller');
     $('#map-data-import-trailer-input').on('change', function(evt) {

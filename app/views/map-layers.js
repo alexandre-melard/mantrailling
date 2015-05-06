@@ -5,5 +5,5 @@ import Ember from 'ember';
 
 export default Ember.View.extend({
   templateName: "mapLayers",
-  classNames: ["map-layers"]
+  classNames: ["map-layers", "btn-group"]
 });

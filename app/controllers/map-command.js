@@ -46,7 +46,7 @@ export default Ember.Controller.extend({
 
   send: function (key, options, resolve, failure) {
     var commands = this.get('commands');
-    console.log('sending command: ' + key + ' with options: ' + JSON.stringify(options));
+    console.log('sending command: ' + key);
     commands.pushObject({
       key: key,
       options: options,

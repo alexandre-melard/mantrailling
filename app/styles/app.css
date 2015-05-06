@@ -6,34 +6,20 @@ html, body, #map {
   overflow: hidden;
 }
 
-.map-draw {
-  z-index: 100;
-  background: rgba(0, 0, 0, 0);
-  width: 50px;
-//  height: 250px;
-  height: 204px;
-  margin-top: auto;
-  margin-bottom: auto;
-  position: absolute;
-  top: 0; bottom: 0; right: 5px;
-}
-
 .map-draw button {
   height: 30px;
 }
 
-.map-draw ul.map-draw-color-dropdown {
-  margin-top: -32px!important;
-  margin-left: -200px!important;
+.map-draw ul.map-draw-dropdown {
+  padding-left: 5px;
+  width: 270px;
 }
 
 .top-container {
   z-index: 100;
   position: absolute;
   width: 405px;
-  margin-left: auto;
-  margin-right: auto;
-  top:5px; right:0; left: 0;
+  top:5px; left: 50px;
 }
 
 .map-location {
@@ -41,7 +27,11 @@ html, body, #map {
   position: absolute;
   top: 5px;
   right: 5px;
-  width: 200px;
+  width: 260px;
+}
+
+.table {
+  margin-bottom: 0px;
 }
 
 .table > tbody > tr > td {
@@ -62,14 +52,15 @@ ul.map-layers-dropdown {
 }
 
 .map-data ul.dropdown-menu {
-  width: 300px;
+  padding-left: 5px;
+  width: 263px;
 }
 .map-data ul.map-data-import-dropdown {
-  width: 100px;
+  width: 200px;
 }
 
 .map-data-import-dropdown button {
-  width: 90px;
+  width: 40px;
   margin-left: 4px;
   margin-bottom: 4px;
 }
@@ -127,6 +118,10 @@ ul.dropdown-menu li {
   display: block;
   width: 180px;
 }
+.map-data .map-data-trails-dropdown .form-control {
+  width: 80%;
+}
+
 
 .dropdown-menu a {
   cursor: pointer;
