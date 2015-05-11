@@ -8,6 +8,7 @@ import getRGB from "../utils/color-get-rgb.js";
 import calcBrightness from "../utils/color-get-brightness.js";
 import colorLuminance from "../utils/color-get-luminance.js";
 import getRoute from "../utils/google-route-between-a-and-b.js";
+import formatLength from "../utils/map-format-length.js";
 
 export default Ember.Controller.extend({
 
@@ -173,6 +174,20 @@ export default Ember.Controller.extend({
       if (this.get('color') !== null) {
         e.feature.set('color', this.get('color'));
       }
+      if (this.get('mtgDrawState') === consts.TRAILER) {
+        e.feature.on('change', function(e) {
+          var feature = e.currentTarget;
+          var options = {
+            length: formatLength(this.get('map').getView().getProjection(), feature.getGeometry())
+          };
+          this.command.send('map.info.length', options);
+        }, this)
+      }
+      var options = {
+        length: formatLength(this.get('map').getView().getProjection(), e.feature.getGeometry())
+      };
+      this.command.send('map.info.length', options);
+
       tooltip.deleteTooltips(this.get('map'));
       this.set('sketch', null);
       tooltip.sketch = null;

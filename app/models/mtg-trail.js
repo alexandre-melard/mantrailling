@@ -10,6 +10,7 @@ let Trail = DS.Model.extend({
   items: DS.hasMany('mtgItem', { async: true }),
   features: DS.attr('string'),
   selected: DS.attr('boolean', {defaultValue: false}),
+  length: DS.attr('number', {defaultValue: 0}),
   createdAt: DS.attr('string', {
     defaultValue: function() { return new Date(); }
   })

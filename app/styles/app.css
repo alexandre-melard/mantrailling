@@ -6,7 +6,7 @@ html, body, #map {
   overflow: hidden;
 }
 .mtg-mode {
-  float:right;
+  display:inline;
 }
 
 .no-radius {
@@ -66,9 +66,16 @@ input {
 }
 
 .map-info {
-  background: rgba(255, 255, 255, 0.85);
+  display: inline;
+  margin-left: 15px;
+  background: rgba(0, 0, 0, 0.15);
   border-radius: 4px;
   padding: 5px;
+}
+
+.map-info img {
+  width: 16px;
+  height: 16px;
 }
 
 .map-location {

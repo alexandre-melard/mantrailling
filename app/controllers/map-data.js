@@ -20,6 +20,16 @@ export default Ember.Controller.extend({
   currentItem: {position: 'P', type: 'Cloth', description: null},
   items: [],
 
+  bindCommand: function () {
+    var me = this;
+    this.command.register(this, 'map.info.length', function(options) {
+      return new Promise(function(resolve, fail) {
+        me.get('selectedTrail').set('length', options.length);
+        resolve(true);
+      });
+    });
+  }.on('init'),
+
   /**
    * Return the selected Trail in Trails' array.
    * If trail param is set, set trails to unselected and provided trail to selected.
