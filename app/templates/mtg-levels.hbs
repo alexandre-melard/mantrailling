@@ -1,17 +1,31 @@
-{{#dropdown-list selected=selectedLevel item="Level" img="assets/images/rocket.png" resetView="false"}}
+{{#dropdown-list item="Level" img="assets/images/rocket.png" btn-radius="no-radius"}}
     <ul class="dropdown-menu map-data-level-dropdown">
         <li class="header">
-            <div class="input-group input-group-sm">
-              {{input type="text" class="form-control" value=levelName placeholder="Level name" size="8"}}
-                <span class="input-group-btn">
-                  <button type="button" class="btn btn-default" {{action 'addLevel'}}>
-                      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                  </button>
-                </span>
-            </div>
+            <table class="table table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th>
+                        <div class="input-group input-group-sm">
+                          {{input type="text" class="form-control" value=levelName placeholder="Level name" size="8"}}
+                          <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" {{action 'addLevel'}}>
+                              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                            </button>
+                          </span>
+                        </div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#each level in levels}}
+                    <tr>
+                        <td class={{if level.selected 'success' ''}} {{action 'changeLevel' level }}>
+                          {{level.name}}
+                        </td>
+                    </tr>
+                {{/each}}
+                </tbody>
+            </table>
         </li>
-      {{#each level in levels itemController="mtgLevel"}}
-          <li class={{if selected 'success' ''}}><a  {{action 'changeLevel' level.model }}>{{level.model.name}}</a></li>
-      {{/each}}
     </ul>
 {{/dropdown-list}}

@@ -40,6 +40,7 @@ export default Ember.Controller.extend({
   },
 
   findLocation: function () {
+    var me = this;
     var map = this.get('controllers.map.map');
     var location = this.locationSearch;
     console.log("lookup location:" + location);
@@ -49,6 +50,23 @@ export default Ember.Controller.extend({
       var lon = parseFloat(latLng.lng);
       var center = ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857');
       panToCoords(map, center);
+      var options = {
+        radius: 10,
+        color: "#0000ff",
+        opacity: "0.3",
+        key: "PointType",
+        value: "Location",
+        label: "",
+        location: center,
+        removeFeature: me.get('locationPoint')
+      };
+      me.command.send('map.draw.point', options,
+        function (feature) {
+          me.set('locationPoint', feature)
+        },
+        function (reason) {
+          console.log(reason);
+        });
     }, function (reason) {
       console.log(reason);
     });

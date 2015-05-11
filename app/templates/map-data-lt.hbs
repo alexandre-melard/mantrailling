@@ -1,0 +1,42 @@
+<!--<form class="form-inline btn-group">-->
+{{#dropdown-list item="Trails" img="assets/images/track.png"}}
+    <ul class="dropdown-menu map-data-trails-dropdown">
+        <li>
+            <table class="table table-hover table-striped table-condensed">
+                <thead>
+                <tr>
+                    <th>
+                        <div class="input-group">
+                          {{input class="form-control btn-group" placeholder="trail's name" value=addTrailName action='addTrail'}}
+                            <span class="input-group-btn">
+                              <button type="button" class="btn btn-default" {{action 'addTrail'}}>
+                                  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                              </button>
+                            </span>
+                        </div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#each trail in trails}}
+                    <tr class={{if trail.selected 'success' ''}} {{action 'changeTrack' trail}}>
+                        <td>{{trail.name}}</td>
+                    </tr>
+                {{/each}}
+                </tbody>
+            </table>
+        </li>
+    </ul>
+{{/dropdown-list}}
+{{#if selectedTrail}}
+  {{view 'mtgLevels'}}
+  <button type="button" class="btn btn-default" {{action 'saveTrail' selectedTrail}}>
+      <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+  </button>
+  <button type="button"
+          class="btn btn-warning" {{action 'deleteTrail' selectedTrail}}>
+      <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+  </button>
+  {{view 'mtgItems'}}
+{{/if}}
+

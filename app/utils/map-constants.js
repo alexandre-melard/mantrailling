@@ -29,5 +29,15 @@ export const COLORS = [
   ["#7f7f7f", "#0c0c0c", "#1d1b10", "#0f243e", "#244061", "#632423", "#4f6128", "#3f3151", "#31859b", "#974806", "#7f6000"]
 ];
 
-export const TRAILER_COLOR = '#e727c0';
-export const TEAM_COLOR = '#ec971f';
+export const draw = {
+  font: '18px Calibri,sans-serif',
+  trailer: {
+    color: '#e727c0'
+  },
+  team: {
+    color: '#ec971f',
+    stroke: {
+      width: 4
+    }
+  }
+};

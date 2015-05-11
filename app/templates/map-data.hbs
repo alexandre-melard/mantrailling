@@ -6,11 +6,14 @@
                 <thead>
                 <tr>
                     <th>
-                      {{input class="form-control btn-group" placeholder="trail's name" value=addTrailName}}
-                        <button type="button" class="btn btn-default" {{action 'addTrail'}}>
-                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                        </button>
-
+                        <div class="input-group">
+                          {{input class="form-control btn-group" placeholder="trail's name" value=addTrailName action='addTrail'}}
+                            <span class="input-group-btn">
+                              <button type="button" class="btn btn-default" {{action 'addTrail'}}>
+                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                              </button>
+                            </span>
+                        </div>
                     </th>
                 </tr>
                 </thead>
@@ -25,58 +28,59 @@
         </li>
     </ul>
 {{/dropdown-list}}
-<!--  data-toggle="tooltip" title="Tools related to your trails" -->
-{{#dropdown-list item="Tools" icon="th"}}
-    <ul class="dropdown-menu map-data-tools-dropdown">
-        <li class="btn-group">
-          {{#dropdown-list item="Import" icon="import" resetView="false"}}
-              <ul class="dropdown-menu map-data-import-dropdown">
-                  <li>
-                      <table class="table table-hover table-condensed">
-                          <tbody>
-                          <tr>
-                              <td {{action 'triggerImport' 'map-data-import-trailer-input'}}>
+{{#if selectedTrail}}
+    <!--  data-toggle="tooltip" title="Tools related to your trails" -->
+    {{#dropdown-list item="Tools" icon="th" btn-radius="no-radius"}}
+        <ul class="dropdown-menu map-data-tools-dropdown">
+            <li class="btn-group">
+              {{#dropdown-list item="Import" icon="import"}}
+                  <ul class="dropdown-menu map-data-import-dropdown">
+                      <li>
+                          <table class="table table-hover table-condensed">
+                              <tbody>
+                              <tr>
+                                  <td {{action 'triggerImport' 'map-data-import-trailer-input'}}>
                                   <span type="button" data-toggle="tooltip" title="Import the Trailer's Trail"
-                                          class="btn btn-success map-data-import-trailer">
+                                        class="btn btn-success map-data-import-trailer">
                                       <img src="assets/images/walk.png" class="inverted" width="16" height="16"/>
                                   </span>
-                                  Import trailer's track
-                                  <input type="file" id="map-data-import-trailer-input" class="hidden" accept=".gpx"/>
-                              </td>
-                          </tr>
-                          <tr>
-                              <td {{action 'triggerImport' 'map-data-import-team-input'}}>
+                                      Import trailer's track
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td {{action 'triggerImport' 'map-data-import-team-input'}}>
                                   <span type="button" data-toggle="tooltip" title="Import the Team's Trail"
                                         class="btn btn-warning map-data-import-team">
                                       <img src="assets/images/track.png" class="inverted" width="16" height="16"/>
                                   </span>
-                                  Import team's track
-                                  <input type="file" id="map-data-import-team-input" class="hidden" accept=".gpx"/>
-                              </td>
-                          </tr>
-                          </tbody>
-                      </table>
-                  </li>
-              </ul>
-          {{/dropdown-list}}
-          {{view 'mtgLevels'}}
-          {{view 'mtgItems'}}
-          {{#dropdown-list selected=selected item="Export" icon="export"  resetView="false"}}
-              <ul class="dropdown-menu map-data-export-dropdown">
-                {{#each format in formats}}
-                    <li><a {{action 'exportTrail' format selectedTrail}}>{{format}}</a></li>
-                {{/each}}
-              </ul>
-          {{/dropdown-list}}
-            <button type="button"
-                    class="btn btn-warning" {{action 'deleteTrail' selectedTrail}}>
-                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-            </button>
-            <button type="button" class="btn btn-default" {{action 'saveTrail' selectedTrail}}>
-                <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
-            </button>
-        </li>
-    </ul>
-{{/dropdown-list}}
-<!--</form>-->
+                                      Import team's track
+                                  </td>
+                              </tr>
+                              </tbody>
+                          </table>
+                          <input type="file" id="map-data-import-trailer-input" class="hidden" accept=".gpx"/>
+                          <input type="file" id="map-data-import-team-input" class="hidden" accept=".gpx"/>
+                      </li>
+                  </ul>
+              {{/dropdown-list}}
+              {{view 'mtgLevels'}}
+              {{view 'mtgItems'}}
+              {{#dropdown-list item="Export" icon="export" }}
+                  <ul class="dropdown-menu map-data-export-dropdown">
+                    {{#each format in formats}}
+                        <li><a {{action 'exportTrail' format selectedTrail}}>{{format}}</a></li>
+                    {{/each}}
+                  </ul>
+              {{/dropdown-list}}
+                <button type="button"
+                        class="btn btn-warning" {{action 'deleteTrail' selectedTrail}}>
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                </button>
+                <button type="button" class="btn btn-default" {{action 'saveTrail' selectedTrail}}>
+                    <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+                </button>
+            </li>
+        </ul>
+    {{/dropdown-list}}
+{{/if}}
 

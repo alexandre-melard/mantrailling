@@ -9,9 +9,14 @@ export default Ember.Component.extend({
   img: false,
   icon: false,
   resetView: "true",
+
   glyphicon: function () {
     return "glyphicon-" + this.get('icon');
   }.property('icon'),
+
+  btnRadius: function() {
+    return this.get('btn-radius');
+  }.property('btn-radius'),
 
   btnClassName: function () {
     return 'btn-' + this.get('item').replace("-icon", "");

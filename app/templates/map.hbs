@@ -1,9 +1,18 @@
 {{render "mapLocation" mapLocation}}
 {{view id="map"}}
+<div class="logo">
+    <img src="assets/images/canimap_cross_on_dog.png"/>
+</div>
 <div class="top-container btn-group">
   {{render "mapData" mapData}}
   {{render "mapDraw" mapDraw}}
   {{render "mapWeather" mapWeather}}
   {{view "mapLayers"}}
+  <div class="mtg-mode">
+      <a role="button" class="btn btn-success radius-right" data-toggle="tooltip"
+         title="Switch to basic mode" href="/">
+          Basic
+      </a>
+  </div>
 </div>
 

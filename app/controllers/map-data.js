@@ -47,7 +47,6 @@ export default Ember.Controller.extend({
     return value;
   }.property('trails.@each.selected'),
 
-
   getData: function (formatName, layer) {
     // define a format the data shall be converted to
     var format = new ol.format[formatName]();
@@ -65,18 +64,24 @@ export default Ember.Controller.extend({
   },
 
   addTrail: function () {
-    var trail = this.store.createRecord('mtgTrail', {
-      name: this.get('addTrailName')
+    var me = this;
+    return this.store.find('mtgLevel', {index: 0}).then(function(levels) {
+      var level = levels.objectAt(0);
+      var trail = me.store.createRecord('mtgTrail', {
+        name: me.get('addTrailName'),
+        level: level
+      });
+      level.set('selected', true);
+      trail.save().then(function () {
+        console.log(trail.get('name') + ".save :: success");
+      }).catch(function (e) {
+        console.log(trail.get('name') + ".save :: failure: " + e);
+      });
+      me.trails.pushObject(trail);
+      trail.set('selected', true);
+      trail = me.changeActiveTrail(trail);
+      return trail;
     });
-    trail.save().then(function () {
-      console.log(trail.get('name') + ".save :: success");
-    }).catch(function (e) {
-      console.log(trail.get('name') + ".save :: failure: " + e);
-    });
-    this.trails.pushObject(trail);
-    trail.set('selected', true);
-    trail = this.changeActiveTrail(trail);
-    return trail;
   },
 
   exportTrail: function (format, trail) {
@@ -84,7 +89,7 @@ export default Ember.Controller.extend({
     var data = this.getData(format, layer);
     var a = document.createElement("a");
     a.href = window.URL.createObjectURL(new Blob([data], {type: 'application/mantralling'}));
-    a.download = trail.name + '.' + format.toLowerCase();
+    a.download = trail.get('name') + '.' + format.toLowerCase();
     a.click();
   },
 
@@ -167,7 +172,7 @@ export default Ember.Controller.extend({
     trail.set('layer', mapCtrl.changeCurrentLayer(trail.get('layer')));
     this.set('selectedTrail', trail);
     if (trail.get('layer').getSource().getFeatures().length > 0) {
-      this.command.send('map.view.extent.fit', options);
+      this.command.send('map.view.extent.fit');
     }
     return trail;
   },
@@ -198,16 +203,16 @@ export default Ember.Controller.extend({
     var me = this;
     this.store.find('mtgLevel').then(function (storedLevels) {
       if (storedLevels.get('length') === 0) {
-        var brevet = me.store.createRecord('mtgLevel', {name: consts.BREVET}).save();
+        var brevet = me.store.createRecord('mtgLevel', {name: consts.BREVET, index: 0}).save();
         me.get('levels').pushObject(brevet);
-        var lvl1 = me.store.createRecord('mtgLevel', {name: consts.LVL1}).save();
+        var lvl1 = me.store.createRecord('mtgLevel', {name: consts.LVL1, index: 1}).save();
         me.get('levels').pushObject(lvl1);
-        var lvl2 = me.store.createRecord('mtgLevel', {name: consts.LVL2}).save();
+        var lvl2 = me.store.createRecord('mtgLevel', {name: consts.LVL2, index: 2}).save();
         me.get('levels').pushObject(lvl2);
-        var lvl3 = me.store.createRecord('mtgLevel', {name: consts.LVL3}).save();
+        var lvl3 = me.store.createRecord('mtgLevel', {name: consts.LVL3, index: 3}).save();
         me.get('levels').pushObject(lvl3);
       } else {
-        me.set('levels', storedLevels);
+        me.set('levels', storedLevels.sortBy('index'));
       }
     });
   },
@@ -232,6 +237,10 @@ export default Ember.Controller.extend({
       this.changeActiveTrail(trail);
     },
     changeLevel: function (level) {
+      this.get('levels').forEach(function(level) {
+        level.set('selected', false);
+      });
+      level.set('selected', true);
       this.get('selectedTrail').set('level', level);
     },
     addTrail: function () {
@@ -253,7 +262,15 @@ export default Ember.Controller.extend({
       this.exportTrail(format, trail);
     },
     triggerImport: function (target) {
+      var me = this;
+      var importFunc = this.mapImportTrailerFile;
       console.log('importing file: ' + target);
+      if (target === 'map-data-import-team-input') {
+        importFunc = this.mapImportTeamFile;
+      }
+      $('#' + target).on("change", function(evt) {
+        importFunc.apply(me, [evt]);
+      });
       $('#' + target).click();
     }
   }

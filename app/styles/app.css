@@ -5,6 +5,51 @@ html, body, #map {
   height: 100%;
   overflow: hidden;
 }
+.mtg-mode {
+  float:right;
+}
+
+.no-radius {
+  border-radius: 0;
+  border-right: 0;
+}
+
+.radius-left {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 4px;
+  border-top-left-radius: 4px;
+}
+
+.radius-right {
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+}
+
+.logo {
+  z-index: 100;
+  position: absolute;
+  top: 0.5em;
+  left: 0.5em;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 4px;
+}
+
+.logo img {
+  width: 40px;
+  height: 40px;
+}
+
+.ol-zoom {
+  top: 3.5em;
+  left: 0.5em;
+}
+
+input {
+  background: rgba(255, 255, 255, 0.85);
+}
 
 .map-draw ul.map-draw-dropdown {
   padding-left: 5px;
@@ -14,8 +59,10 @@ html, body, #map {
 .top-container {
   z-index: 100;
   position: absolute;
-  width: 405px;
   top:5px; left: 50px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 4px;
+  padding: 5px;
 }
 
 .map-location {
@@ -25,9 +72,14 @@ html, body, #map {
   right: 5px;
   width: 260px;
 }
+/*Change la largeur de la dropdown*/
+.pac-container {
+  width: 220px !important;
+}
 
 .table {
   margin-bottom: 0px;
+  background-color: white;
 }
 
 .table > tbody > tr > td {
@@ -47,10 +99,10 @@ ul.map-layers-dropdown {
   width: 320px;
 }
 
-.map-data ul.dropdown-menu {
-  padding-left: 5px;
+.map-data-tools-dropdown {
   width: 300px;
 }
+
 .map-data ul.map-data-import-dropdown {
   width: 200px;
 }
@@ -61,8 +113,8 @@ ul.map-layers-dropdown {
   margin-bottom: 4px;
 }
 
-.map-data ul.map-items-dropdown {
-  width: 460px;
+ul.map-items-dropdown {
+  width: 480px;
 }
 
 .map-data input, .map-data select {
@@ -83,15 +135,19 @@ ul.map-layers-dropdown {
 
 ul.dropdown-menu {
   max-height: 450px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 4px;
+  padding: 5px;
 }
-
+ul.map-data-trails-dropdown, ul.map-data-level-dropdown {
+  width: 250px;
+}
 ul.dropdown-menu li {
   display: block;
 }
 
 .dropdown-menu {
   display: block;
-  width: 200px;
   min-width: 0;
 }
 
@@ -114,10 +170,6 @@ ul.dropdown-menu li {
   display: block;
   width: 180px;
 }
-.map-data .map-data-trails-dropdown .form-control {
-  width: 80%;
-}
-
 
 .dropdown-menu a {
   cursor: pointer;
