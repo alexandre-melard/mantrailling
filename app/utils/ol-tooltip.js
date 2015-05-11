@@ -3,6 +3,7 @@
  */
 import formatLength from "../utils/map-format-length.js";
 import formatArea from "../utils/map-format-area.js";
+import consts from "../utils/map-constants.js";
 
 /**
  * Message to show when the user is drawing a polygon.
@@ -53,9 +54,9 @@ export default {
         output = formatLength(this.map.getView().getProjection(), geom);
         helpMsg = continueLineMsg;
         tooltipCoord = geom.getLastCoordinate();
-      } else if (this.mtgDrawState === "Marker") {
+      } else if (this.mtgDrawState === consts.MARKER) {
         helpMsg = "Click to add a comment";
-      } else if (this.mtgDrawState === "Point") {
+      } else if (this.mtgDrawState === consts.POINT) {
         helpMsg = "Click to add a point";
       }
       if (output) {

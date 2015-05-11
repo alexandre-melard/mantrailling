@@ -29,8 +29,13 @@ export const COLORS = [
   ["#7f7f7f", "#0c0c0c", "#1d1b10", "#0f243e", "#244061", "#632423", "#4f6128", "#3f3151", "#31859b", "#974806", "#7f6000"]
 ];
 
-export const draw = {
-  font: '18px Calibri,sans-serif',
+export const style = {
+  text: {
+    font: '18px Calibri,sans-serif',
+    stroke: {
+      width: 3
+    }
+  },
   trailer: {
     color: '#e727c0'
   },
@@ -38,6 +43,21 @@ export const draw = {
     color: '#ec971f',
     stroke: {
       width: 4
+    }
+  },
+  zone: {
+    color: '#204d74',
+    stroke: {
+      width: 4
+    }
+  },
+  point: {
+    label: "",
+    radius: 10,
+    opacity: 0.5,
+    color: '#ac2925',
+    stroke: {
+      width: 2
     }
   }
 };

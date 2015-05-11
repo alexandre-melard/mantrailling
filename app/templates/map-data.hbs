@@ -20,7 +20,7 @@
                 <tbody>
                 {{#each trail in trails}}
                     <tr class={{if trail.selected 'success' ''}} {{action 'changeTrack' trail}}>
-                        <td>{{trail.name}}</td>
+                        <td class="editable">{{trail.name}}</td>
                     </tr>
                 {{/each}}
                 </tbody>

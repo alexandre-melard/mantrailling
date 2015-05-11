@@ -33,11 +33,11 @@ export default function (map) {
     if (type === consts.MARKER) {
       return markerStyle(geometry, feature);
     } else {
-      var radius = feature.get('radius') || 10;
-      var opacity = parseFloat(feature.get('opacity')) || 0.5;
-      var label = feature.get('label') || "";
-      console.log('using label:' + label);
-      var rgb = getRGBColor(getColor('#ac2925', feature));
+      var radius = feature.get('radius') || consts.style.point.radius;
+      var opacity = parseFloat(feature.get('opacity')) ||  consts.style.point.opacity;
+      var label = feature.get('label') ||  consts.style.point.label;
+      var color = getColor(consts.style.point.color, feature);
+      var rgb = getRGBColor(color);
       return [new ol.style.Style({
         image: new ol.style.Circle({
           radius: radius,
@@ -46,19 +46,18 @@ export default function (map) {
           }),
           stroke: new ol.style.Stroke({
             color: 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 0.8)',
-            width: 2
+            width: consts.style.point.stroke.width
           })
         }),
         text: new ol.style.Text({
-          //offsetX: -radius,
-          font: consts.draw.font,
+          font: consts.style.text.font,
           text: label,
           fill: new ol.style.Fill({
-            color: getColor('#286090', feature)
+            color: color
           }),
           stroke: new ol.style.Stroke({
             color: (calcBrightness(rgb) < 220) ? "#FFFFFF" : "#000000",
-            width: 3
+            width: consts.style.text.stroke.width
           })
         })
       })
@@ -68,25 +67,26 @@ export default function (map) {
 
   var polygonStyle = function (geometry, feature) {
     var label = formatArea(map.getView().getProjection(), feature.getGeometry());
-    var color = getColor('#204d74', feature);
+    var color = getColor(consts.style.zone.color, feature);
     var rgb = getRGBColor(color);
     return [new ol.style.Style({
       fill: new ol.style.Fill({
         color: 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 0.2)'
       }),
       stroke: new ol.style.Stroke({
-        color: 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 0.8)'
+        color: 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 0.8)',
+        width: consts.style.zone.stroke.width
       }),
       text: new ol.style.Text({
         offsetY: -10,
-        font: consts.draw.font,
+        font: consts.style.text.font,
         text: label,
         fill: new ol.style.Fill({
-          color: getColor('#286090', feature)
+          color: color
         }),
         stroke: new ol.style.Stroke({
           color: (calcBrightness(rgb) < 220) ? "#FFFFFF" : "#000000",
-          width: 3
+          width: consts.style.text.stroke.width
         })
       })
     })];
@@ -102,28 +102,28 @@ export default function (map) {
     var styles = [];
     var color, rgb;
     if (type === consts.TEAM) {
-      color = getColor(consts.draw.team.color, feature);
+      color = getColor(consts.style.team.color, feature);
       rgb = getRGBColor(color);
       styles.push(new ol.style.Style({
         stroke: new ol.style.Stroke({
           color: 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 0.8)',
-          width: consts.draw.team.stroke.width
+          width: consts.style.team.stroke.width
         }),
         text: new ol.style.Text({
           offsetY: -10,
-          font: consts.draw.font,
+          font: consts.style.text.font,
           text: label,
           fill: new ol.style.Fill({
-            color: getColor(consts.draw.team.color, feature)
+            color: getColor(consts.style.team.color, feature)
           }),
           stroke: new ol.style.Stroke({
             color: (calcBrightness(rgb) < 220) ? "#FFFFFF" : "#000000",
-            width: 3
+            width: consts.style.text.stroke.width
           })
         })
       }));
     } else {
-      color = getColor(consts.draw.trailer.color, feature);
+      color = getColor(consts.style.trailer.color, feature);
       rgb = getRGBColor(color);
       styles.push(new ol.style.Style({
         stroke: new ol.style.Stroke({
@@ -132,14 +132,14 @@ export default function (map) {
         }),
         text: new ol.style.Text({
           offsetY: 10,
-          font: consts.draw.font,
+          font: consts.style.text.font,
           text: label,
           fill: new ol.style.Fill({
-            color: getColor(consts.draw.trailer.color, feature)
+            color: getColor(consts.style.trailer.color, feature)
           }),
           stroke: new ol.style.Stroke({
             color: (calcBrightness(rgb) < 220) ? "#FFFFFF" : "#000000",
-            width: 3
+            width: consts.style.text.stroke.width
           })
         })
       }));
