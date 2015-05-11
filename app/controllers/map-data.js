@@ -17,7 +17,7 @@ export default Ember.Controller.extend({
   selectedFormat: consts.GEO_JSON,
   levels: [],
   itemTypes: ['Cloth', 'Leather', 'Cardboard', 'Plastic'],
-  currentItem: {},
+  currentItem: {position: 'P', type: 'Cloth', description: null},
   items: [],
 
   /**
@@ -224,7 +224,7 @@ export default Ember.Controller.extend({
     mtgItem.save();
     this.get('selectedTrail').get('items').pushObject(mtgItem);
     console.log('new item created ' + mtgItem.get('index'));
-    this.set('currentItem', {});
+    this.set('currentItem', {position: 'P', type: '', description: null});
   },
 
   deleteItem: function (item) {

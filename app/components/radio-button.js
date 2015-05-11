@@ -15,14 +15,13 @@ export default Ember.Component.extend({
   type: 'radio',
   attributeBindings: [ 'checked', 'name', 'type', 'value', 'groupValue' ],
 
-  init: function() {
-    this._super();
+  handleCheckedInit: function() {
     this.checked();
-  },
+  }.on('didInsertElement'),
 
   checked: function () {
     if (this.get('value') === this.get('groupValue')) {
-      Ember.run.once(this, 'takeAction');
+      this.takeAction();
       return true;
     } else { return false; }
   },
