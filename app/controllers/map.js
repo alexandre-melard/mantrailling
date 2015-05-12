@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import constants from '../utils/map-constants.js';
 import getStyleFunction from "../utils/map-style.js";
+import conf from "../config/environment.js";
 
 /**
  * Created by alex on 29/03/2015.
@@ -10,6 +11,8 @@ export default Ember.Controller.extend({
   tileLayers: [],
   selectedTileLayer: null,
   currentLayer: null,
+  basicURL: conf.baseURL,
+  expertURL: conf.expertURL,
 
   bindCommand: function () {
     this.command.register(this, 'map.view.extent.fit', function(options) {

@@ -15,8 +15,6 @@ export default Ember.Controller.extend({
   needs: ['map', 'mapData'],
   state: null,
   olDraw: null,
-  select: null,
-  modify: null,
   mtgDrawState: null,
   onDrawEnd: null,
   moveListenerKey: null,
@@ -42,11 +40,6 @@ export default Ember.Controller.extend({
     this.command.register(this, 'map.draw.point', this.drawPoint);
   }.on('init'),
 
-  onMapCreated: function () {
-    this.set('select', this.createSelect());
-    this.set('modify', this.createModify());
-  }.observes('map'),
-
   onGeometryChange: function () {
     var map = this.get('map');
     if (map == null) {
@@ -57,7 +50,7 @@ export default Ember.Controller.extend({
     map.removeInteraction(this.get('olDraw'));
     if (this.get('mtgDrawState') === "Modify") {
       tooltip.deleteTooltips(this.get('map'));
-      map.addInteraction(this.select);
+      map.addInteraction(this.get('select'));
       map.addInteraction(this.get('modify'));
       this.changeCursorOnFeature();
     } else if (this.get('mtgDrawState') !== null) {
@@ -84,7 +77,10 @@ export default Ember.Controller.extend({
     });
   },
 
-  createSelect: function () {
+  select: function () {
+    if (this.get('selectCache') !== undefined) {
+      return this.get('selectCache');
+    }
     var select = new ol.interaction.Select();
 
     // grab the features from the select interaction to use in the modify interaction
@@ -111,12 +107,16 @@ export default Ember.Controller.extend({
         }
       });
     }, this);
+    this.set('selectCache', select);
     return select;
-  },
+  }.property(''),
 
-  createModify: function () {
+  modify: function () {
+    if (this.get('modifyCache') !== undefined) {
+      return this.get('modifyCache');
+    }
     var select = this.get('select');
-    return new ol.interaction.Modify({
+    var modify = new ol.interaction.Modify({
       features: select.getFeatures(),
       // the SHIFT key must be pressed to delete vertices, so
       // that new vertices can be drawn at the same position
@@ -126,7 +126,9 @@ export default Ember.Controller.extend({
           ol.events.condition.singleClick(event);
       }
     });
-  },
+    this.set('modifyCache', modify);
+    return modify;
+  }.property(''),
 
   createDraw: function () {
     var currentLayer = this.get('currentLayer');
@@ -187,7 +189,7 @@ export default Ember.Controller.extend({
             length: formatLength(this.get('map').getView().getProjection(), feature.getGeometry())
           };
           this.command.send('map.info.length', options);
-        }, this)
+        }, this);
         var options = {
           length: formatLength(this.get('map').getView().getProjection(), e.feature.getGeometry())
         };

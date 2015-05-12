@@ -1,4 +1,4 @@
-{{render "mapLocation" mapLocation}}
+{{render "mapLocation" controller="mapLocation"}}
 {{view "map" id="map"}}
 <div class="logo">
     <img src="assets/images/canimap_cross_on_dog.png"/>
@@ -8,7 +8,7 @@
   {{render "mapDrawLt" controller="mapDraw"}}
   <div class="mtg-mode">
     <a role="button" class="btn btn-success radius-right" data-toggle="tooltip"
-       title="Switch to expert mode" href="/expert">
+       title="Switch to expert mode"  {{bind-attr href=expertURL}}>
         Expert
     </a>
   </div>

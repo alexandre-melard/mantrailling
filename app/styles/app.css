@@ -74,7 +74,6 @@ input {
 }
 
 .map-info-detail {
-  padding: 2px;
 }
 
 .map-info img {
@@ -309,6 +308,7 @@ label.mtg-item-position input[type="radio"] {
 }
 
 .map-draw-color-dropdown {
+  width: 200px;
   padding-left: 5px;
   padding-right: 5px;
 }

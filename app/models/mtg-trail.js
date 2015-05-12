@@ -11,6 +11,7 @@ let Trail = DS.Model.extend({
   features: DS.attr('string'),
   selected: DS.attr('boolean', {defaultValue: false}),
   length: DS.attr('number', {defaultValue: 0}),
+  location: DS.attr('string'),
   createdAt: DS.attr('string', {
     defaultValue: function() { return new Date(); }
   })
