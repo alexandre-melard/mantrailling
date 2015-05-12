@@ -266,7 +266,11 @@ export default Ember.Controller.extend({
       this.deleteItem(item);
     },
     saveTrail: function (trail) {
-      trail.save();
+      trail.save().then(function () {
+        console.log(trail.get('name') + ".save :: success");
+      }).catch(function (e) {
+        console.log(trail.get('name') + ".save :: failure: " + e);
+      });
     },
     exportTrail: function (format, trail) {
       this.exportTrail(format, trail);

@@ -73,6 +73,10 @@ input {
   padding: 5px;
 }
 
+.map-info-detail {
+  padding: 2px;
+}
+
 .map-info img {
   width: 16px;
   height: 16px;

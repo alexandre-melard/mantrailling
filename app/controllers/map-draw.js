@@ -14,8 +14,6 @@ export default Ember.Controller.extend({
 
   needs: ['map', 'mapData'],
   state: null,
-  map: null,
-  currentLayer: null,
   olDraw: null,
   select: null,
   modify: null,
@@ -31,6 +29,14 @@ export default Ember.Controller.extend({
   followPathMode: false,
   followPathModeTitle: "Draw with straight lines",
   followPathModeIcon: "plane",
+
+  map: function() {
+    return this.get('controllers.map').get('map');
+  }.property(''),
+
+  currentLayer: function() {
+    return this.get('controllers.map').get('currentLayer');
+  }.property(''),
 
   bindCommand: function () {
     this.command.register(this, 'map.draw.point', this.drawPoint);
@@ -182,11 +188,11 @@ export default Ember.Controller.extend({
           };
           this.command.send('map.info.length', options);
         }, this)
+        var options = {
+          length: formatLength(this.get('map').getView().getProjection(), e.feature.getGeometry())
+        };
+        this.command.send('map.info.length', options);
       }
-      var options = {
-        length: formatLength(this.get('map').getView().getProjection(), e.feature.getGeometry())
-      };
-      this.command.send('map.info.length', options);
 
       tooltip.deleteTooltips(this.get('map'));
       this.set('sketch', null);
@@ -224,17 +230,6 @@ export default Ember.Controller.extend({
       }
     }
   }.observes('sketch'),
-
-  init: function () {
-    this._super();
-    this.get('controllers.map').addObserver('map', this, function (sender) {
-      this.set('map', sender.get('map'));
-    });
-    this.get('controllers.map').addObserver('currentLayer', this, function (sender) {
-      this.set('currentLayer', sender.get('currentLayer'));
-    });
-    this.mapDrawService.register(this);
-  },
 
   setFeatureStyle: function(feature, options) {
     if (options.label !== undefined) {
