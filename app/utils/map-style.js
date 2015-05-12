@@ -7,7 +7,7 @@ import formatArea from "../utils/map-format-area.js";
 import calcBrightness from "../utils/color-get-brightness.js";
 import getRGBColor from "../utils/color-get-rgb.js";
 
-export default function (map) {
+export default function (map, command) {
   var getColor = function (def, feature) {
     var color = feature.get("color");
     if (color === undefined || color === null) {
@@ -123,6 +123,25 @@ export default function (map) {
         })
       }));
     } else {
+      // mise à jour de la longeur de piste dans le trail et de la position de piste dans le trail
+      var updateLengthAndLocation = function(map, feature, command) {
+        var options = {
+          length: formatLength(map.getView().getProjection(), feature.getGeometry())
+        };
+        command.send('map.info.length', options);
+        var coord = feature.getGeometry().getFirstCoordinates();
+        options = {
+          location: mapFormatDMS(coord[0], coord[1])
+        };
+        command.send('map.info.location', options);
+      };
+      feature.on('change', function(e) {
+        var feature = e.currentTarget;
+        updateLengthAndLocation(map, feature, command);
+      }, this);
+      updateLengthAndLocation(map, feature, command);
+
+
       color = getColor(consts.style.trailer.color, feature);
       rgb = getRGBColor(color);
       styles.push(new ol.style.Style({

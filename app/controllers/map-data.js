@@ -4,6 +4,7 @@
 import Ember from 'ember';
 import * as consts from '../utils/map-constants.js';
 import getStyleFunction from "../utils/map-style.js";
+import formatLength from "../utils/map-format-length.js";
 
 export default Ember.Controller.extend({
 
@@ -163,7 +164,7 @@ export default Ember.Controller.extend({
         var features = JSON.parse(trail.get('features'));
         var vectorSource = mapController.createVectorSource(features);
         var vectorLayer = mapController.createVector(vectorSource);
-        vectorLayer.setStyle(getStyleFunction(me.get('map')));
+        vectorLayer.setStyle(getStyleFunction(me.get('map'), me.command));
         trail.set('layer', vectorLayer);
         if (trail.get('selected')) {
           me.changeActiveTrail(trail, me);

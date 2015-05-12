@@ -182,19 +182,6 @@ export default Ember.Controller.extend({
       if (this.get('color') !== null) {
         e.feature.set('color', this.get('color'));
       }
-      if (this.get('mtgDrawState') === consts.TRAILER) {
-        e.feature.on('change', function(e) {
-          var feature = e.currentTarget;
-          var options = {
-            length: formatLength(this.get('map').getView().getProjection(), feature.getGeometry())
-          };
-          this.command.send('map.info.length', options);
-        }, this);
-        var options = {
-          length: formatLength(this.get('map').getView().getProjection(), e.feature.getGeometry())
-        };
-        this.command.send('map.info.length', options);
-      }
 
       tooltip.deleteTooltips(this.get('map'));
       this.set('sketch', null);
