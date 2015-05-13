@@ -5,6 +5,11 @@ html, body, #map {
   height: 100%;
   overflow: hidden;
 }
+
+.glyphicon {
+  top: 3px;
+}
+
 .mtg-mode {
   display:inline;
 }

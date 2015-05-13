@@ -23,9 +23,17 @@ export default Ember.Controller.extend({
 
   bindCommand: function () {
     var me = this;
-    this.command.register(this, 'map.info.length', function(options) {
-      return new Promise(function(resolve, fail) {
+    this.command.register(this, 'map.info.length', function (options) {
+      return new Promise(function (resolve, fail) {
         me.get('selectedTrail').set('length', options.length);
+        resolve(true);
+      });
+    });
+    this.command.register(this, 'map.info.location', function (options) {
+      return new Promise(function (resolve, fail) {
+        me.get('selectedTrail').set('location',
+          options.location.lat.d + "°" + options.location.lat.m + "'" + options.location.lat.s + "'' N, " +
+          options.location.lon.d + "°" + options.location.lon.m + "'" + options.location.lon.s + "'' E");
         resolve(true);
       });
     });
@@ -76,7 +84,7 @@ export default Ember.Controller.extend({
 
   addTrail: function () {
     var me = this;
-    return this.store.find('mtgLevel', {index: 0}).then(function(levels) {
+    return this.store.find('mtgLevel', {index: 0}).then(function (levels) {
       var level = levels.objectAt(0);
       var trail = me.store.createRecord('mtgTrail', {
         name: me.get('addTrailName'),
@@ -129,8 +137,8 @@ export default Ember.Controller.extend({
       var reader = new FileReader();
       var me = this;
       // Closure to capture the file information.
-      reader.onload = (function(theFile) {
-        return function(e) {
+      reader.onload = (function (theFile) {
+        return function (e) {
           var source = new ol.source.StaticVector({
             format: new ol.format.GPX(),
             projection: 'EPSG:3857'
@@ -248,7 +256,7 @@ export default Ember.Controller.extend({
       this.changeActiveTrail(trail);
     },
     changeLevel: function (level) {
-      this.get('levels').forEach(function(level) {
+      this.get('levels').forEach(function (level) {
         level.set('selected', false);
       });
       level.set('selected', true);
@@ -283,7 +291,7 @@ export default Ember.Controller.extend({
       if (target === 'map-data-import-team-input') {
         importFunc = this.mapImportTeamFile;
       }
-      $('#' + target).on("change", function(evt) {
+      $('#' + target).on("change", function (evt) {
         importFunc.apply(me, [evt]);
       });
       $('#' + target).click();

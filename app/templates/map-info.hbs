@@ -2,10 +2,19 @@
     <div class="map-info">
       {{selectedTrail.name}}
         <span class="map-info-detail">
-            <img src="assets/images/rocket.png"/> {{selectedTrail.level.name}},
-            <img src="assets/images/basket.png"/> {{selectedTrail.items.length}},
-            <span class="glyphicon glyphicon-road" aria-hidden="true"></span> {{selectedTrail.length}}
-            <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span> {{selectedTrail.location}}
+          {{#if selectedTrail.level.name }}
+              <img src="assets/images/rocket.png"/> {{selectedTrail.level.name}}
+          {{/if}}
+          {{#if selectedTrail.items.length }}
+              <img src="assets/images/basket.png"/> {{selectedTrail.items.length}}
+          {{/if}}
+          {{#if selectedTrail.length }}
+              <span class="glyphicon glyphicon-road" aria-hidden="true"></span> {{selectedTrail.length}}
+          {{/if}}
+          {{#if selectedTrail.location }}
+              <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span> {{selectedTrail.location}}
+          {{/if}}
         </span>
+        &nbsp;
     </div>
 {{/if}}
