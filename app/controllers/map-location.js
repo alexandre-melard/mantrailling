@@ -39,34 +39,45 @@ export default Ember.Controller.extend({
     return duration;
   },
 
+  centerTo: function(map, lat, lon, me) {
+    var center = ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857');
+    me.panToCoords(map, center);
+    var options = {
+      radius: 10,
+      color: "#0000ff",
+      opacity: "0.3",
+      key: "PointType",
+      value: "Location",
+      label: "",
+      location: center,
+      removeFeature: me.get('locationPoint')
+    };
+    me.command.send('map.draw.point', options,
+      function (feature) {
+        me.set('locationPoint', feature)
+      },
+      function (reason) {
+        console.log(reason);
+      });
+  },
+
   findLocation: function () {
     var me = this;
     var map = this.get('controllers.map.map');
-    var location = this.locationSearch;
+    var location = this.get('locationSearch');
     console.log("lookup location:" + location);
+    var re = /(\d+)° (\d+)′ (\d+)″ \w+ (\d+)° (\d+)′ (\d+)″ \w+/;
+    if (re.test(location)) {
+      var match = re.exec(location);
+      var lat = parseFloat(match[1]) + parseFloat(match[2])/60. + parseFloat(match[3])/3600. * 1/1000000;
+      var lon = parseFloat(match[4]) + parseFloat(match[5])/60. + parseFloat(match[6])/3600. * 1/1000000;
+      me.centerTo(map, lat, lon, me);
+    }
     var panToCoords = this.panToCoords;
     getLatLng(location).then(function (latLng) {
       var lat = parseFloat(latLng.lat);
       var lon = parseFloat(latLng.lng);
-      var center = ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857');
-      panToCoords(map, center);
-      var options = {
-        radius: 10,
-        color: "#0000ff",
-        opacity: "0.3",
-        key: "PointType",
-        value: "Location",
-        label: "",
-        location: center,
-        removeFeature: me.get('locationPoint')
-      };
-      me.command.send('map.draw.point', options,
-        function (feature) {
-          me.set('locationPoint', feature)
-        },
-        function (reason) {
-          console.log(reason);
-        });
+      me.centerTo(map, lat, lon, me);
     }, function (reason) {
       console.log(reason);
     });
@@ -103,7 +114,7 @@ export default Ember.Controller.extend({
       };
       me.command.send('map.draw.point', options,
         function (feature) {
-          me.set('gpsPoint', feature)
+          me.set('gpsPoint', feature);
         },
         function (reason) {
           console.log(reason);
@@ -119,7 +130,10 @@ export default Ember.Controller.extend({
       this.gpsLocation();
     },
     locateOnMap: function () {
-      this.command.send('map.draw.location');
+      var options = {
+        tooltip: "Click on the map to get the coordinates"
+      };
+      this.command.send('map.draw.location', options);
     }
   }
 

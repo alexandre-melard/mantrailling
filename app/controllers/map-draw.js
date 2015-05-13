@@ -144,7 +144,7 @@ export default Ember.Controller.extend({
       source: source,
       type: /** @type {ol.geom.GeometryType} */ (geometry)
     }));
-    tooltip.createTooltips(this.get('map'), this.get('sketch'));
+    tooltip.createTooltips(this.get('map'), this.get('sketch'), this.get('mtgDrawState'));
 
     this.get('olDraw').on('drawstart',
       function (evt) {
@@ -216,16 +216,16 @@ export default Ember.Controller.extend({
         popup = this.container.lookup('component:map-popup', {singleton: false});
         popup.set('feature', sketch);
         popup.set('map', this.get('map'));
+        if (this.get('mtgDrawState') === consts.LOCATION) {
+          popup.set('content', ol.coordinate.toStringHDMS(
+            ol.proj.transform(sketch.getGeometry().getFirstCoordinate(), 'EPSG:3857', 'EPSG:4326')));
+          sketch.setStyle(new  ol.style.Style());
+        } else {
+          popup.setEditable();
+        }
+        popup.append();
+        this.get('popups').pushObject(popup);
       }
-      if (this.get('mtgDrawState') === consts.LOCATION) {
-        popup.set('content', ol.coordinate.toStringHDMS(
-          ol.proj.transform(sketch.getGeometry().getFirstCoordinate(), 'EPSG:3857', 'EPSG:4326')));
-        sketch.setStyle(new  ol.style.Style());
-      } else {
-        popup.setEditable();
-      }
-      popup.append();
-      this.get('popups').pushObject(popup);
     }
   }.observes('sketch'),
 
@@ -278,10 +278,11 @@ export default Ember.Controller.extend({
     });
   },
 
-  drawLocation: function () {
+  drawLocation: function (options) {
     var me = this;
     return new Promise(function (resolve) {
       me.set('mtgDrawState', consts.LOCATION);
+      me.set('helpv')
       resolve(true);
     });
   },

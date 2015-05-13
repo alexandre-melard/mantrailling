@@ -24,6 +24,7 @@ export default {
   measureTooltip: null,
   sketch: null,
   map: null,
+  mtgDrawState: null,
 
   removePointerMoveHandler: function (map) {
     this.deleteTooltip(map, null, null, this.moveListenerKey);
@@ -58,6 +59,8 @@ export default {
         helpMsg = "Click to add a comment";
       } else if (this.mtgDrawState === consts.POINT) {
         helpMsg = "Click to add a point";
+      } else if (this.mtgDrawState === consts.LOCATION) {
+        helpMsg = "Click to get the GPS location";
       }
       if (output) {
         this.measureTooltipElement.innerHTML = output;
@@ -107,11 +110,12 @@ export default {
     this.measureTooltipElement = ret.element;
   },
 
-  createTooltips: function (map, sketch) {
+  createTooltips: function (map, sketch, mtgDrawState) {
     this.createMeasureTooltip(map);
     this.createHelpTooltip(map);
     this.sketch = sketch;
     this.map = map;
+    this.mtgDrawState = mtgDrawState;
     this.moveListenerKey = map.on('pointermove', this.pointerMoveHandler, this);
   },
 
