@@ -11,7 +11,7 @@ export default Ember.Controller.extend({
   tileLayers: [],
   selectedTileLayer: null,
   currentLayer: null,
-  basicURL: conf.baseURL,
+  basicURL: conf.basicURL,
   expertURL: conf.expertURL,
 
   bindCommand: function () {

@@ -49,7 +49,7 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-    ENV.baseURL = '/beta';
+    ENV.baseURL = '/beta/';
   }
   ENV.basicURL = ENV.baseURL;
   ENV.expertURL = ENV.baseURL + 'expert';
