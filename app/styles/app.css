@@ -36,10 +36,11 @@ html, body, #map {
 .logo {
   z-index: 100;
   position: absolute;
-  top: 0.5em;
-  left: 0.5em;
+  top: 5px;
+  left: 5px;
   background: rgba(255, 255, 255, 0.85);
   border-radius: 4px;
+  padding: 5px;
 }
 
 .logo img {
@@ -48,8 +49,8 @@ html, body, #map {
 }
 
 .ol-zoom {
-  top: 3.5em;
-  left: 0.5em;
+  top: 4em;
+  left: 5px;
 }
 
 input {
@@ -64,7 +65,7 @@ input {
 .top-container {
   z-index: 100;
   position: absolute;
-  top:5px; left: 50px;
+  top:5px; left: 60px;
   background: rgba(255, 255, 255, 0.85);
   border-radius: 4px;
   padding: 5px;
@@ -124,7 +125,7 @@ ul.map-layers-dropdown {
 }
 
 .map-data-tools-dropdown {
-  width: 300px;
+  width: 260px;
 }
 
 .map-data ul.map-data-import-dropdown {

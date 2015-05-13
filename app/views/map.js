@@ -1,8 +1,8 @@
 import Ember from 'ember';
+import AfterRender from '../mixins/after-render';
 
-export default Ember.View.extend({
-  build: function () {
-
+export default Ember.View.extend(AfterRender, {
+  afterRenderEvent: function() {
     // Fix Ember to resize the map fullscreen
     $.each($('#map').parents(), function (index, parent) {
       $(parent).height("100%");
@@ -15,6 +15,5 @@ export default Ember.View.extend({
       container: 'body',
       placement: 'bottom'
     });
-  }.on('didInsertElement')
+  }
 });
-
