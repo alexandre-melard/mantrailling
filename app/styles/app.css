@@ -71,9 +71,12 @@ input {
 }
 
 .map-info {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
   display: inline;
   margin-left: 15px;
-  background: rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.85);
   border-radius: 4px;
   padding: 5px;
 }
