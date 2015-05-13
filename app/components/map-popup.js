@@ -6,6 +6,7 @@ export default Ember.Component.extend({
   feature: null,
   overlay: null,
   map: null,
+  editable: true,
 
   content: function (value) {
     if (value && value !== "content") {
@@ -19,7 +20,7 @@ export default Ember.Component.extend({
    * Create an overlay to anchor the popup to the map.
    */
   createOverlay: function (element) {
-    return new ol.Overlay(/** @type {olx.OverlayOptions} */ ({
+    return new ol.Overlay( ({
       element: element,
       autoPan: true,
       autoPanAnimation: {
@@ -43,19 +44,22 @@ export default Ember.Component.extend({
     this.overlay.setPosition(position);
   },
 
-  setUp: function () {
-    this.addToMap(this.element);
-    this.setPosition(this.feature.getGeometry().getCoordinates());
-    this.$('.popup-closer').on('click', {ctx: this}, function () {
-      //event.data.ctx.hide();
-      $(this.closest('.map-popup')).css('display', 'none');
-    });
+  setEditable: function() {
     var me = this;
     this.$('.editable').editable({
       mode: 'inline',
       success: function (response, newValue) {
         me.get('feature').set('description', newValue);
       }
+    });
+  },
+
+  setUp: function () {
+    this.addToMap(this.element);
+    this.setPosition(this.feature.getGeometry().getCoordinates());
+    this.$('.popup-closer').on('click', {ctx: this}, function () {
+      //event.data.ctx.hide();
+      $(this.closest('.map-popup')).css('display', 'none');
     });
   }.on('didInsertElement'),
 

@@ -25,7 +25,7 @@ export default Ember.Controller.extend({
     var start = +new Date();
     var pan = ol.animation.pan({
       duration: duration,
-      source: /** @type {ol.Coordinate} */ (view.getCenter()),
+      source: (view.getCenter()),
       start: start
     });
     var bounce = ol.animation.bounce({
@@ -117,6 +117,9 @@ export default Ember.Controller.extend({
     },
     gpsLocation: function () {
       this.gpsLocation();
+    },
+    locateOnMap: function () {
+      this.command.send('map.draw.location');
     }
   }
 

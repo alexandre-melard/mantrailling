@@ -12,7 +12,7 @@
                 {{#each layer in tileLayers itemController="mapLayer"}}
                     <tr {{bind-attr id=layer.model.identifier}}>
                         <td class="layer-id">
-                            <label class="hint--top" {{bind-attr data-hint=layer.model.title}}>
+                            <label class="hint--top" {{bind-attr data-toggle="tooltip" data-original-title=layer.model.title}}>
                               {{input type="checkbox" checked=layer.visible}}
                               {{str-sub layer.model.title 20}}
                             </label>

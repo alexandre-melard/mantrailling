@@ -94,7 +94,7 @@ input {
   position: absolute;
   top: 5px;
   right: 5px;
-  width: 260px;
+  width: 290px;
 }
 /*Change la largeur de la dropdown*/
 .pac-container {
@@ -434,6 +434,12 @@ label.mtg-item-position input[type="radio"] {
 
 .popup-closer:after {
   content: "✖";
+}
+
+.popup-content {
+  width: 200px;
+  text-align: center;
+  font-weight: bold;
 }
 
 .editable-clear-x {

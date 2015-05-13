@@ -38,6 +38,7 @@ export default Ember.Controller.extend({
 
   bindCommand: function () {
     this.command.register(this, 'map.draw.point', this.drawPoint);
+    this.command.register(this, 'map.draw.location', this.drawLocation);
   }.on('init'),
 
   onGeometryChange: function () {
@@ -136,7 +137,7 @@ export default Ember.Controller.extend({
     var geometry = this.get('mtgDrawState');
     if (this.get('mtgDrawState') === consts.TRAILER || this.get('mtgDrawState') === consts.TEAM) {
       geometry = consts.LINE_STRING;
-    } else if (this.get('mtgDrawState') === consts.MARKER) {
+    } else if (this.get('mtgDrawState') === consts.MARKER || this.get('mtgDrawState') === consts.LOCATION) {
       geometry = consts.POINT;
     }
     this.set('olDraw', new ol.interaction.Draw({
@@ -210,13 +211,21 @@ export default Ember.Controller.extend({
     // Wait for sketch to be drawn
     if (sketch === null) {
       sketch = this.get('sketchLastState');
-      if (this.get('mtgDrawState') === consts.MARKER) {
-        var popup = this.container.lookup('component:map-popup', {singleton: false});
+      var popup;
+      if (this.get('mtgDrawState') === consts.MARKER || this.get('mtgDrawState') === consts.LOCATION) {
+        popup = this.container.lookup('component:map-popup', {singleton: false});
         popup.set('feature', sketch);
         popup.set('map', this.get('map'));
-        popup.append();
-        this.get('popups').pushObject(popup);
       }
+      if (this.get('mtgDrawState') === consts.LOCATION) {
+        popup.set('content', ol.coordinate.toStringHDMS(
+          ol.proj.transform(sketch.getGeometry().getFirstCoordinate(), 'EPSG:3857', 'EPSG:4326')));
+        sketch.setStyle(new  ol.style.Style());
+      } else {
+        popup.setEditable();
+      }
+      popup.append();
+      this.get('popups').pushObject(popup);
     }
   }.observes('sketch'),
 
@@ -266,6 +275,14 @@ export default Ember.Controller.extend({
       } else {
         me.drawPointUI(me, resolve, options);
       }
+    });
+  },
+
+  drawLocation: function () {
+    var me = this;
+    return new Promise(function (resolve) {
+      me.set('mtgDrawState', consts.LOCATION);
+      resolve(true);
     });
   },
 

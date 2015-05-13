@@ -24,16 +24,14 @@ export default Ember.Controller.extend({
   bindCommand: function () {
     var me = this;
     this.command.register(this, 'map.info.length', function (options) {
-      return new Promise(function (resolve, fail) {
+      return new Promise(function (resolve) {
         me.get('selectedTrail').set('length', options.length);
         resolve(true);
       });
     });
     this.command.register(this, 'map.info.location', function (options) {
-      return new Promise(function (resolve, fail) {
-        me.get('selectedTrail').set('location',
-          options.location.lat.d + "°" + options.location.lat.m + "'" + options.location.lat.s + "'' N, " +
-          options.location.lon.d + "°" + options.location.lon.m + "'" + options.location.lon.s + "'' E");
+      return new Promise(function (resolve) {
+        me.get('selectedTrail').set('location', options.location);
         resolve(true);
       });
     });
@@ -137,7 +135,7 @@ export default Ember.Controller.extend({
       var reader = new FileReader();
       var me = this;
       // Closure to capture the file information.
-      reader.onload = (function (theFile) {
+      reader.onload = (function () {
         return function (e) {
           var source = new ol.source.StaticVector({
             format: new ol.format.GPX(),
@@ -165,7 +163,6 @@ export default Ember.Controller.extend({
     var me = this;
     var mapController = this.get('controllers.map');
     var trails = this.trails;
-    var changeActiveTrail = this.changeActiveTrail;
     var storedTrails = this.store.find('mtgTrail');
     storedTrails.then(function (storedTrails) {
       storedTrails.forEach(function (trail) {

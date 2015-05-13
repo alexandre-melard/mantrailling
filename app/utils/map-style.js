@@ -6,7 +6,6 @@ import formatLength from "../utils/map-format-length.js";
 import formatArea from "../utils/map-format-area.js";
 import calcBrightness from "../utils/color-get-brightness.js";
 import getRGBColor from "../utils/color-get-rgb.js";
-import mapFormatDMS from "../utils/map-format-dms.js";
 
 export default function (map, command) {
   var getColor = function (def, feature) {
@@ -18,7 +17,7 @@ export default function (map, command) {
   };
   var markerStyle = function (geometry, feature) {
     return [new ol.style.Style({
-      image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+      image: new ol.style.Icon(({
         anchor: [0.5, 32],
         anchorXUnits: 'fraction',
         anchorYUnits: 'pixels',
@@ -35,8 +34,8 @@ export default function (map, command) {
       return markerStyle(geometry, feature);
     } else {
       var radius = feature.get('radius') || consts.style.point.radius;
-      var opacity = parseFloat(feature.get('opacity')) ||  consts.style.point.opacity;
-      var label = feature.get('label') ||  consts.style.point.label;
+      var opacity = parseFloat(feature.get('opacity')) || consts.style.point.opacity;
+      var label = feature.get('label') || consts.style.point.label;
       var color = getColor(consts.style.point.color, feature);
       var rgb = getRGBColor(color);
       return [new ol.style.Style({
@@ -125,18 +124,19 @@ export default function (map, command) {
       }));
     } else {
       // mise à jour de la longeur de piste dans le trail et de la position de piste dans le trail
-      var updateLengthAndLocation = function(map, feature, command) {
+      var updateLengthAndLocation = function (map, feature, command) {
         var options = {
           length: formatLength(map.getView().getProjection(), geometry)
         };
         command.send('map.info.length', options);
-        var coords = ol.proj.transform(geometry.getFirstCoordinate(), "EPSG:3857", "EPSG:4326");
         options = {
-          location: mapFormatDMS(coords[1], coords[0])
+          location: ol.coordinate.toStringHDMS(
+            ol.proj.transform(geometry.getFirstCoordinate(), 'EPSG:3857', 'EPSG:4326')
+          )
         };
         command.send('map.info.location', options);
       };
-      feature.on('change', function(e) {
+      feature.on('change', function (e) {
         var feature = e.currentTarget;
         updateLengthAndLocation(map, feature, command);
       }, this);
@@ -170,31 +170,33 @@ export default function (map, command) {
         var endLine = geometry.getLastCoordinate();
         var rgb;
         if (start[0] === startLine[0] && start[1] === startLine[1]) {
-          rgb = getRGBColor('#008000');
+          rgb = getRGBColor(consts.style.trailer.start.color);
           styles.push(new ol.style.Style({
             geometry: new ol.geom.Point(start),
             image: new ol.style.Circle({
-              radius: 10,
+              radius: consts.style.trailer.start.radius,
               fill: new ol.style.Fill({
-                color: 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 0.2)'
+                color: 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', ' + consts.style.trailer.start.opacity + ')'
               }),
               stroke: new ol.style.Stroke({
-                color: 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 0.8)'
+                color: 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 0.8)',
+                width: consts.style.trailer.start.stroke.width
               })
             })
           }));
         }
         if (end[0] === endLine[0] && end[1] === endLine[1]) {
-          rgb = getRGBColor('#FF0000');
+          rgb = getRGBColor(consts.style.trailer.end.color);
           styles.push(new ol.style.Style({
             geometry: new ol.geom.Point(end),
             image: new ol.style.Circle({
-              radius: 10,
+              radius: consts.style.trailer.end.radius,
               fill: new ol.style.Fill({
-                color: 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 0.2)'
+                color: 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', ' + consts.style.trailer.end.opacity + ')'
               }),
               stroke: new ol.style.Stroke({
-                color: 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 0.8)'
+                color: 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 0.8)',
+                width: consts.style.trailer.end.stroke.width
               })
             })
           }));

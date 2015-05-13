@@ -8,6 +8,7 @@ export const MULTILINE_STRING = "MultiLineString";
 export const LINE_STRING = "LineString";
 export const POLYGON = "Polygon";
 export const MARKER = "Marker";
+export const LOCATION = "Location";
 export const TRAILER = "Trailer";
 export const TEAM = "Team";
 
@@ -37,7 +38,23 @@ export const style = {
     }
   },
   trailer: {
-    color: '#e727c0'
+    color: '#e727c0',
+    start: {
+      color: '#FFFF00',
+      radius: 10,
+      opacity: 0.5,
+      stroke: {
+        width: 2
+      }
+    },
+    end: {
+      color: '#FF0000',
+      radius: 10,
+      opacity: 0.5,
+      stroke: {
+        width: 2
+      }
+    }
   },
   team: {
     color: '#ec971f',

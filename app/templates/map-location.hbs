@@ -2,10 +2,14 @@
     <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
   {{input type="text" class="form-control map-location-search-input" value=locationSearch action='findLocation'}}
     <span class="input-group-btn">
-      <button type="button" data-hint="Place Lookup" class="btn btn-default hint--bottom" {{action 'findLocation'}}>Go
+      <button type="button" data-toggle="tooltip" data-original-title="Place Lookup" class="btn btn-default" {{action 'findLocation'}}>Go
       </button>
-      <button type="button" data-hint="Track GPS location"
-              class="btn btn-default hint--bottom" {{action 'gpsLocation'}}><span
-              class="glyphicon glyphicon-screenshot" aria-hidden="true"></span></button>
+      <button type="button" data-toggle="tooltip" data-original-title="Get address on map" class="btn btn-default" {{action 'locateOnMap'}}>
+          <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+      </button>
+      <button type="button" data-toggle="tooltip" data-original-title="Track GPS location"
+              class="btn btn-default" {{action 'gpsLocation'}}>
+          <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>
+      </button>
     </span>
 </div>
