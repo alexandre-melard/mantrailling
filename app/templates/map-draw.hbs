@@ -1,4 +1,4 @@
-{{#dropdown-list item="Draw" icon="pencil" btn-radius="no-radius"}}
+{{#dropdown-list item="Draw" icon="pencil" btn-radius="no-radius" toggle="tooltip" title="Display drawing tools"}}
     <ul class="dropdown-menu map-draw-dropdown">
         <li class="btn-group">
             <button type="button" data-toggle="tooltip" data-original-title="Draw a Point"
@@ -25,7 +25,7 @@
                     class="btn btn-brown-red map-draw-follow-path" {{action 'toggleFollowPathMode'}}>
                 <span class="glyphicon glyphicon-{{followPathModeIcon}}" aria-hidden="true"></span>
             </button>
-          {{#dropdown-list item="Color" img="assets/images/palette.gif" }}
+          {{#dropdown-list item="Color" img="assets/images/palette.gif" toggle="tooltip" title="Color palette, you need to select the color before drawing"}}
               <ul {{bind-attr class=":dropdown-menu :map-draw-color-dropdown"}}>
                   <li>
                       <table class="">

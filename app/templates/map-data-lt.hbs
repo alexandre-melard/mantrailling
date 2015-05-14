@@ -30,10 +30,10 @@
 {{/dropdown-list}}
 {{#if selectedTrail}}
   {{view 'mtgLevels'}}
-  <button type="button" class="btn btn-default" {{action 'saveTrail' selectedTrail}}>
+  <button type="button" class="btn btn-default" toggle="tooltip" title="Save the trail in your browser's memory" {{action 'saveTrail' selectedTrail}}>
       <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
   </button>
-  <button type="button"
+  <button type="button" toggle="tooltip" title="Delete the trail from your browser's memory"
           class="btn btn-warning" {{action 'deleteTrail' selectedTrail}}>
       <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
   </button>

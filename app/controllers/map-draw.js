@@ -324,10 +324,10 @@ export default Ember.Controller.extend({
     toggleFollowPathMode: function () {
       this.toggleProperty('followPathMode');
       if (this.get('followPathMode')) {
-        this.set('followPathModeTitle', "Follow the roads and path");
+        this.set('followPathModeTitle', "Follow the roads and path (click to switch to straight mode)");
         this.set('followPathModeIcon', "road");
       } else {
-        this.set('followPathModeTitle', "Draw with straight lines");
+        this.set('followPathModeTitle', "Draw with straight lines (click to switch to follow mode)");
         this.set('followPathModeIcon', "plane");
       }
       // Fix tooltip
