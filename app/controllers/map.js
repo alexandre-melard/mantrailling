@@ -39,7 +39,7 @@ export default Ember.Controller.extend({
   createVectorSource: function (features) {
     var vectorSource = null;
     if (features !== undefined && features !== null) {
-      vectorSource = new ol.source.GeoJSON({object: features});
+      vectorSource = new ol.source.GPX({object: features});
     } else {
       vectorSource = new ol.source.Vector();
     }

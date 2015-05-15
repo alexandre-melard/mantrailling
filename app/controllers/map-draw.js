@@ -142,7 +142,7 @@ export default Ember.Controller.extend({
     }
     this.set('olDraw', new ol.interaction.Draw({
       source: source,
-      type: /** @type {ol.geom.GeometryType} */ (geometry)
+      type: geometry
     }));
     tooltip.createTooltips(this.get('map'), this.get('sketch'), this.get('mtgDrawState'));
 
@@ -151,6 +151,13 @@ export default Ember.Controller.extend({
         // set sketch
         var feature = evt.feature;
         var geom = feature.getGeometry();
+        if (this.get('mtgDrawState') === consts.TRAILER) {
+          this.command.send('trailer.create.start', {
+            feature: feature,
+            map: this.get('map'),
+            layer: this.get('currentLayer')
+          });
+        }
         this.set('sketch', feature);
         tooltip.sketch = feature;
         $('#map').on('keyup', function (event) {
@@ -179,7 +186,12 @@ export default Ember.Controller.extend({
       }, this);
 
     this.get('olDraw').on('drawend', function (e) {
-      e.feature.set('specificType', this.get('mtgDrawState'));
+
+      if (this.get('mtgDrawState') === consts.TRAILER) {
+        this.command.send('trailer.create.end');
+      }
+
+      e.feature.set('extensions', {'type': this.get('mtgDrawState')});
       if (this.get('color') !== null) {
         e.feature.set('color', this.get('color'));
       }

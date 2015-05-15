@@ -29,7 +29,7 @@ export default function (map, command) {
   };
 
   var pointStyle = function (geometry, feature) {
-    var type = feature.get('specificType');
+    var type = feature.get('extensions').type;
     if (type === consts.MARKER) {
       return markerStyle(geometry, feature);
     } else {
@@ -98,7 +98,7 @@ export default function (map, command) {
       geometry = geometry.getLineStrings()[0];
     }
     var label = formatLength(map.getView().getProjection(), geometry);
-    var type = feature.get('specificType');
+    var type = feature.get('extensions').type;
     var styles = [];
     var color, rgb;
     if (type === consts.TEAM) {

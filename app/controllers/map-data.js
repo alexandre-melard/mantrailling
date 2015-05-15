@@ -14,8 +14,7 @@ export default Ember.Controller.extend({
   map: null,
   addTrailName: null,
   trails: [],
-  formats: [consts.GEO_JSON, consts.KML, consts.GPX],
-  selectedFormat: consts.GEO_JSON,
+  formats: [consts.GPX],
   levels: [],
   itemTypes: ['Cloth', 'Leather', 'Cardboard', 'Plastic'],
   currentItem: {position: 'P', type: 'Cloth', description: null},
@@ -33,6 +32,32 @@ export default Ember.Controller.extend({
       return new Promise(function (resolve) {
         me.get('selectedTrail').set('location', options.location);
         resolve(true);
+      });
+    });
+    this.command.register(this, 'trailer.create.start', function (options) {
+      return new Promise(function (resolve) {
+        me.store.createRecord('mapLinestring', {
+          type: consts.TRAILER,
+          feature: options.feature,
+          map: options.map,
+          layer: options.layer
+        }).save().then(function(trailer) {
+          me.get('selectedTrail').set('trailer', trailer);
+          me.get('selectedTrail').save();
+          resolve(trailer);
+        });
+      });
+    });
+    this.command.register(this, 'trailer.create.end', function (options) {
+      return new Promise(function (resolve) {
+        me.get('selectedTrail').get('trailer').then(function(trailer) {
+          //trailer.set('length', options.length);
+          //trailer.set('location', options.location);
+          trailer.exportToGPX().then(function(gpx) {
+            trailer.save();
+            resolve(trailer);
+          });
+        });
       });
     });
   }.on('init'),
@@ -137,14 +162,9 @@ export default Ember.Controller.extend({
       // Closure to capture the file information.
       reader.onload = (function () {
         return function (e) {
-          var source = new ol.source.StaticVector({
-            format: new ol.format.GPX(),
-            projection: 'EPSG:3857'
-          });
-          var features = source.readFeatures(e.target.result);
+          var features = trail.import(e.target.result);
           var feature = features[0];
-          feature.set('specificType', type);
-          trail.get('layer').getSource().addFeature(feature);
+          feature.set('extensions', {'type': type});
           var options = {
             layer: trail.get('layer')
           };
@@ -166,11 +186,11 @@ export default Ember.Controller.extend({
     var storedTrails = this.store.find('mtgTrail');
     storedTrails.then(function (storedTrails) {
       storedTrails.forEach(function (trail) {
-        var features = JSON.parse(trail.get('features'));
-        var vectorSource = mapController.createVectorSource(features);
+        var vectorSource = mapController.createVectorSource();
         var vectorLayer = mapController.createVector(vectorSource);
         vectorLayer.setStyle(getStyleFunction(me.get('map'), me.command));
-        trail.set('layer', vectorLayer);
+        trail.layer = vectorLayer;
+        trail.import();
         if (trail.get('selected')) {
           me.changeActiveTrail(trail, me);
         }
