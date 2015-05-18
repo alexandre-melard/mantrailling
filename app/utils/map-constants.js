@@ -30,14 +30,75 @@ export const COLORS = [
 ];
 
 export const style = {
-  text: {
-    font: '18px Calibri,sans-serif',
+  LineString: {
     stroke: {
-      width: 3
+      color: {
+        hexa: '#ffffff',
+        opacity: '0.8'
+      },
+      width: 2
+    },
+    text: {
+      offset: {
+        x: 0,
+        y: 0
+      },
+      font: '18px Calibri,sans-serif',
+      fill: {
+        color: {
+          hexa: '#ffffff'
+        }
+      },
+      stroke: {
+        color: {
+          hexa: '#ffffff'
+        },
+        width: 3
+      }
+    },
+    start: {
+      color: '#000000',
+      radius: 5,
+      opacity: 0.5,
+      stroke: {
+        width: 1
+      }
+    },
+    end: {
+      color: '#ffffff',
+      radius: 5,
+      opacity: 0.5,
+      stroke: {
+        width: 1
+      }
     }
   },
-  trailer: {
-    color: '#e727c0',
+  Trailer: {
+    stroke: {
+      color: {
+        hexa: '#e727c0',
+        opacity: '0.8'
+      },
+      width: 4
+    },
+    text: {
+      offset: {
+        x: 0,
+        y: 0
+      },
+      font: '18px Calibri,sans-serif',
+      fill: {
+        color: {
+          hexa: '#e727c0'
+        }
+      },
+      stroke: {
+        color: {
+          hexa: '#e727c0'
+        },
+        width: 3
+      }
+    },
     start: {
       color: '#FFFF00',
       radius: 10,
@@ -55,10 +116,47 @@ export const style = {
       }
     }
   },
-  team: {
-    color: '#ec971f',
+  Team: {
     stroke: {
-      width: 4
+      color: {
+        hexa: '#ec971f',
+        opacity: '0.8'
+      },
+      width: 2
+    },
+    text: {
+      offset: {
+        x: 0,
+        y: 0
+      },
+      font: '18px Calibri,sans-serif',
+      fill: {
+        color: {
+          hexa: '#ec971f'
+        }
+      },
+      stroke: {
+        color: {
+          hexa: '#ec971f'
+        },
+        width: 3
+      }
+    },
+    start: {
+      color: '#FFFF00',
+      radius: 5,
+      opacity: 0.5,
+      stroke: {
+        width: 1
+      }
+    },
+    end: {
+      color: '#FF0000',
+      radius: 5,
+      opacity: 0.5,
+      stroke: {
+        width: 1
+      }
     }
   },
   zone: {

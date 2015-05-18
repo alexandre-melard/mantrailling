@@ -3,6 +3,7 @@
  */
 import DS from 'ember-data';
 import xml2json from '../utils/xml2json.js';
+import json2xml from '../utils/json2xml.js';
 
 export default DS.Model.extend({
   type: DS.attr(), // Trailer or Team
@@ -19,7 +20,7 @@ export default DS.Model.extend({
     }
   },
 
-  extensions: function(gpx, key, value) {
+  extensions: function(gpx, value) {
     var $gpx;
     if (typeof gpx  === "string") {
       var gpxDoc = $.parseXML( gpx );
@@ -27,7 +28,7 @@ export default DS.Model.extend({
     } else {
       $gpx = gpx;
     }
-    var $extensions = $gpx.find( "extensions" )[0];
+    var $extensions = $gpx.find( "extensions" );
     if ($extensions.length === 0) {
       // OpenLayers generate RTE whereas some other tools generate trk to describe a path
       var where = "rte";
@@ -38,13 +39,10 @@ export default DS.Model.extend({
       $extensions = $gpx.find( "extensions" );
     }
     if (value !== undefined) {
-      $extensions.append("<" + key + ">" + value + "</" + key + ">");
+      $extensions.append(json2xml(value));
       return $gpx;
     }
-    if (key !== undefined) {
-      return $extensions.find(key).text();
-    }
-    return $extensions;
+    return $extensions[0];
   },
 
   /**
@@ -57,11 +55,7 @@ export default DS.Model.extend({
       var gpx = format.writeFeatures([me.feature], {featureProjection: "EPSG:3857"});
       var extensions = me.feature.get('extensions');
       if (extensions !== undefined) {
-        for (var property in extensions) {
-          if (extensions.hasOwnProperty(property)) {
-            gpx = me.extensions(gpx, property, extensions[property]);
-          }
-        }
+        gpx = me.extensions(gpx, extensions);
       }
       // we want the gpx as string format
       me.set('gpx', (new XMLSerializer()).serializeToString(gpx[0]));

@@ -13,13 +13,9 @@
                     class="btn btn-primary map-draw-polygon" {{action 'toggleDraw' 'Polygon'}}>
                 <span class="glyphicon glyphicon-retweet" aria-hidden="true"></span>
             </button>
-            <button type="button" data-toggle="tooltip" data-original-title="Draw the Trailer's Trail"
-                    class="btn btn-pink map-draw-trailer" {{action 'toggleDraw' 'Trailer'}}>
-                <img src="assets/images/walk.png" class="inverted" width="16" height="16"/>
-            </button>
-            <button type="button" data-toggle="tooltip" data-original-title="Draw the Team's Trail"
-                    class="btn btn-warning map-draw-team" {{action 'toggleDraw' 'Team'}}>
-                <img src="assets/images/track.png" class="inverted" width="16" height="16"/>
+            <button type="button" data-toggle="tooltip" data-original-title="Draw a LineString"
+                    class="btn btn-pink map-draw-trailer" {{action 'command' 'map.draw.linestring'}}>
+                <img src="assets/images/winding-road.png" class="inverted" width="16" height="16"/>
             </button>
             <button type="button" data-toggle="tooltip" data-original-title="{{followPathModeTitle}}"
                     class="btn btn-brown-red map-draw-follow-path" {{action 'toggleFollowPathMode'}}>

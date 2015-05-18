@@ -13,6 +13,7 @@ let Trail = DS.Model.extend({
   items: DS.hasMany('mtgItem', {async: true}),
   Trailer: DS.belongsTo('mapLinestring', {async: true}),
   Team: DS.belongsTo('mapLinestring', {async: true}),
+  lineString: DS.hasMany('mapLinestring', {async: true}),
   points: DS.hasMany('mapPoint', {async: true}),
   zones: DS.hasMany('mapZone', {async: true}),
   createdAt: DS.attr('string', {

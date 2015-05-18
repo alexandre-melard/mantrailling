@@ -33,6 +33,14 @@
     {{#dropdown-list item="Tools" icon="th" btn-radius="no-radius" toggle="tooltip" title="Tools related to the selected trail"}}
         <ul class="dropdown-menu map-data-tools-dropdown">
             <li class="btn-group">
+              <button type="button" data-toggle="tooltip" data-original-title="Draw the Trailer's Trail"
+                      class="btn btn-pink map-draw-trailer" {{action 'command' 'data.trailer.create'}}>
+                  <img src="assets/images/walk.png" class="inverted" width="16" height="16"/>
+              </button>
+              <button type="button" data-toggle="tooltip" data-original-title="Draw the Team's Trail"
+                      class="btn btn-warning map-draw-team" {{action 'command' 'data.team.create'}}>
+                  <img src="assets/images/track.png" class="inverted" width="16" height="16"/>
+              </button>
               {{#dropdown-list item="Import" icon="import" toggle="tooltip" title="Import a path related ot the selected trail"}}
                   <ul class="dropdown-menu map-data-import-dropdown">
                       <li>

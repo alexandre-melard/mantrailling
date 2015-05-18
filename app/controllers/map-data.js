@@ -20,8 +20,60 @@ export default Ember.Controller.extend({
   currentItem: {position: 'P', type: 'Cloth', description: null},
   items: [],
 
+  onCreateTrailerStart: function (options) {
+    var me = this;
+    return new Promise(function (resolve) {
+      me.store.createRecord('mapLinestring', {
+        type: consts.TRAILER,
+        feature: options.feature,
+        map: options.map,
+        layer: options.layer
+      }).save().then(function (trailer) {
+        me.get('selectedTrail').get('Trailer').then(function (lastTrailer) {
+          if (lastTrailer !== null) {
+            lastTrailer.removeFromMap();
+          }
+          me.get('selectedTrail').set('Trailer', trailer);
+          me.get('selectedTrail').save();
+          resolve(trailer);
+        });
+      });
+    });
+  },
+
+  onCreateTrailerEnd: function (options) {
+    var me = this;
+    return new Promise(function (resolve) {
+      me.get('selectedTrail').get('Trailer').then(function (trailer) {
+        trailer.exportToGPX().then(function (gpx) {
+          trailer.save();
+          resolve(trailer);
+        });
+      });
+    });
+  },
+
   bindCommand: function () {
     var me = this;
+    this.command.register(this, 'map.linestring.change', function (options) {
+      return new Promise(function (resolve) {
+        var geometry = options.feature.getGeometry();
+        var length = formatLength(me.get('map').getView().getProjection(), geometry);
+        if (options.feature.get('label') !== length) {
+          options.feature.set('label', length);
+          if (options.feature.get('extensions').type === consts.TRAILER) {
+            me.command.send('map.info.length', {
+              length: length
+            });
+            me.command.send('map.info.location', {
+              location: ol.coordinate.toStringHDMS(
+                ol.proj.transform(geometry.getFirstCoordinate(), 'EPSG:3857', 'EPSG:4326')
+              )
+            });
+          }
+        }
+      });
+    });
     this.command.register(this, 'map.info.length', function (options) {
       return new Promise(function (resolve) {
         me.get('selectedTrail').set('length', options.length);
@@ -34,35 +86,8 @@ export default Ember.Controller.extend({
         resolve(true);
       });
     });
-    this.command.register(this, 'trailer.create.start', function (options) {
-      return new Promise(function (resolve) {
-        me.store.createRecord('mapLinestring', {
-          type: consts.TRAILER,
-          feature: options.feature,
-          map: options.map,
-          layer: options.layer
-        }).save().then(function (trailer) {
-          me.get('selectedTrail').get('Trailer').then(function (lastTrailer) {
-            if(lastTrailer !== null) {
-              lastTrailer.removeFromMap();
-            }
-            me.get('selectedTrail').set('Trailer', trailer);
-            me.get('selectedTrail').save();
-            resolve(trailer);
-          });
-        });
-      });
-    });
-    this.command.register(this, 'trailer.create.end', function (options) {
-      return new Promise(function (resolve) {
-        me.get('selectedTrail').get('Trailer').then(function (trailer) {
-          trailer.exportToGPX().then(function (gpx) {
-            trailer.save();
-            resolve(trailer);
-          });
-        });
-      });
-    });
+    this.command.register(this, 'trailer.create.start', this.onCreateTrailerStart);
+    this.command.register(this, 'trailer.create.end', this.onCreateTrailerEnd);
   }.on('init'),
 
   /**
@@ -195,7 +220,7 @@ export default Ember.Controller.extend({
         var vectorLayer = mapController.createVector(vectorSource);
         vectorLayer.setStyle(getStyleFunction(me.get('map'), me.command));
         trail.layer = vectorLayer;
-        trail.load().then(function() {
+        trail.load().then(function () {
           if (trail.get('selected')) {
             me.changeActiveTrail(trail, me);
           }
@@ -275,6 +300,29 @@ export default Ember.Controller.extend({
   },
 
   actions: {
+    command: function (command) {
+      var me = this;
+      if (command === "data.trailer.create") {
+        this.command.send("map.draw.linestring", consts.style[consts.TRAILER], function (feature) {
+          me.onCreateTrailerStart({
+            feature: feature,
+            map: me.get('map'),
+            layer: me.get('controllers.map').get('currentLayer')
+          }).then(function() {
+            me.onCreateTrailerEnd();
+          });
+        });
+      } else if (command === "data.team.create") {
+        this.command.send("map.draw.linestring", consts.style[consts.TEAM], function (feature) {
+          me.onCreateTeamStart({
+            feature: feature,
+            map: me.get('map'),
+            layer: me.get('controllers.map').get('currentLayer')
+          });
+          me.onCreateTeamEnd();
+        });
+      }
+    },
     changeTrack: function (trail) {
       this.changeActiveTrail(trail);
     },

@@ -16,6 +16,7 @@ export default Ember.Controller.extend({
   state: null,
   olDraw: null,
   mtgDrawState: null,
+  onDrawStart: null,
   onDrawEnd: null,
   moveListenerKey: null,
   sketch: null,
@@ -28,27 +29,35 @@ export default Ember.Controller.extend({
   followPathModeTitle: "Draw with straight lines",
   followPathModeIcon: "plane",
 
-  map: function() {
+  map: function () {
     return this.get('controllers.map').get('map');
   }.property(''),
 
-  currentLayer: function() {
+  currentLayer: function () {
     return this.get('controllers.map').get('currentLayer');
   }.property(''),
 
   bindCommand: function () {
     this.command.register(this, 'map.draw.point', this.drawPoint);
     this.command.register(this, 'map.draw.location', this.drawLocation);
+    this.command.register(this, 'map.draw.linestring', this.drawLineString);
   }.on('init'),
 
-  onGeometryChange: function () {
-    var map = this.get('map');
+  resetInteractions: function (map) {
     if (map == null) {
       return;
     }
     map.removeInteraction(this.get('select'));
     map.removeInteraction(this.get('modify'));
     map.removeInteraction(this.get('olDraw'));
+  },
+
+  onGeometryChange: function () {
+    var map = this.get('map');
+    if (map == null) {
+      return;
+    }
+    this.resetInteractions(map);
     if (this.get('mtgDrawState') === "Modify") {
       tooltip.deleteTooltips(this.get('map'));
       map.addInteraction(this.get('select'));
@@ -135,9 +144,7 @@ export default Ember.Controller.extend({
     var currentLayer = this.get('currentLayer');
     var source = currentLayer.getSource();
     var geometry = this.get('mtgDrawState');
-    if (this.get('mtgDrawState') === consts.TRAILER || this.get('mtgDrawState') === consts.TEAM) {
-      geometry = consts.LINE_STRING;
-    } else if (this.get('mtgDrawState') === consts.MARKER || this.get('mtgDrawState') === consts.LOCATION) {
+    if (this.get('mtgDrawState') === consts.MARKER || this.get('mtgDrawState') === consts.LOCATION) {
       geometry = consts.POINT;
     }
     this.set('olDraw', new ol.interaction.Draw({
@@ -151,12 +158,9 @@ export default Ember.Controller.extend({
         // set sketch
         var feature = evt.feature;
         var geom = feature.getGeometry();
-        if (this.get('mtgDrawState') === consts.TRAILER) {
-          this.command.send('trailer.create.start', {
-            feature: feature,
-            map: this.get('map'),
-            layer: this.get('currentLayer')
-          });
+
+        if (this.get('onDrawStart') !== null) {
+          this.get('onDrawStart')(feature);
         }
         this.set('sketch', feature);
         tooltip.sketch = feature;
@@ -186,10 +190,6 @@ export default Ember.Controller.extend({
       }, this);
 
     this.get('olDraw').on('drawend', function (e) {
-
-      if (this.get('mtgDrawState') === consts.TRAILER) {
-        this.command.send('trailer.create.end');
-      }
 
       e.feature.set('extensions', {type: this.get('mtgDrawState'), color: this.get('color')});
       if (this.get('color') !== null) {
@@ -231,7 +231,7 @@ export default Ember.Controller.extend({
         if (this.get('mtgDrawState') === consts.LOCATION) {
           popup.set('content', ol.coordinate.toStringHDMS(
             ol.proj.transform(sketch.getGeometry().getFirstCoordinate(), 'EPSG:3857', 'EPSG:4326')));
-          sketch.setStyle(new  ol.style.Style());
+          sketch.setStyle(new ol.style.Style());
         } else {
           popup.setEditable();
         }
@@ -251,7 +251,7 @@ export default Ember.Controller.extend({
     resolve(feature);
   },
 
-  drawPointUI: function(me, resolve, options) {
+  drawPointUI: function (me, resolve, options) {
     me.set('mtgDrawState', consts.POINT);
     me.set('onDrawEnd', function (feature) {
       feature.set('extensions', options);
@@ -263,7 +263,7 @@ export default Ember.Controller.extend({
   drawPoint: function (options) {
     var me = this;
     return new Promise(function (resolve, error) {
-      if (options.removeFeature !== undefined) {
+      if (options !== undefined && options.removeFeature !== undefined) {
         me.get('currentLayer').getSource().removeFeature(options.removeFeature);
       }
       if (options.location !== undefined) {
@@ -271,6 +271,27 @@ export default Ember.Controller.extend({
       } else {
         me.drawPointUI(me, resolve, options);
       }
+    });
+  },
+
+  drawLineString: function (options) {
+    var me = this;
+    return new Promise(function (resolve, error) {
+      if (options !== undefined && options.removeFeature !== undefined) {
+        me.get('currentLayer').getSource().removeFeature(options.removeFeature);
+      }
+      me.set('mtgDrawState', consts.LINE_STRING);
+      me.set('onDrawStart', function (feature) {
+        me.set('onDrawStart', null);
+      });
+      me.set('onDrawEnd', function (feature) {
+        var geometry = feature.getGeometry();
+        var length = formatLength(me.get('map').getView().getProjection(), geometry);
+        feature.set('label', length);
+        feature.set('extensions', options);
+        me.set('onDrawEnd', null);
+        resolve(feature);
+      });
     });
   },
 
@@ -304,6 +325,14 @@ export default Ember.Controller.extend({
   },
 
   actions: {
+    command: function (command) {
+      var me = this;
+      if (command === "map.draw.linestring") {
+        this.drawLineString(consts.style[consts.LINE_STRING]).then(function (feature) {
+          console.log("line string created");
+        });
+      }
+    },
     toggleDraw: function (state) {
       this.set('mtgDrawState', state);
     },
