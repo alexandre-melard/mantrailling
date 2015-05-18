@@ -191,7 +191,7 @@ export default Ember.Controller.extend({
         this.command.send('trailer.create.end');
       }
 
-      e.feature.set('extensions', {'type': this.get('mtgDrawState')});
+      e.feature.set('extensions', {type: this.get('mtgDrawState'), color: this.get('color')});
       if (this.get('color') !== null) {
         e.feature.set('color', this.get('color'));
       }
@@ -241,36 +241,20 @@ export default Ember.Controller.extend({
     }
   }.observes('sketch'),
 
-  setFeatureStyle: function(feature, options) {
-    if (options.label !== undefined) {
-      feature.set("label", options.label);
-    }
-    if (options.radius !== undefined) {
-      feature.set("radius", options.radius);
-    }
-    if (options.opacity !== undefined) {
-      feature.set("opacity", options.opacity);
-    }
-    if (options.color !== undefined) {
-      feature.set("color", options.color);
-    }
-    return feature;
-  },
-
   drawPointAtLocation: function (me, resolve, options) {
     var feature = new ol.Feature({
       geometry: new ol.geom.Point(options.location),
       name: 'GPS Tracker'
     });
     me.get('currentLayer').getSource().addFeature(feature);
-    feature = me.setFeatureStyle(feature, options);
+    feature.set('extensions', options);
     resolve(feature);
   },
 
   drawPointUI: function(me, resolve, options) {
     me.set('mtgDrawState', consts.POINT);
     me.set('onDrawEnd', function (feature) {
-      feature = me.setFeatureStyle(feature, options);
+      feature.set('extensions', options);
       me.set('onDrawEnd', null);
       resolve(feature);
     });

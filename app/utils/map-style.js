@@ -9,7 +9,7 @@ import getRGBColor from "../utils/color-get-rgb.js";
 
 export default function (map, command) {
   var getColor = function (def, feature) {
-    var color = feature.get("color");
+    var color = feature.get('extensions').color;
     if (color === undefined || color === null) {
       color = def;
     }
@@ -33,9 +33,9 @@ export default function (map, command) {
     if (type === consts.MARKER) {
       return markerStyle(geometry, feature);
     } else {
-      var radius = feature.get('radius') || consts.style.point.radius;
-      var opacity = parseFloat(feature.get('opacity')) || consts.style.point.opacity;
-      var label = feature.get('label') || consts.style.point.label;
+      var radius = feature.get('extensions').radius || consts.style.point.radius;
+      var opacity = parseFloat(feature.get('extensions').opacity) || consts.style.point.opacity;
+      var label = feature.get('extensions').label || consts.style.point.label;
       var color = getColor(consts.style.point.color, feature);
       var rgb = getRGBColor(color);
       return [new ol.style.Style({

@@ -3,7 +3,6 @@
  */
 
 // Geometrie
-export const POINT = "Point";
 export const MULTILINE_STRING = "MultiLineString";
 export const LINE_STRING = "LineString";
 export const POLYGON = "Polygon";

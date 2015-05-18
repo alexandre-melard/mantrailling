@@ -41,19 +41,22 @@ export default Ember.Controller.extend({
           feature: options.feature,
           map: options.map,
           layer: options.layer
-        }).save().then(function(trailer) {
-          me.get('selectedTrail').set('trailer', trailer);
-          me.get('selectedTrail').save();
-          resolve(trailer);
+        }).save().then(function (trailer) {
+          me.get('selectedTrail').get('Trailer').then(function (lastTrailer) {
+            if(lastTrailer !== null) {
+              lastTrailer.removeFromMap();
+            }
+            me.get('selectedTrail').set('Trailer', trailer);
+            me.get('selectedTrail').save();
+            resolve(trailer);
+          });
         });
       });
     });
     this.command.register(this, 'trailer.create.end', function (options) {
       return new Promise(function (resolve) {
-        me.get('selectedTrail').get('trailer').then(function(trailer) {
-          //trailer.set('length', options.length);
-          //trailer.set('location', options.location);
-          trailer.exportToGPX().then(function(gpx) {
+        me.get('selectedTrail').get('Trailer').then(function (trailer) {
+          trailer.exportToGPX().then(function (gpx) {
             trailer.save();
             resolve(trailer);
           });
@@ -154,7 +157,6 @@ export default Ember.Controller.extend({
         size: f.size,
         date: f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a'
       };
-      console.log(file);
       console.log('importing ' + f.type + ' file as ' + type);
 
       var reader = new FileReader();
@@ -162,18 +164,21 @@ export default Ember.Controller.extend({
       // Closure to capture the file information.
       reader.onload = (function () {
         return function (e) {
-          var features = trail.import(e.target.result);
-          var feature = features[0];
-          feature.set('extensions', {'type': type});
-          var options = {
-            layer: trail.get('layer')
-          };
-          me.command.send('map.view.extent.fit', options);
+          var gpx = e.target.result;
+          trail.get(type).then(function (mapLineString) {
+            mapLineString.removeFromMap();
+            mapLineString.importGPX(gpx, {type: type}).then(function (feature) {
+              mapLineString.save();
+              var options = {
+                layer: trail.get('layer')
+              };
+              me.command.send('map.view.extent.fit', options);
+            });
+          });
         };
       })(f);
       // Read in the image file as a text file.
       reader.readAsText(f);
-
     } else {
       alert('The File APIs are not fully supported in this browser.');
     }
@@ -190,11 +195,12 @@ export default Ember.Controller.extend({
         var vectorLayer = mapController.createVector(vectorSource);
         vectorLayer.setStyle(getStyleFunction(me.get('map'), me.command));
         trail.layer = vectorLayer;
-        trail.import();
-        if (trail.get('selected')) {
-          me.changeActiveTrail(trail, me);
-        }
-        trails.pushObject(trail);
+        trail.load().then(function() {
+          if (trail.get('selected')) {
+            me.changeActiveTrail(trail, me);
+          }
+          trails.pushObject(trail);
+        });
       });
     });
   },
