@@ -2,7 +2,6 @@
  * Created by A140980 on 04/05/2015.
  */
 import * as consts from '../utils/map-constants.js';
-import formatArea from "../utils/map-format-area.js";
 import calcBrightness from "../utils/color-get-brightness.js";
 import getRGBColor from "../utils/color-get-rgb.js";
 
@@ -28,64 +27,88 @@ export default function (map, command) {
   };
 
   var pointStyle = function (geometry, feature) {
-    var type = feature.get('extensions').type;
-    if (type === consts.MARKER) {
-      return markerStyle(geometry, feature);
-    } else {
-      var radius = feature.get('extensions').radius || consts.style.point.radius;
-      var opacity = parseFloat(feature.get('extensions').opacity) || consts.style.point.opacity;
-      var label = feature.get('extensions').label || consts.style.point.label;
-      var color = getColor(consts.style.point.color, feature);
-      var rgb = getRGBColor(color);
-      return [new ol.style.Style({
-        image: new ol.style.Circle({
-          radius: radius,
-          fill: new ol.style.Fill({
-            color: 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', ' + opacity + ')'
-          }),
-          stroke: new ol.style.Stroke({
-            color: 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 0.8)',
-            width: consts.style.point.stroke.width
-          })
-        }),
-        text: new ol.style.Text({
-          font: consts.style.text.font,
-          text: label,
-          fill: new ol.style.Fill({
-            color: color
-          }),
-          stroke: new ol.style.Stroke({
-            color: (calcBrightness(rgb) < 220) ? "#FFFFFF" : "#000000",
-            width: consts.style.text.stroke.width
-          })
-        })
-      })
-      ];
+    var label = feature.get('label');
+    var style = feature.get('extensions');
+    var color = feature.get('color');
+    if (color !== undefined && color !== null) {
+      style.fill.color.hexa = color;
+      style.stroke.color.hexa = color;
+      style.text.fill.color.hexa = color;
+      style.text.stroke.color.hexa = color;
     }
-  };
 
-  var polygonStyle = function (geometry, feature) {
-    var label = formatArea(map.getView().getProjection(), feature.getGeometry());
-    var color = getColor(consts.style.zone.color, feature);
-    var rgb = getRGBColor(color);
+    var fillColor = getRGBColor(style.fill.color.hexa);
+    var strokeColor = getRGBColor(style.stroke.color.hexa);
     return [new ol.style.Style({
-      fill: new ol.style.Fill({
-        color: 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 0.2)'
-      }),
-      stroke: new ol.style.Stroke({
-        color: 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 0.8)',
-        width: consts.style.zone.stroke.width
-      }),
-      text: new ol.style.Text({
-        offsetY: -10,
-        font: consts.style.text.font,
-        text: label,
+      image: new ol.style.Circle({
+        radius: style.radius,
         fill: new ol.style.Fill({
-          color: color
+          color: 'rgba(' + fillColor.r + ',' + fillColor.g + ',' + fillColor.b + ', '+
+          parseFloat(style.fill.color.opacity) || 0.2 +')'
         }),
         stroke: new ol.style.Stroke({
-          color: (calcBrightness(rgb) < 220) ? "#FFFFFF" : "#000000",
-          width: consts.style.text.stroke.width
+          color: 'rgba(' + strokeColor.r + ',' + strokeColor.g + ',' + strokeColor.b + ', '+
+          parseFloat(style.stroke.color.opacity) || 0.8 +')',
+          width: parseInt(style.stroke.width) || 4
+        })
+      }),
+      text: new ol.style.Text({
+        offsetX: parseInt(style.text.offset.x) || 0,
+        offsetY: parseInt(style.text.offset.y) || 0,
+        font: style.text.font || '18px Calibri,sans-serif',
+        text: label,
+        fill: new ol.style.Fill({
+          color: style.text.fill.color.hexa || '#000000'
+        }),
+        stroke: new ol.style.Stroke({
+          color: (calcBrightness(getRGBColor(style.text.stroke.color.hexa || '#000000')) < 220) ? "#FFFFFF" : "#000000",
+          width: parseInt(style.text.stroke.width) || 4
+        })
+      })
+    })];
+  };
+
+
+
+  var polygonStyle = function (geometry, feature) {
+    // mise à jour de la longeur de piste dans le trail et de la position de piste dans le trail
+    feature.on('change', function (e) {
+      var feature = e.currentTarget;
+      command.send('map.polygon.change', {feature: feature});
+    }, this);
+
+    var label = feature.get('label');
+    var style = feature.get('extensions');
+    var color = feature.get('color');
+    if (color !== undefined && color !== null) {
+      style.fill.color.hexa = color;
+      style.stroke.color.hexa = color;
+      style.text.fill.color.hexa = color;
+      style.text.stroke.color.hexa = color;
+    }
+    var fillColor = getRGBColor(style.fill.color.hexa);
+    var strokeColor = getRGBColor(style.stroke.color.hexa);
+    return [new ol.style.Style({
+      fill: new ol.style.Fill({
+        color: 'rgba(' + fillColor.r + ',' + fillColor.g + ',' + fillColor.b + ', '+
+        parseFloat(style.fill.color.opacity) || 0.2 +')'
+      }),
+      stroke: new ol.style.Stroke({
+        color: 'rgba(' + strokeColor.r + ',' + strokeColor.g + ',' + strokeColor.b + ', '+
+        parseFloat(style.stroke.color.opacity) || 0.8 +')',
+        width: parseInt(style.stroke.width) || 4
+      }),
+      text: new ol.style.Text({
+        offsetX: parseInt(style.text.offset.x) || 0,
+        offsetY: parseInt(style.text.offset.y) || 0,
+        font: style.text.font || '18px Calibri,sans-serif',
+        text: label,
+        fill: new ol.style.Fill({
+          color: style.text.fill.color.hexa || '#000000'
+        }),
+        stroke: new ol.style.Stroke({
+          color: (calcBrightness(getRGBColor(style.text.stroke.color.hexa || '#000000')) < 220) ? "#FFFFFF" : "#000000",
+          width: parseInt(style.text.stroke.width) || 4
         })
       })
     })];
@@ -97,7 +120,6 @@ export default function (map, command) {
       var feature = e.currentTarget;
       command.send('map.linestring.change', {feature: feature});
     }, this);
-    command.send('map.linestring.change', {feature: feature});
 
     if (geometry.getType() === consts.MULTILINE_STRING) {
       // get the first path of the file
@@ -106,6 +128,13 @@ export default function (map, command) {
     var styles = [];
     var label = feature.get('label');
     var style = feature.get('extensions');
+    var color = feature.get('color');
+    if (color !== undefined && color !== null) {
+      style.stroke.color.hexa = color;
+      style.text.fill.color.hexa = color;
+      style.text.stroke.color.hexa = color;
+    }
+
     var strokeColor = style.stroke.color.hexa || '#000000';
     var strokeRGB = getRGBColor(strokeColor);
     styles.push(new ol.style.Style({

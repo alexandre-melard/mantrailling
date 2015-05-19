@@ -5,6 +5,7 @@ import Ember from 'ember';
 import * as consts from '../utils/map-constants.js';
 import getStyleFunction from "../utils/map-style.js";
 import formatLength from "../utils/map-format-length.js";
+import formatArea from "../utils/map-format-area.js";
 
 export default Ember.Controller.extend({
 
@@ -71,6 +72,15 @@ export default Ember.Controller.extend({
               )
             });
           }
+        }
+      });
+    });
+    this.command.register(this, 'map.polygon.change', function (options) {
+      return new Promise(function (resolve) {
+        var geometry = options.feature.getGeometry();
+        var area = formatArea(me.get('map').getView().getProjection(), geometry);
+        if (options.feature.get('label') !== area) {
+          options.feature.set('label', area);
         }
       });
     });

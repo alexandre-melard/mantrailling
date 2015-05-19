@@ -6,6 +6,7 @@
 export const MULTILINE_STRING = "MultiLineString";
 export const LINE_STRING = "LineString";
 export const POLYGON = "Polygon";
+export const POINT = "Point";
 export const MARKER = "Marker";
 export const LOCATION = "Location";
 export const TRAILER = "Trailer";
@@ -33,7 +34,7 @@ export const style = {
   LineString: {
     stroke: {
       color: {
-        hexa: '#ffffff',
+        hexa: '#0000ff',
         opacity: '0.8'
       },
       width: 2
@@ -46,12 +47,12 @@ export const style = {
       font: '18px Calibri,sans-serif',
       fill: {
         color: {
-          hexa: '#ffffff'
+          hexa: '#0000ff'
         }
       },
       stroke: {
         color: {
-          hexa: '#ffffff'
+          hexa: '#0000ff'
         },
         width: 3
       }
@@ -65,7 +66,7 @@ export const style = {
       }
     },
     end: {
-      color: '#ffffff',
+      color: '#0000ff',
       radius: 5,
       opacity: 0.5,
       stroke: {
@@ -159,19 +160,71 @@ export const style = {
       }
     }
   },
-  zone: {
-    color: '#204d74',
+  Polygon: {
+    fill: {
+      color: {
+        hexa: '#204d74',
+        opacity: '0.2'
+      }
+    },
     stroke: {
+      color: {
+        hexa: '#204d74',
+        opacity: '0.8'
+      },
       width: 4
+    },
+    text: {
+      offset: {
+        x: 0,
+        y: 0
+      },
+      font: '18px Calibri,sans-serif',
+      fill: {
+        color: {
+          hexa: '#204d74'
+        }
+      },
+      stroke: {
+        color: {
+          hexa: '#204d74'
+        },
+        width: 3
+      }
     }
   },
-  point: {
-    label: "",
+  Point: {
     radius: 10,
-    opacity: 0.5,
-    color: '#ac2925',
+    fill: {
+      color: {
+        hexa: '#ac2925',
+        opacity: '0.5'
+      }
+    },
     stroke: {
+      color: {
+        hexa: '#ac2925',
+        opacity: '0.8'
+      },
       width: 2
+    },
+    text: {
+      offset: {
+        x: 0,
+        y: 0
+      },
+      font: '18px Calibri,sans-serif',
+      fill: {
+        color: {
+          hexa: '#ac2925'
+        }
+      },
+      stroke: {
+        color: {
+          hexa: '#ac2925'
+        },
+        width: 3
+      }
     }
   }
 };

@@ -9,6 +9,7 @@ import calcBrightness from "../utils/color-get-brightness.js";
 import colorLuminance from "../utils/color-get-luminance.js";
 import getRoute from "../utils/google-route-between-a-and-b.js";
 import formatLength from "../utils/map-format-length.js";
+import formatArea from "../utils/map-format-area.js";
 
 export default Ember.Controller.extend({
 
@@ -41,6 +42,7 @@ export default Ember.Controller.extend({
     this.command.register(this, 'map.draw.point', this.drawPoint);
     this.command.register(this, 'map.draw.location', this.drawLocation);
     this.command.register(this, 'map.draw.linestring', this.drawLineString);
+    this.command.register(this, 'map.draw.polygon', this.drawPolygon);
   }.on('init'),
 
   resetInteractions: function (map) {
@@ -190,12 +192,6 @@ export default Ember.Controller.extend({
       }, this);
 
     this.get('olDraw').on('drawend', function (e) {
-
-      e.feature.set('extensions', {type: this.get('mtgDrawState'), color: this.get('color')});
-      if (this.get('color') !== null) {
-        e.feature.set('color', this.get('color'));
-      }
-
       tooltip.deleteTooltips(this.get('map'));
       this.set('sketch', null);
       tooltip.sketch = null;
@@ -254,6 +250,10 @@ export default Ember.Controller.extend({
   drawPointUI: function (me, resolve, options) {
     me.set('mtgDrawState', consts.POINT);
     me.set('onDrawEnd', function (feature) {
+      options.type = consts.POINT;
+      if (me.get('color') !== null) {
+        feature.set('color', me.get('color'));
+      }
       feature.set('extensions', options);
       me.set('onDrawEnd', null);
       resolve(feature);
@@ -274,20 +274,24 @@ export default Ember.Controller.extend({
     });
   },
 
-  drawLineString: function (options) {
+  draw: function(what, labelFunction, options) {
     var me = this;
     return new Promise(function (resolve, error) {
       if (options !== undefined && options.removeFeature !== undefined) {
         me.get('currentLayer').getSource().removeFeature(options.removeFeature);
       }
-      me.set('mtgDrawState', consts.LINE_STRING);
+      me.set('mtgDrawState', what);
       me.set('onDrawStart', function (feature) {
         me.set('onDrawStart', null);
       });
       me.set('onDrawEnd', function (feature) {
         var geometry = feature.getGeometry();
-        var length = formatLength(me.get('map').getView().getProjection(), geometry);
-        feature.set('label', length);
+        var label = labelFunction(me.get('map').getView().getProjection(), geometry);
+        feature.set('label', label);
+        options.type = what;
+        if (me.get('color') !== null) {
+          feature.set('color', me.get('color'));
+        }
         feature.set('extensions', options);
         me.set('onDrawEnd', null);
         resolve(feature);
@@ -295,11 +299,18 @@ export default Ember.Controller.extend({
     });
   },
 
+  drawLineString: function (options) {
+    return this.draw(consts.LINE_STRING, formatLength, options);
+  },
+
+  drawPolygon: function (options) {
+    return this.draw(consts.POLYGON, formatArea, options);
+  },
+
   drawLocation: function (options) {
     var me = this;
     return new Promise(function (resolve) {
       me.set('mtgDrawState', consts.LOCATION);
-      me.set('helpv')
       resolve(true);
     });
   },
@@ -325,11 +336,19 @@ export default Ember.Controller.extend({
   },
 
   actions: {
-    command: function (command) {
+    commandAction: function (command) {
       var me = this;
       if (command === "map.draw.linestring") {
         this.drawLineString(consts.style[consts.LINE_STRING]).then(function (feature) {
           console.log("line string created");
+        });
+      } else if (command === "map.draw.polygon") {
+        this.drawPolygon(consts.style[consts.POLYGON]).then(function (feature) {
+          console.log("polygon created");
+        });
+      } else if (command === "map.draw.point") {
+        this.drawPoint(consts.style[consts.POINT]).then(function (feature) {
+          console.log("point created");
         });
       }
     },

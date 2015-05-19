@@ -41,6 +41,8 @@
                       class="btn btn-warning map-draw-team" {{action 'command' 'data.team.create'}}>
                   <img src="assets/images/track.png" class="inverted" width="16" height="16"/>
               </button>
+              {{view 'mtgLevels'}}
+              {{view 'mtgItems'}}
               {{#dropdown-list item="Import" icon="import" toggle="tooltip" title="Import a path related ot the selected trail"}}
                   <ul class="dropdown-menu map-data-import-dropdown">
                       <li>
@@ -71,8 +73,6 @@
                       </li>
                   </ul>
               {{/dropdown-list}}
-              {{view 'mtgLevels'}}
-              {{view 'mtgItems'}}
               {{#dropdown-list item="Export" icon="export" toggle="tooltip" title="Export the path related ot the trailer's trail"}}
                   <ul class="dropdown-menu map-data-export-dropdown">
                     {{#each format in formats}}

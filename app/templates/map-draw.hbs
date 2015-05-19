@@ -2,7 +2,7 @@
     <ul class="dropdown-menu map-draw-dropdown">
         <li class="btn-group">
             <button type="button" data-toggle="tooltip" data-original-title="Draw a Point"
-                    class="btn btn-danger map-draw-point" {{action 'toggleDraw' 'Point'}}>
+                    class="btn btn-danger map-draw-point" {{action 'commandAction' 'map.draw.point'}}>
                 <img src="assets/images/point.png" class="inverted" width="12" height="12"/>
             </button>
             <button type="button" data-toggle="tooltip" data-original-title="Add description"
@@ -10,11 +10,11 @@
                 <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
             </button>
             <button type="button" data-toggle="tooltip" data-original-title="Draw a Zone"
-                    class="btn btn-primary map-draw-polygon" {{action 'toggleDraw' 'Polygon'}}>
+                    class="btn btn-primary map-draw-polygon" {{action 'commandAction' 'map.draw.polygon'}}>
                 <span class="glyphicon glyphicon-retweet" aria-hidden="true"></span>
             </button>
             <button type="button" data-toggle="tooltip" data-original-title="Draw a LineString"
-                    class="btn btn-pink map-draw-trailer" {{action 'command' 'map.draw.linestring'}}>
+                    class="btn btn-pink map-draw-linestring" {{action 'commandAction' 'map.draw.linestring'}}>
                 <img src="assets/images/winding-road.png" class="inverted" width="16" height="16"/>
             </button>
             <button type="button" data-toggle="tooltip" data-original-title="{{followPathModeTitle}}"
