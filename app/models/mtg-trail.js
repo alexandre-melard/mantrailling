@@ -21,24 +21,44 @@ let Trail = DS.Model.extend({
   }),
   load: function () {
     var me = this;
+    var layer = this.layer;
     return Promise.all(
-      [consts.TRAILER, consts.TEAM].map(function (type) {
-        me.get(type).then(function (item) {
-          if (item !== null) {
-            item.layer = me.layer;
-            return item.loadGPX();
-          }
-        });
-      }));
+      [me.get('mapDraw').then(function (mapDraw) {
+        if (mapDraw !== null) {
+          mapDraw.load(layer);
+        }
+      })].concat([consts.TRAILER, consts.TEAM].map(function (type) {
+          me.get(type).then(function (item) {
+            if (item !== null) {
+              return item.loadGPX(layer);
+            }
+          });
+        })));
+  },
+  export: function () {
+    var me = this;
+    var layer = this.layer;
+    return Promise.all(
+      [me.get('mapDraw').then(function (mapDraw) {
+        if (mapDraw !== null) {
+          mapDraw.export();
+        }
+      })].concat([consts.TRAILER, consts.TEAM].map(function (type) {
+          me.get(type).then(function (item) {
+            if (item !== null) {
+              return item.exportGPX();
+            }
+          });
+        })));
   },
   import: function () {
     var me = this;
+    var layer = this.layer;
     return Promise.all(
       [consts.TRAILER, consts.TEAM].map(function (type) {
         me.get(type).then(function (item) {
           if (item !== null) {
-            item.layer = me.layer;
-            return item.importGPX(null, {type: type});
+            return item.importGPX(layer, null, {type: type});
           }
         });
       }));

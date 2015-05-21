@@ -2,28 +2,20 @@
  * Created by alex on 31/03/2015.
  */
 import DS from 'ember-data';
+import GeoJSON from '../models/geo-json.js';
 import xml2json from '../utils/xml2json.js';
 import json2xml from '../utils/json2xml.js';
 
-export default DS.Model.extend({
-  map: null,
-  layer: null,
-  feature: null,   // OpenLayers object
-  xml: DS.attr('string'), // XML exchange format
+export default GeoJSON.extend({
+  gpx: DS.attr('string'), // XML GPS exchange format
 
-  removeFromMap: function() {
-    if (this.layer !== null && this.feature !== null) {
-      this.layer.getSource().removeFeature(this.feature);
-    }
-  },
-
-  extensions: function(xml, value) {
+  extensions: function(gpx, value) {
     var $xml;
-    if (typeof xml  === "string") {
-      var gpxDoc = $.parseXML( xml );
+    if (typeof gpx  === "string") {
+      var gpxDoc = $.parseXML( gpx );
       $xml = $( gpxDoc );
     } else {
-      $xml = xml;
+      $xml = gpx;
     }
     var $extensions = $xml.find( "extensions" );
     if ($extensions.length === 0) {
@@ -44,60 +36,41 @@ export default DS.Model.extend({
     return $extensions[0];
   },
 
-  export: function(formatType) {
-    var me = this;
-    return new Promise(function(resolve) {
-      var format;
-      if (formatType === "GPX") {
-        format = new ol.format.GPX();
-      } else if (formatType === "GML3") {
-        format = new ol.format.GML3();
-      }
-      var xml = format.writeFeatures([me.feature], {featureProjection: "EPSG:3857"});
-      var extensions = me.feature.get('extensions');
-      if (extensions !== undefined) {
-        xml = me.extensions(xml, extensions);
-      }
-      // we want the gpx as string format
-      me.set('xml', (new XMLSerializer()).serializeToString(xml[0]));
-      resolve(me.get('xml'));
-    });
-  },
-
   /**
    * transform the layer object to GPX
    */
   exportToGPX: function() {
-    return this.export('GPX');
+    var me = this;
+    return new Promise(function(resolve) {
+      var format = new ol.format.GPX();
+      var gpx = format.writeFeatures([me.feature], {featureProjection: "EPSG:3857"});
+      var extensions = me.feature.get('extensions');
+      if (extensions !== undefined) {
+        gpx = me.extensions(gpx, extensions);
+      }
+      // we want the gpx as string format
+      me.set('gpx', (new XMLSerializer()).serializeToString(gpx[0]));
+      resolve(me.get('gpx'));
+    });
   },
 
   /**
-   * transform the layer object to GML
+   * transform the GPX data to features layer
    */
-  exportToGML: function() {
-    return this.export('GML');
-  },
-
-  load: function(formatType) {
+  loadGPX: function(layer) {
     var me = this;
     return new Promise(function(resolve) {
-      var format;
-      if (formatType === "GPX") {
-        format = new ol.format.GPX();
-      } else if (formatType === "GML3") {
-        format = new ol.format.GML3();
-      }
       var source = new ol.source.StaticVector({
-        format: format,
+        format: new ol.format.GPX(),
         projection: 'EPSG:3857'
       });
 
-      // convert xml to openlayers
-      me.feature = source.readFeatures(me.get('xml'))[0];
-      me.feature.set('extensions', xml2json(me.extensions(me.get('xml'))));
+      // convert gpx to openlayers
+      me.feature = source.readFeatures(me.get('gpx'))[0];
+      me.feature.set('extensions', xml2json(me.extensions(me.get('gpx'))));
 
       // add the feature to the feature's layer
-      me.layer.getSource().addFeature(me.feature);
+      layer.getSource().addFeature(me.feature);
       resolve(me.feature);
     });
   },
@@ -105,62 +78,30 @@ export default DS.Model.extend({
   /**
    * transform the GPX data to features layer
    */
-  loadGPX: function() {
-    return this.load('GPX');
-  },
-
-  /**
-   * transform the GML data to features layer
-   */
-  loadGML: function() {
-    return this.load('GML');
-  },
-
-  import: function(formatType, xml, extensions) {
+  importGPX: function(layer, gpx, extensions) {
     var me = this;
     return new Promise(function(resolve) {
-      var format;
-      if (formatType === "GPX") {
-        format = new ol.format.GPX();
-      } else if (formatType === "GML3") {
-        format = new ol.format.GML3();
-      }
-      if (xml !== undefined && xml !== null) {
+      if (gpx !== undefined && gpx !== null) {
         if (extensions !== undefined) {
           for (var property in extensions) {
             if (extensions.hasOwnProperty(property)) {
-              xml = me.extensions(xml, property, extensions[property]);
+              gpx = me.extensions(gpx, property, extensions[property]);
             }
           }
         }
-        me.set("xml", new XMLSerializer().serializeToString(xml[0]));
+        me.set("gpx", new XMLSerializer().serializeToString(gpx[0]));
       }
       var source = new ol.source.StaticVector({
-        format: format,
+        format: new ol.format.GPX(),
         projection: 'EPSG:3857'
       });
-      // convert xml to openlayers
-      me.feature = source.readFeatures(me.get('xml'))[0];
+      // convert gpx to openlayers
+      me.feature = source.readFeatures(me.get('gpx'))[0];
       me.feature.set('extensions', extensions);
 
       // add the feature to the feature's layer
-      me.layer.getSource().addFeature(me.feature);
+      layer.getSource().addFeature(me.feature);
       resolve(me.feature);
     });
-  },
-
-  /**
-   * transform the GPX data to features layer
-   */
-  importGPX: function(xml, extensions) {
-    return this.import("GPX", xml, extensions);
-  },
-
-  /**
-   * transform the GPX data to features layer
-   */
-  importGML: function(xml, extensions) {
-    return this.import("GML", xml, extensions);
   }
-
 });

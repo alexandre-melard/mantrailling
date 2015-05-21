@@ -39,8 +39,9 @@ export default Ember.Component.extend({
       $(".dropdown-menu").parent().addClass("hidden");
 
       // Set dropdown to visible
+      var parents;
       if (!this.get('isDropdownVisible')) {
-        var parents = this.$(".dropdown-menu:first").parents(".dropdown-menu");
+        parents = this.$(".dropdown-menu:first").parents(".dropdown-menu");
         parents.each(function () {
           $(this).parent().removeClass("hidden");
           $(this).parent().addClass("visible");
@@ -50,7 +51,7 @@ export default Ember.Component.extend({
       } else {
         this.$(".dropdown-menu:first").parent().removeClass("visible");
         this.$(".dropdown-menu:first").parent().addClass("hidden");
-        var parents = this.$(".dropdown-menu:first").parents(".dropdown-menu");
+        parents = this.$(".dropdown-menu:first").parents(".dropdown-menu");
         parents.each(function (parent) {
           $(this).parent().removeClass("hidden");
           $(this).parent().addClass("visible");

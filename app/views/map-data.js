@@ -7,7 +7,6 @@ export default Ember.View.extend({
   templateName: "mapData",
   classNames: ["map-data", "btn-group"],
   onInit: function() {
-    var me = this;
     this.$('.editable').editable({
       toggle: 'manual',
       mode: 'inline',

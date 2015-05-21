@@ -6,13 +6,6 @@ import calcBrightness from "../utils/color-get-brightness.js";
 import getRGBColor from "../utils/color-get-rgb.js";
 
 export default function (map, command) {
-  var getColor = function (def, feature) {
-    var color = feature.get('extensions').color;
-    if (color === undefined || color === null) {
-      color = def;
-    }
-    return color;
-  };
   var markerStyle = function (geometry, feature) {
     return [new ol.style.Style({
       image: new ol.style.Icon(({

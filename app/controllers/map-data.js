@@ -54,8 +54,48 @@ export default Ember.Controller.extend({
     });
   },
 
+  getOrCreateMapDraw: function () {
+    var me = this;
+    return new Promise(function (resolve) {
+      me.get('selectedTrail').get('mapDraw').then(function (md) {
+        if (md === null) {
+          me.store.createRecord('mapDraw', {}).save().then(function (mapDraw) {
+            me.get('selectedTrail').set('mapDraw', mapDraw);
+            resolve(mapDraw);
+          });
+        } else {
+          resolve(md);
+        }
+      });
+    });
+  },
+
   bindCommand: function () {
     var me = this;
+    this.command.register(this, 'map.draw.linestring.created', function (options) {
+      var feature = options.feature;
+      var trail = me.get('selectedTrail');
+      return new Promise(function (resolve) {
+        me.getOrCreateMapDraw().then(function(mapDraw) {
+          var ls = me.store.createRecord('mapLinestring');
+          ls.layer = trail.layer;
+          ls.feature = feature;
+          ls.exportGeoJSON();
+          ls.save();
+          mapDraw.get('lineStrings').pushObject(ls);
+          mapDraw.save();
+          resolve(ls);
+        });
+      });
+    });
+    this.command.register(this, 'map.draw.modify.end', function (options) {
+      var features = options.features;
+      var trail = me.get('selectedTrail');
+      return new Promise(function (resolve) {
+        trail.export();
+        resolve(true);
+      });
+    });
     this.command.register(this, 'map.linestring.change', function (options) {
       return new Promise(function (resolve) {
         var geometry = options.feature.getGeometry();
@@ -75,6 +115,22 @@ export default Ember.Controller.extend({
         }
       });
     });
+    this.command.register(this, 'map.draw.polygon.created', function (options) {
+      var feature = options.feature;
+      var trail = me.get('selectedTrail');
+      return new Promise(function (resolve) {
+        me.getOrCreateMapDraw().then(function(mapDraw) {
+          var poly = me.store.createRecord('mapPolygon');
+          poly.layer = trail.layer;
+          poly.feature = feature;
+          poly.exportGeoJSON();
+          poly.save();
+          mapDraw.get('polygons').pushObject(poly);
+          mapDraw.save();
+          resolve(poly);
+        });
+      });
+    });
     this.command.register(this, 'map.polygon.change', function (options) {
       return new Promise(function (resolve) {
         var geometry = options.feature.getGeometry();
@@ -82,6 +138,22 @@ export default Ember.Controller.extend({
         if (options.feature.get('label') !== area) {
           options.feature.set('label', area);
         }
+      });
+    });
+    this.command.register(this, 'map.draw.point.created', function (options) {
+      var feature = options.feature;
+      var trail = me.get('selectedTrail');
+      return new Promise(function (resolve) {
+        me.getOrCreateMapDraw().then(function(mapDraw) {
+          var point = me.store.createRecord('mapPoint');
+          point.layer = trail.layer;
+          point.feature = feature;
+          point.exportGeoJSON();
+          point.save();
+          mapDraw.get('points').pushObject(point);
+          mapDraw.save();
+          resolve(point);
+        });
       });
     });
     this.command.register(this, 'map.info.length', function (options) {
@@ -201,8 +273,8 @@ export default Ember.Controller.extend({
         return function (e) {
           var gpx = e.target.result;
           trail.get(type).then(function (mapLineString) {
-            mapLineString.removeFromMap();
-            mapLineString.importGPX(gpx, {type: type}).then(function (feature) {
+            mapLineString.removeFromMap(this.get('controllers.map').get('currentLayer'));
+            mapLineString.importGPX(layer, gpx, {type: type}).then(function (feature) {
               mapLineString.save();
               var options = {
                 layer: trail.get('layer')
@@ -318,7 +390,7 @@ export default Ember.Controller.extend({
             feature: feature,
             map: me.get('map'),
             layer: me.get('controllers.map').get('currentLayer')
-          }).then(function() {
+          }).then(function () {
             me.onCreateTrailerEnd();
           });
         });

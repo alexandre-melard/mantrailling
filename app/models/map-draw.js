@@ -1,5 +1,4 @@
 import DS from 'ember-data';
-import * as consts from '../utils/map-constants.js';
 
 /**
  * Created by alex on 31/03/2015.
@@ -15,14 +14,29 @@ let MapDraw = DS.Model.extend({
       return new Date();
     }
   }),
-  load: function () {
+  load: function (layer) {
     var me = this;
     return Promise.all(
       ['lineStrings', 'points', 'polygons'].map(function (type) {
-        this.get(type).then(function (items) {
+        me.get(type).then(function (items) {
           if (items !== null) {
             items.forEach(function (item) {
-              return item.loadGeoJSON();
+              return item.loadGeoJSON(layer);
+            });
+          }
+        });
+      }));
+  },
+  export: function () {
+    var me = this;
+    return Promise.all(
+      ['lineStrings', 'points', 'polygons'].map(function (type) {
+        me.get(type).then(function (items) {
+          if (items !== null) {
+            items.forEach(function (item) {
+              item.exportGeoJSON();
+              item.save();
+              return item;
             });
           }
         });
@@ -32,10 +46,11 @@ let MapDraw = DS.Model.extend({
     var me = this;
     return Promise.all(
       ['lineStrings', 'points', 'polygons'].map(function (type) {
-        this.get(type).then(function (items) {
+        me.get(type).then(function (items) {
           if (items !== null) {
             items.forEach(function (item) {
-              return importGeoJSON(null, {type: type});
+              item.importGeoJSON(null, {type: type});
+              return item;
             });
           }
         });

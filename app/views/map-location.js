@@ -8,6 +8,6 @@ export default Ember.View.extend({
   templateName: "mapLocation",
   classNames: ["input-group", "input-group-sm", "map-location"],
   autocomplete: function() {
-    var auto = autocomplete($(".map-location-search-input")[0]);
+    autocomplete($(".map-location-search-input")[0]);
   }.on('didInsertElement')
 });

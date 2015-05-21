@@ -138,6 +138,14 @@ export default Ember.Controller.extend({
           ol.events.condition.singleClick(event);
       }
     });
+    var me = this;
+    //modify.handleEvent(function (event) {
+    //  if (event.originalEvent === "mouseup") {
+    //    this.command.send("map.draw.modify.end", {features: select.getFeatures()});
+    //  }
+    //  return true;
+    //});
+
     this.set('modifyCache', modify);
     return modify;
   }.property(''),
@@ -274,7 +282,7 @@ export default Ember.Controller.extend({
     });
   },
 
-  draw: function(what, labelFunction, options) {
+  draw: function (what, labelFunction, options) {
     var me = this;
     return new Promise(function (resolve, error) {
       if (options !== undefined && options.removeFeature !== undefined) {
@@ -341,19 +349,19 @@ export default Ember.Controller.extend({
       if (command === "map.draw.linestring") {
         this.drawLineString(consts.style[consts.LINE_STRING]).then(function (feature) {
           console.log("line string created");
+          me.command.send('map.draw.linestring.created', {feature: feature});
         });
       } else if (command === "map.draw.polygon") {
         this.drawPolygon(consts.style[consts.POLYGON]).then(function (feature) {
           console.log("polygon created");
+          me.command.send('map.draw.polygon.created', {feature: feature});
         });
       } else if (command === "map.draw.point") {
         this.drawPoint(consts.style[consts.POINT]).then(function (feature) {
           console.log("point created");
+          me.command.send('map.draw.point.created', {feature: feature});
         });
       }
-    },
-    toggleDraw: function (state) {
-      this.set('mtgDrawState', state);
     },
 
     toggleModify: function () {

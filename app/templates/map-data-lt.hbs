@@ -29,6 +29,10 @@
     </ul>
 {{/dropdown-list}}
 {{#if selectedTrail}}
+  <button type="button" data-toggle="tooltip" data-original-title="Draw the Trailer's Trail"
+          class="btn btn-pink map-draw-trailer" {{action 'command' 'data.trailer.create'}}>
+      <img src="assets/images/walk.png" class="inverted" width="16" height="16"/>
+  </button>
   {{view 'mtgLevels'}}
   <button type="button" class="btn btn-default" toggle="tooltip" title="Save the trail in your browser's memory" {{action 'saveTrail' selectedTrail}}>
       <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
