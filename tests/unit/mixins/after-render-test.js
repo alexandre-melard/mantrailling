@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import AfterRenderMixin from '../../../mixins/after-render';
+import AfterRenderMixin from '../../../externals/after-render';
 import { module, test } from 'qunit';
 
 module('AfterRenderMixin');

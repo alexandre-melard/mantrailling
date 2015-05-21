@@ -9,6 +9,7 @@ let MapDraw = DS.Model.extend({
   lineStrings: DS.hasMany('mapLinestring', {async: true}),
   points: DS.hasMany('mapPoint', {async: true}),
   polygons: DS.hasMany('mapPolygon', {async: true}),
+  trail: DS.belongsTo('mtgTrail'),
   createdAt: DS.attr('string', {
     defaultValue: function () {
       return new Date();

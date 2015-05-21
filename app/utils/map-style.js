@@ -64,12 +64,6 @@ export default function (map, command) {
 
 
   var polygonStyle = function (geometry, feature) {
-    // mise à jour de la longeur de piste dans le trail et de la position de piste dans le trail
-    feature.on('change', function (e) {
-      var feature = e.currentTarget;
-      command.send('map.polygon.change', {feature: feature});
-    }, this);
-
     var label = feature.get('label');
     var style = feature.get('extensions');
     var color = feature.get('color');

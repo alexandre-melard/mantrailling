@@ -42,11 +42,13 @@ export default DS.Model.extend({
       });
 
       // convert geoJSON to openlayers
-      var features = source.readFeatures(me.get('geoJSON'));
+      var feature = source.readFeatures(me.get('geoJSON'))[0];
+
+      me.feature = feature;
 
       // add the feature to the feature's layer
-      layer.getSource().addFeatures(features);
-      resolve(features);
+      layer.getSource().addFeature(feature);
+      resolve(feature);
     });
   },
 

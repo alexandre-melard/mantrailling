@@ -5,5 +5,6 @@ export default DS.Model.extend({
   location: DS.attr('string'),
   position: DS.attr('string'),
   type: DS.attr('string'),
-  description: DS.attr('string')
+  description: DS.attr('string'),
+  trail: DS.belongsTo('mtgTrail')
 });

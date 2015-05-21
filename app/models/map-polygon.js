@@ -3,4 +3,6 @@
  */
 import GeoJSON from '../models/geo-json.js';
 
-export default GeoJSON.extend({});
+export default GeoJSON.extend({
+  mapDraw: DS.belongsTo('mapDraw')
+});

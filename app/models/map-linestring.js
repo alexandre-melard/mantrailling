@@ -8,6 +8,8 @@ import json2xml from '../utils/json2xml.js';
 
 export default GeoJSON.extend({
   gpx: DS.attr('string'), // XML GPS exchange format
+  trail: DS.belongsTo('mtgTrail'),
+  mapDraw: DS.belongsTo('mapDraw'),
 
   extensions: function(gpx, value) {
     var $xml;

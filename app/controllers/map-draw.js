@@ -52,6 +52,7 @@ export default Ember.Controller.extend({
     map.removeInteraction(this.get('select'));
     map.removeInteraction(this.get('modify'));
     map.removeInteraction(this.get('olDraw'));
+    $('#map').off('mouseup');
   },
 
   onGeometryChange: function () {
@@ -119,6 +120,11 @@ export default Ember.Controller.extend({
         }
       });
     }, this);
+
+    features.on('remove', function () {
+      this.command.send('map.draw.change', {features: features});
+    }, this);
+
     this.set('selectCache', select);
     return select;
   }.property(''),
@@ -138,13 +144,6 @@ export default Ember.Controller.extend({
           ol.events.condition.singleClick(event);
       }
     });
-    var me = this;
-    //modify.handleEvent(function (event) {
-    //  if (event.originalEvent === "mouseup") {
-    //    this.command.send("map.draw.modify.end", {features: select.getFeatures()});
-    //  }
-    //  return true;
-    //});
 
     this.set('modifyCache', modify);
     return modify;

@@ -21,7 +21,7 @@ export default Ember.Controller.extend({
   currentItem: {position: 'P', type: 'Cloth', description: null},
   items: [],
 
-  onCreateTrailerStart: function (options) {
+  onCreatePathStart: function (type, options) {
     var me = this;
     return new Promise(function (resolve) {
       me.store.createRecord('mapLinestring', {
@@ -29,26 +29,26 @@ export default Ember.Controller.extend({
         feature: options.feature,
         map: options.map,
         layer: options.layer
-      }).save().then(function (trailer) {
-        me.get('selectedTrail').get('Trailer').then(function (lastTrailer) {
-          if (lastTrailer !== null) {
-            lastTrailer.removeFromMap();
+      }).save().then(function (ls) {
+        me.get('selectedTrail').get(type).then(function (last) {
+          if (last !== null) {
+            last.removeFromMap(me.get('selectedTrail').layer);
           }
-          me.get('selectedTrail').set('Trailer', trailer);
+          me.get('selectedTrail').set(type, ls);
           me.get('selectedTrail').save();
-          resolve(trailer);
+          resolve(ls);
         });
       });
     });
   },
 
-  onCreateTrailerEnd: function (options) {
+  onCreatePathEnd: function (type, options) {
     var me = this;
     return new Promise(function (resolve) {
-      me.get('selectedTrail').get('Trailer').then(function (trailer) {
-        trailer.exportToGPX().then(function (gpx) {
-          trailer.save();
-          resolve(trailer);
+      me.get('selectedTrail').get(type).then(function (ls) {
+        ls.exportToGPX().then(function (gpx) {
+          ls.save();
+          resolve(ls);
         });
       });
     });
@@ -88,8 +88,8 @@ export default Ember.Controller.extend({
         });
       });
     });
-    this.command.register(this, 'map.draw.modify.end', function (options) {
-      var features = options.features;
+    this.command.register(this, 'map.draw.change', function (options) {
+      console.log("detected change in draw, exporting trail");
       var trail = me.get('selectedTrail');
       return new Promise(function (resolve) {
         trail.export();
@@ -168,8 +168,8 @@ export default Ember.Controller.extend({
         resolve(true);
       });
     });
-    this.command.register(this, 'trailer.create.start', this.onCreateTrailerStart);
-    this.command.register(this, 'trailer.create.end', this.onCreateTrailerEnd);
+    this.command.register(this, 'trailer.create.start', this.onCreatePathStart);
+    this.command.register(this, 'trailer.create.end', this.onCreatePathEnd);
   }.on('init'),
 
   /**
@@ -274,7 +274,7 @@ export default Ember.Controller.extend({
           var gpx = e.target.result;
           trail.get(type).then(function (mapLineString) {
             mapLineString.removeFromMap(this.get('controllers.map').get('currentLayer'));
-            mapLineString.importGPX(layer, gpx, {type: type}).then(function (feature) {
+            mapLineString.importGPX(trail.layer, gpx, {type: type}).then(function (feature) {
               mapLineString.save();
               var options = {
                 layer: trail.get('layer')
@@ -386,22 +386,23 @@ export default Ember.Controller.extend({
       var me = this;
       if (command === "data.trailer.create") {
         this.command.send("map.draw.linestring", consts.style[consts.TRAILER], function (feature) {
-          me.onCreateTrailerStart({
+          me.onCreatePathStart(consts.TRAILER, {
             feature: feature,
             map: me.get('map'),
             layer: me.get('controllers.map').get('currentLayer')
           }).then(function () {
-            me.onCreateTrailerEnd();
+            me.onCreatePathEnd(consts.TRAILER);
           });
         });
       } else if (command === "data.team.create") {
         this.command.send("map.draw.linestring", consts.style[consts.TEAM], function (feature) {
-          me.onCreateTeamStart({
+          me.onCreatePathStart(consts.TEAM, {
             feature: feature,
             map: me.get('map'),
             layer: me.get('controllers.map').get('currentLayer')
+          }).then(function () {
+            me.onCreatePathEnd(consts.TEAM);
           });
-          me.onCreateTeamEnd();
         });
       }
     },

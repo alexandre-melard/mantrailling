@@ -1,6 +1,7 @@
 /**
  * Created by A140980 on 04/05/2015.
  */
+export const VERSION = "2.0.0";
 
 // Geometrie
 export const MULTILINE_STRING = "MultiLineString";

@@ -7,12 +7,13 @@ import * as consts from '../utils/map-constants.js';
 let Trail = DS.Model.extend({
   map: null,
   layer: null,
+  version: DS.attr('string', {defaultValue: consts.VERSION}),
   name: DS.attr('string'),
   selected: DS.attr('boolean', {defaultValue: false}),
   level: DS.belongsTo('mtgLevel', {async: true}),
   items: DS.hasMany('mtgItem', {async: true}),
-  Trailer: DS.belongsTo('mapLinestring', {async: true}),
-  Team: DS.belongsTo('mapLinestring', {async: true}),
+  Trailer: DS.belongsTo('mapLinestring', {async: true, inverse: 'trail'}),
+  Team: DS.belongsTo('mapLinestring', {async: true, inverse: 'trail'}),
   mapDraw: DS.belongsTo('mapDraw', {async: true}),
   createdAt: DS.attr('string', {
     defaultValue: function () {
@@ -22,6 +23,11 @@ let Trail = DS.Model.extend({
   load: function () {
     var me = this;
     var layer = this.layer;
+    if (this.get('version') !== consts.VERSION) {
+      console.log("major version change, deleting model");
+      localStorage.clear();
+      this.set('version', consts.VERSION);
+    }
     return Promise.all(
       [me.get('mapDraw').then(function (mapDraw) {
         if (mapDraw !== null) {
@@ -46,7 +52,7 @@ let Trail = DS.Model.extend({
       })].concat([consts.TRAILER, consts.TEAM].map(function (type) {
           me.get(type).then(function (item) {
             if (item !== null) {
-              return item.exportGPX();
+              return item.exportToGPX();
             }
           });
         })));
