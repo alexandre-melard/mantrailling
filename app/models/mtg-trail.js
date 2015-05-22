@@ -55,18 +55,28 @@ let Trail = DS.Model.extend({
     });
   },
 
-  remove: function(feature) {
+  remove: function (feature) {
     var me = this;
-    return new Promise(function(resolve) {
+    return new Promise(function (resolve) {
       if (me.get('Trailer') !== null && me.get('Trailer').feature.getId() === feature.getId()) {
         me.get('Trailer').destroyRecord();
       } else if (me.get('Team') !== null && me.get('Team').feature.getId() === feature.getId()) {
         me.get('Team').destroyRecord();
-      } else if (me.get('mapDraw') !== null){
+      } else if (me.get('mapDraw') !== null) {
         me.get('mapDraw').remove(feature);
       }
       resolve(true);
     });
+  },
+
+  save: function () {
+    var me = this;
+    return Promise.all(['Trailer', 'Team', 'mapDraw'].map(function (type) {
+        return me.get(type).save();
+      }).concat(me.get('items').map(function (item) {
+        return item.save();
+      })).concat(me._super())
+    );
   }
 });
 

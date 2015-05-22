@@ -24,31 +24,27 @@ export default Ember.Controller.extend({
   onCreatePathStart: function (type, options) {
     var me = this;
     return new Promise(function (resolve) {
-      me.store.createRecord('mapLinestring', {
+      var ls = me.store.createRecord('mapLinestring', {
         type: consts.TRAILER,
         feature: options.feature,
         map: options.map,
         layer: options.layer
-      }).save().then(function (ls) {
-        var last = me.get('selectedTrail').get(type)
-        if (last !== null) {
-          last.removeFromMap(me.get('selectedTrail').layer);
-        }
-        me.get('selectedTrail').set(type, ls);
-        me.get('selectedTrail').save();
-        resolve(ls);
-      });
+      })
+      var last = me.get('selectedTrail').get(type)
+      if (last !== null) {
+        last.removeFromMap(me.get('selectedTrail').layer);
+      }
+      me.get('selectedTrail').set(type, ls);
+      resolve(ls);
     });
   },
 
   onCreatePathEnd: function (type, options) {
     var me = this;
     return new Promise(function (resolve) {
-      var ls = me.get('selectedTrail').get(type)
-      ls.exportToGPX().then(function (gpx) {
-        ls.save();
-        resolve(ls);
-      });
+      var ls = me.get('selectedTrail').get(type);
+      ls.exportToGPX();
+      resolve(ls);
     });
   },
 
@@ -57,10 +53,9 @@ export default Ember.Controller.extend({
     return new Promise(function (resolve) {
       var md = me.get('selectedTrail').get('mapDraw');
       if (md === null) {
-        me.store.createRecord('mapDraw', {}).save().then(function (mapDraw) {
-          me.get('selectedTrail').set('mapDraw', mapDraw);
-          resolve(mapDraw);
-        });
+        var mapDraw = me.store.createRecord('mapDraw', {});
+        me.get('selectedTrail').set('mapDraw', mapDraw);
+        resolve(mapDraw);
       } else {
         resolve(md);
       }
@@ -96,9 +91,7 @@ export default Ember.Controller.extend({
           ls.layer = trail.layer;
           ls.feature = feature;
           ls.exportGeoJSON();
-          ls.save();
           mapDraw.get('lineStrings').pushObject(ls);
-          mapDraw.save();
           resolve(ls);
         });
       });
@@ -131,9 +124,7 @@ export default Ember.Controller.extend({
           poly.layer = trail.layer;
           poly.feature = feature;
           poly.exportGeoJSON();
-          poly.save();
           mapDraw.get('polygons').pushObject(poly);
-          mapDraw.save();
           resolve(poly);
         });
       });
@@ -147,9 +138,7 @@ export default Ember.Controller.extend({
           point.layer = trail.layer;
           point.feature = feature;
           point.exportGeoJSON();
-          point.save();
           mapDraw.get('points').pushObject(point);
-          mapDraw.save();
           resolve(point);
         });
       });
@@ -189,7 +178,6 @@ export default Ember.Controller.extend({
         } else {
           t.set('selected', false);
         }
-        t.save();
       }, this);
     }
     return value;
@@ -220,11 +208,6 @@ export default Ember.Controller.extend({
         level: level
       });
       level.set('selected', true);
-      trail.save().then(function () {
-        console.log(trail.get('name') + ".save :: success");
-      }).catch(function (e) {
-        console.log(trail.get('name') + ".save :: failure: " + e);
-      });
       me.trails.pushObject(trail);
       trail.set('selected', true);
       trail = me.changeActiveTrail(trail);
@@ -271,7 +254,6 @@ export default Ember.Controller.extend({
           trail.get(type).then(function (mapLineString) {
             mapLineString.removeFromMap(this.get('controllers.map').get('currentLayer'));
             mapLineString.importGPX(trail.layer, gpx, {type: type}).then(function (feature) {
-              mapLineString.save();
               var options = {
                 layer: trail.get('layer')
               };
@@ -365,7 +347,6 @@ export default Ember.Controller.extend({
     var items = this.get('selectedTrail').get('items');
     this.get('currentItem').index = (items.get('length') + 1);
     var mtgItem = this.store.createRecord('mtgItem', this.get('currentItem'));
-    mtgItem.save();
     this.get('selectedTrail').get('items').pushObject(mtgItem);
     console.log('new item created ' + mtgItem.get('index'));
     this.set('currentItem', {position: 'P', type: '', description: null});

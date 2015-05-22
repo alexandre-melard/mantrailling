@@ -34,30 +34,42 @@ let MapDraw = DS.Model.extend({
         if (items !== null) {
           items.forEach(function (item) {
             item.exportGeoJSON();
-            item.save();
             return item;
           });
         }
       }));
   },
 
-  remove: function(feature) {
-    this.get('points').forEach(function(item) {
-        if (item.feature.getId() === feature.getId()) {
-          item.destroyRecord();
-        }
-      });
-    this.get('polygons').forEach(function(item) {
+  remove: function (feature) {
+    this.get('points').forEach(function (item) {
       if (item.feature.getId() === feature.getId()) {
         item.destroyRecord();
       }
     });
-    this.get('lineStrings').forEach(function(item) {
+    this.get('polygons').forEach(function (item) {
       if (item.feature.getId() === feature.getId()) {
         item.destroyRecord();
       }
     });
+    this.get('lineStrings').forEach(function (item) {
+      if (item.feature.getId() === feature.getId()) {
+        item.destroyRecord();
+      }
+    });
+  },
+
+  save: function () {
+    var me = this;
+    return Promise.all(me.get('lineStrings').map(function (ls) {
+        return ls.save();
+      }).concat(me.get('points').map(function (p) {
+        return p.save();
+      })).concat(me.get('polygons').map(function (p) {
+        return p.save();
+      })).concat(me._super())
+    );
   }
+
 });
 
 export default MapDraw;
