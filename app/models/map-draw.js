@@ -6,10 +6,9 @@ import DS from 'ember-data';
 let MapDraw = DS.Model.extend({
   map: null,
   layer: null,
-  lineStrings: DS.hasMany('mapLinestring', {async: true}),
-  points: DS.hasMany('mapPoint', {async: true}),
-  polygons: DS.hasMany('mapPolygon', {async: true}),
-  trail: DS.belongsTo('mtgTrail'),
+  lineStrings: DS.hasMany('mapLinestring', {async: false}),
+  points: DS.hasMany('mapPoint', {async: false}),
+  polygons: DS.hasMany('mapPolygon', {async: false}),
   createdAt: DS.attr('string', {
     defaultValue: function () {
       return new Date();
@@ -19,43 +18,45 @@ let MapDraw = DS.Model.extend({
     var me = this;
     return Promise.all(
       ['lineStrings', 'points', 'polygons'].map(function (type) {
-        me.get(type).then(function (items) {
-          if (items !== null) {
-            items.forEach(function (item) {
-              return item.loadGeoJSON(layer);
-            });
-          }
-        });
+        var items = me.get(type);
+        if (items !== null) {
+          items.forEach(function (item) {
+            return item.loadGeoJSON(layer);
+          });
+        }
       }));
   },
   export: function () {
     var me = this;
     return Promise.all(
       ['lineStrings', 'points', 'polygons'].map(function (type) {
-        me.get(type).then(function (items) {
-          if (items !== null) {
-            items.forEach(function (item) {
-              item.exportGeoJSON();
-              item.save();
-              return item;
-            });
-          }
-        });
+        var items = me.get(type);
+        if (items !== null) {
+          items.forEach(function (item) {
+            item.exportGeoJSON();
+            item.save();
+            return item;
+          });
+        }
       }));
   },
-  import: function () {
-    var me = this;
-    return Promise.all(
-      ['lineStrings', 'points', 'polygons'].map(function (type) {
-        me.get(type).then(function (items) {
-          if (items !== null) {
-            items.forEach(function (item) {
-              item.importGeoJSON(null, {type: type});
-              return item;
-            });
-          }
-        });
-      }));
+
+  remove: function(feature) {
+    this.get('points').forEach(function(item) {
+        if (item.feature.getId() === feature.getId()) {
+          item.destroyRecord();
+        }
+      });
+    this.get('polygons').forEach(function(item) {
+      if (item.feature.getId() === feature.getId()) {
+        item.destroyRecord();
+      }
+    });
+    this.get('lineStrings').forEach(function(item) {
+      if (item.feature.getId() === feature.getId()) {
+        item.destroyRecord();
+      }
+    });
   }
 });
 

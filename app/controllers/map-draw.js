@@ -14,7 +14,6 @@ import formatArea from "../utils/map-format-area.js";
 export default Ember.Controller.extend({
 
   needs: ['map', 'mapData'],
-  state: null,
   olDraw: null,
   mtgDrawState: null,
   onDrawStart: null,
@@ -91,6 +90,7 @@ export default Ember.Controller.extend({
   },
 
   select: function () {
+    var me = this;
     if (this.get('selectCache') !== undefined) {
       return this.get('selectCache');
     }
@@ -114,6 +114,7 @@ export default Ember.Controller.extend({
             vectorFeatures.forEach(function (sourceFeature) {
               if (sourceFeature === feature) {
                 vector.getSource().removeFeature(sourceFeature);
+                me.command.send('map.draw.remove', {feature: sourceFeature});
               }
             });
           });

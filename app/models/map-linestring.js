@@ -8,7 +8,6 @@ import json2xml from '../utils/json2xml.js';
 
 export default GeoJSON.extend({
   gpx: DS.attr('string'), // XML GPS exchange format
-  trail: DS.belongsTo('mtgTrail'),
   mapDraw: DS.belongsTo('mapDraw'),
 
   extensions: function(gpx, value) {
@@ -43,6 +42,7 @@ export default GeoJSON.extend({
    */
   exportToGPX: function() {
     var me = this;
+    this.feature.setId(this.id);
     return new Promise(function(resolve) {
       var format = new ol.format.GPX();
       var gpx = format.writeFeatures([me.feature], {featureProjection: "EPSG:3857"});
@@ -69,6 +69,7 @@ export default GeoJSON.extend({
 
       // convert gpx to openlayers
       me.feature = source.readFeatures(me.get('gpx'))[0];
+      me.feature.setId(me.id);
       me.feature.set('extensions', xml2json(me.extensions(me.get('gpx'))));
 
       // add the feature to the feature's layer

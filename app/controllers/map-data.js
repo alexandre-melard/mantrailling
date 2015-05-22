@@ -30,14 +30,13 @@ export default Ember.Controller.extend({
         map: options.map,
         layer: options.layer
       }).save().then(function (ls) {
-        me.get('selectedTrail').get(type).then(function (last) {
-          if (last !== null) {
-            last.removeFromMap(me.get('selectedTrail').layer);
-          }
-          me.get('selectedTrail').set(type, ls);
-          me.get('selectedTrail').save();
-          resolve(ls);
-        });
+        var last = me.get('selectedTrail').get(type)
+        if (last !== null) {
+          last.removeFromMap(me.get('selectedTrail').layer);
+        }
+        me.get('selectedTrail').set(type, ls);
+        me.get('selectedTrail').save();
+        resolve(ls);
       });
     });
   },
@@ -45,11 +44,10 @@ export default Ember.Controller.extend({
   onCreatePathEnd: function (type, options) {
     var me = this;
     return new Promise(function (resolve) {
-      me.get('selectedTrail').get(type).then(function (ls) {
-        ls.exportToGPX().then(function (gpx) {
-          ls.save();
-          resolve(ls);
-        });
+      var ls = me.get('selectedTrail').get(type)
+      ls.exportToGPX().then(function (gpx) {
+        ls.save();
+        resolve(ls);
       });
     });
   },
@@ -57,21 +55,38 @@ export default Ember.Controller.extend({
   getOrCreateMapDraw: function () {
     var me = this;
     return new Promise(function (resolve) {
-      me.get('selectedTrail').get('mapDraw').then(function (md) {
-        if (md === null) {
-          me.store.createRecord('mapDraw', {}).save().then(function (mapDraw) {
-            me.get('selectedTrail').set('mapDraw', mapDraw);
-            resolve(mapDraw);
-          });
-        } else {
-          resolve(md);
-        }
-      });
+      var md = me.get('selectedTrail').get('mapDraw');
+      if (md === null) {
+        me.store.createRecord('mapDraw', {}).save().then(function (mapDraw) {
+          me.get('selectedTrail').set('mapDraw', mapDraw);
+          resolve(mapDraw);
+        });
+      } else {
+        resolve(md);
+      }
     });
   },
 
   bindCommand: function () {
     var me = this;
+    this.command.register(this, 'map.draw.change', function (options) {
+      console.log("detected change in draw, exporting trail");
+      var trail = me.get('selectedTrail');
+      return new Promise(function (resolve) {
+        trail.export();
+        resolve(true);
+      });
+    });
+    this.command.register(this, 'map.draw.remove', function (options) {
+      console.log("detected removal in draw");
+      var trail = me.get('selectedTrail');
+      return new Promise(function (resolve) {
+        trail.remove(options.feature).then(function() {
+          trail.export();
+          resolve(true);
+        });
+      });
+    });
     this.command.register(this, 'map.draw.linestring.created', function (options) {
       var feature = options.feature;
       var trail = me.get('selectedTrail');
@@ -86,14 +101,6 @@ export default Ember.Controller.extend({
           mapDraw.save();
           resolve(ls);
         });
-      });
-    });
-    this.command.register(this, 'map.draw.change', function (options) {
-      console.log("detected change in draw, exporting trail");
-      var trail = me.get('selectedTrail');
-      return new Promise(function (resolve) {
-        trail.export();
-        resolve(true);
       });
     });
     this.command.register(this, 'map.linestring.change', function (options) {
@@ -131,15 +138,6 @@ export default Ember.Controller.extend({
         });
       });
     });
-    this.command.register(this, 'map.polygon.change', function (options) {
-      return new Promise(function (resolve) {
-        var geometry = options.feature.getGeometry();
-        var area = formatArea(me.get('map').getView().getProjection(), geometry);
-        if (options.feature.get('label') !== area) {
-          options.feature.set('label', area);
-        }
-      });
-    });
     this.command.register(this, 'map.draw.point.created', function (options) {
       var feature = options.feature;
       var trail = me.get('selectedTrail');
@@ -168,8 +166,6 @@ export default Ember.Controller.extend({
         resolve(true);
       });
     });
-    this.command.register(this, 'trailer.create.start', this.onCreatePathStart);
-    this.command.register(this, 'trailer.create.end', this.onCreatePathEnd);
   }.on('init'),
 
   /**
@@ -302,12 +298,11 @@ export default Ember.Controller.extend({
         var vectorLayer = mapController.createVector(vectorSource);
         vectorLayer.setStyle(getStyleFunction(me.get('map'), me.command));
         trail.layer = vectorLayer;
-        trail.load().then(function () {
-          if (trail.get('selected')) {
-            me.changeActiveTrail(trail, me);
-          }
-          trails.pushObject(trail);
-        });
+        trail.load();
+        if (trail.get('selected')) {
+          me.changeActiveTrail(trail, me);
+        }
+        trails.pushObject(trail);
       });
     });
   },

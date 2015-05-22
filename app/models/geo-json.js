@@ -19,6 +19,7 @@ export default DS.Model.extend({
   exportGeoJSON: function() {
     var me = this;
     var feature = me.feature;
+    feature.setId(this.id);
     return new Promise(function(resolve) {
       var format = new ol.format.GeoJSON();
       var geoJSON = format.writeFeatures([feature], {featureProjection: "EPSG:3857"});
@@ -43,6 +44,7 @@ export default DS.Model.extend({
 
       // convert geoJSON to openlayers
       var feature = source.readFeatures(me.get('geoJSON'))[0];
+      feature.setId(me.id);
 
       me.feature = feature;
 

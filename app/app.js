@@ -13,6 +13,22 @@ var App = Ember.Application.extend({
 
 loadInitializers(App, config.modulePrefix);
 
+Ember.Route.reopen({
+  beforeModel: function(transition){
+    var me = this;
+    [ 'mapDraw',
+      'mapLayer',
+      'mapLinestring',
+      'mapPoint',
+      'mapPolygon',
+      'mtgItem',
+      'mtgLevel',
+      'mtgTrail'].forEach(function(model) {
+      me.store.find(model);
+    });
+  }
+});
+
 Ember.View.reopen({
   init: function() {
     this._super();
