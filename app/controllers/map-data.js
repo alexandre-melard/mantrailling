@@ -353,7 +353,7 @@ export default Ember.Controller.extend({
   },
 
   deleteItem: function (item) {
-    item.destroyRecord();
+    item.deleteRecord();
     this.get('selectedTrail').get('itemAtPoints').removeObject(item);
   },
 

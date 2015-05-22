@@ -43,17 +43,17 @@ let MapDraw = DS.Model.extend({
   remove: function (feature) {
     this.get('points').forEach(function (item) {
       if (item.feature.getId() === feature.getId()) {
-        item.destroyRecord();
+        item.deleteRecord();
       }
     });
     this.get('polygons').forEach(function (item) {
       if (item.feature.getId() === feature.getId()) {
-        item.destroyRecord();
+        item.deleteRecord();
       }
     });
     this.get('lineStrings').forEach(function (item) {
       if (item.feature.getId() === feature.getId()) {
-        item.destroyRecord();
+        item.deleteRecord();
       }
     });
   },
@@ -61,11 +61,17 @@ let MapDraw = DS.Model.extend({
   save: function () {
     var me = this;
     return Promise.all(me.get('lineStrings').map(function (ls) {
-        return ls.save();
+        if (ls !== null) {
+          return ls.save();
+        }
       }).concat(me.get('points').map(function (p) {
-        return p.save();
+        if (p !== null) {
+          return p.save();
+        }
       })).concat(me.get('polygons').map(function (p) {
-        return p.save();
+        if (p !== null) {
+          return p.save();
+        }
       })).concat(me._super())
     );
   }
