@@ -6,5 +6,17 @@ export default DS.Model.extend({
   position: DS.attr('string'),
   type: DS.attr('string'),
   description: DS.attr('string'),
-  trail: DS.belongsTo('mtgTrail')
+  trail: DS.belongsTo('mtgTrail'),
+
+  bindCommand: function () {
+    var me = this;
+    this.command.register(this, 'save', function (options) {
+      return new Promise(function (resolve) {
+        console.log("saving mtg items");
+        me.save();
+        resolve(true);
+      });
+    });
+  }.on('init')
+
 });

@@ -20,6 +20,27 @@ let Trail = DS.Model.extend({
       return new Date();
     }
   }),
+
+  bindCommand: function () {
+    var me = this;
+    this.command.register(this, 'save', function (options) {
+      return new Promise(function (resolve) {
+        console.log("saving map layers");
+        me.save();
+        resolve(true);
+      });
+    });
+    this.command.register(this, 'mtg.trail.remove', function (options) {
+      return new Promise(function (resolve) {
+        if (options.id === me.id) {
+          console.log("removing trail:" + me.get('name'));
+          me.deleteRecord();
+          resolve(true);
+        }
+      });
+    });
+  }.on('init'),
+
   load: function () {
     var me = this;
     var layer = this.layer;
@@ -55,32 +76,65 @@ let Trail = DS.Model.extend({
     });
   },
 
+  import: function (data, layer, map) {
+    var me = this;
+    this.layer = layer;
+    this.map = map;
+    var json = JSON.parse(data);
+    this.set("version", json.version);
+    this.set("name", json.name);
+    this.set("selected", true);
+    this.set("level", this.store.find('mtgLevel', {name: json.level}));
+
+    // need to create new items
+TODO
+    this.set("items", json.items);
+
+    this.set('mapDraw', this.store.createRecord('mapDraw'));
+    this.get('mapDraw').import(json.mapDraw);
+
+    this.set('Trailer', this.store.createRecord('mapLinestring'));
+    this.get('Trailer').import(json.Trailer);
+
+    this.set('Team', this.store.createRecord('mapLinestring'));
+    this.get('Team').import(json.Team);
+  },
+
+  serialize: function() {
+    var me = this;
+    this.export();
+    var data = {};
+
+    data.version = this.get("version")
+    data.name = this.get("name")
+    data.level = this.get("level").get('name');
+    data.items = this.get("items")
+
+    var mapDraw = this.get('mapDraw');
+    if (mapDraw !== null) {
+      data.mapDraw = mapDraw.serialize();
+    }
+    [consts.TRAILER, consts.TEAM].map(function (type) {
+      var item = me.get(type)
+      if (item !== null) {
+        data[type] = item.get('gpx');
+      }
+    });
+    return JSON.stringify(data);
+  },
+
   remove: function (feature) {
     var me = this;
     return new Promise(function (resolve) {
       if (me.get('Trailer') !== null && me.get('Trailer').feature.getId() === feature.getId()) {
-        me.get('Trailer').deleteRecord();
+        me.command.send("map.feature.remove", {feature: me.get('Trailer').feature});
       } else if (me.get('Team') !== null && me.get('Team').feature.getId() === feature.getId()) {
-        me.get('Team').deleteRecord();
+        me.command.send("map.feature.remove", {feature: me.get('Team').feature});
       } else if (me.get('mapDraw') !== null) {
-        me.get('mapDraw').remove(feature);
+        me.command.send("mtg.draw.remove", {id: me.get('mapDraw').id});
       }
       resolve(true);
     });
-  },
-
-  save: function () {
-    var me = this;
-    return Promise.all(['Trailer', 'Team', 'mapDraw'].map(function (type) {
-        if (me.get(type) !== null) {
-          return me.get(type).save();
-        }
-      }).concat(me.get('items').map(function (item) {
-        if (me.get(item) !== null) {
-          return me.get(item).save();
-        }
-      })).concat(me._super())
-    );
   }
 });
 

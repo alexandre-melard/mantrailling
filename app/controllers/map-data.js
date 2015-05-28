@@ -6,6 +6,7 @@ import * as consts from '../utils/map-constants.js';
 import getStyleFunction from "../utils/map-style.js";
 import formatLength from "../utils/map-format-length.js";
 import formatArea from "../utils/map-format-area.js";
+import file from "../utils/file-io.js";
 
 export default Ember.Controller.extend({
 
@@ -72,21 +73,11 @@ export default Ember.Controller.extend({
         resolve(true);
       });
     });
-    this.command.register(this, 'map.draw.remove', function (options) {
-      console.log("detected removal in draw");
-      var trail = me.get('selectedTrail');
-      return new Promise(function (resolve) {
-        trail.remove(options.feature).then(function() {
-          trail.export();
-          resolve(true);
-        });
-      });
-    });
-    this.command.register(this, 'map.draw.linestring.created', function (options) {
+    this.command.register(this, 'map.draw.linestring.create', function (options) {
       var feature = options.feature;
       var trail = me.get('selectedTrail');
       return new Promise(function (resolve) {
-        me.getOrCreateMapDraw().then(function(mapDraw) {
+        me.getOrCreateMapDraw().then(function (mapDraw) {
           var ls = me.store.createRecord('mapLinestring');
           ls.layer = trail.layer;
           ls.feature = feature;
@@ -115,11 +106,11 @@ export default Ember.Controller.extend({
         }
       });
     });
-    this.command.register(this, 'map.draw.polygon.created', function (options) {
+    this.command.register(this, 'map.draw.polygon.create', function (options) {
       var feature = options.feature;
       var trail = me.get('selectedTrail');
       return new Promise(function (resolve) {
-        me.getOrCreateMapDraw().then(function(mapDraw) {
+        me.getOrCreateMapDraw().then(function (mapDraw) {
           var poly = me.store.createRecord('mapPolygon');
           poly.layer = trail.layer;
           poly.feature = feature;
@@ -129,11 +120,11 @@ export default Ember.Controller.extend({
         });
       });
     });
-    this.command.register(this, 'map.draw.point.created', function (options) {
+    this.command.register(this, 'map.draw.point.create', function (options) {
       var feature = options.feature;
       var trail = me.get('selectedTrail');
       return new Promise(function (resolve) {
-        me.getOrCreateMapDraw().then(function(mapDraw) {
+        me.getOrCreateMapDraw().then(function (mapDraw) {
           var point = me.store.createRecord('mapPoint');
           point.layer = trail.layer;
           point.feature = feature;
@@ -215,64 +206,53 @@ export default Ember.Controller.extend({
     });
   },
 
-  exportTrail: function (format, trail) {
-    var layer = trail.layer;
-    var data = this.getData(format, layer);
-    var a = document.createElement("a");
-    a.href = window.URL.createObjectURL(new Blob([data], {type: 'application/mantralling'}));
-    a.download = trail.get('name') + '.' + format.toLowerCase();
-    a.click();
+  exportTrace: function (format, trace) {
+    var data = trace.serialize(format);
+    file.write(data, "trace", format);
+  },
+
+  exportTrail: function (trail) {
+    var data = trail.serialize();
+    file.write(data, trail.get('name'), "cmp");
   },
 
   mapImportTrailerFile: function (evt) {
-    this.importTrail(consts.TRAILER, this.get('selectedTrail'), evt);
+    this.importTrace(consts.TRAILER, this.get('selectedTrail'), evt);
   },
 
   mapImportTeamFile: function (evt) {
-    this.importTrail(consts.TEAM, this.get('selectedTrail'), evt);
+    this.importTrace(consts.TEAM, this.get('selectedTrail'), evt);
   },
 
-  importTrail: function (type, trail, evt) {
-    // Check for the various File API support.
-    if (window.File && window.FileReader) {
-      // Great success! All the File APIs are supported.
-      var f = evt.target.files[0];
-      var file = {
-        name: f.name,
-        type: f.type || 'n/a',
-        size: f.size,
-        date: f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a'
-      };
-      console.log('importing ' + f.type + ' file as ' + type);
+  importTrace: function (type, trail, evt) {
+    var me = this;
+    file.read(type, function(gpx) {
+      trail.get(type).then(function (mapLineString) {
+        mapLineString.removeFromMap(this.get('controllers.map').get('currentLayer'));
+        mapLineString.importGPX(trail.layer, gpx, {type: type}).then(function (feature) {
+          var options = {
+            layer: trail.get('layer')
+          };
+          me.command.send('map.view.extent.fit', options);
+        });
+      });
+    });
+  },
 
-      var reader = new FileReader();
-      var me = this;
-      // Closure to capture the file information.
-      reader.onload = (function () {
-        return function (e) {
-          var gpx = e.target.result;
-          trail.get(type).then(function (mapLineString) {
-            mapLineString.removeFromMap(this.get('controllers.map').get('currentLayer'));
-            mapLineString.importGPX(trail.layer, gpx, {type: type}).then(function (feature) {
-              var options = {
-                layer: trail.get('layer')
-              };
-              me.command.send('map.view.extent.fit', options);
-            });
-          });
-        };
-      })(f);
-      // Read in the image file as a text file.
-      reader.readAsText(f);
-    } else {
-      alert('The File APIs are not fully supported in this browser.');
-    }
+  importTrail: function (options) {
+    var me = this;
+    file.read(function(data) {
+          var trail = me.store.createRecord('mtgTrail');
+          trail.import(data);
+          trail.save();
+          me.get('trails').pushObject(trail);
+    });
   },
 
   loadTrails: function () {
     var me = this;
     var mapController = this.get('controllers.map');
-    var trails = this.trails;
+    var trails = this.get('trails');
     var storedTrails = this.store.find('mtgTrail');
     storedTrails.then(function (storedTrails) {
       storedTrails.forEach(function (trail) {
@@ -358,7 +338,7 @@ export default Ember.Controller.extend({
   },
 
   actions: {
-    command: function (command) {
+    command: function (command, options) {
       var me = this;
       if (command === "data.trailer.create") {
         this.command.send("map.draw.linestring", consts.style[consts.TRAILER], function (feature) {
@@ -380,6 +360,12 @@ export default Ember.Controller.extend({
             me.onCreatePathEnd(consts.TEAM);
           });
         });
+      } else if (command === "trail.open") {
+        this.importTrail(options);
+      } else if (command === "trail.delete") {
+        this.deleteTrail(options);
+      } else if (command === "trail.export") {
+        this.exportTrail(options);
       }
     },
     changeTrack: function (trail) {
@@ -404,15 +390,15 @@ export default Ember.Controller.extend({
     deleteItem: function (item) {
       this.deleteItem(item);
     },
-    saveTrail: function (trail) {
-      trail.save().then(function () {
+    save: function (trail) {
+      this.command.send('save', null, function () {
         console.log(trail.get('name') + ".save :: success");
-      }).catch(function (e) {
+      }, function (e) {
         console.log(trail.get('name') + ".save :: failure: " + e);
       });
     },
-    exportTrail: function (format, trail) {
-      this.exportTrail(format, trail);
+    exportTrace: function (format, trail) {
+      this.exportTrace(format, trail);
     },
     triggerImport: function (target) {
       var me = this;

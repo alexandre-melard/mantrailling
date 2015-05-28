@@ -114,7 +114,7 @@ export default Ember.Controller.extend({
             vectorFeatures.forEach(function (sourceFeature) {
               if (sourceFeature === feature) {
                 vector.getSource().removeFeature(sourceFeature);
-                me.command.send('map.draw.remove', {feature: sourceFeature});
+                me.command.send('map.feature.remove', {feature: sourceFeature});
               }
             });
           });
@@ -349,17 +349,17 @@ export default Ember.Controller.extend({
       if (command === "map.draw.linestring") {
         this.drawLineString(consts.style[consts.LINE_STRING]).then(function (feature) {
           console.log("line string created");
-          me.command.send('map.draw.linestring.created', {feature: feature});
+          me.command.send('map.draw.linestring.create', {feature: feature});
         });
       } else if (command === "map.draw.polygon") {
         this.drawPolygon(consts.style[consts.POLYGON]).then(function (feature) {
           console.log("polygon created");
-          me.command.send('map.draw.polygon.created', {feature: feature});
+          me.command.send('map.draw.polygon.create', {feature: feature});
         });
       } else if (command === "map.draw.point") {
         this.drawPoint(consts.style[consts.POINT]).then(function (feature) {
           console.log("point created");
-          me.command.send('map.draw.point.created', {feature: feature});
+          me.command.send('map.draw.point.create', {feature: feature});
         });
       }
     },

@@ -14,6 +14,27 @@ let MapDraw = DS.Model.extend({
       return new Date();
     }
   }),
+
+  bindCommand: function () {
+    var me = this;
+    this.command.register(this, 'save', function (options) {
+      return new Promise(function (resolve) {
+        console.log("saving drawings");
+        me.save();
+        resolve(true);
+      });
+    });
+    this.command.register(this, 'mtg.draw.remove', function (options) {
+      return new Promise(function (resolve) {
+        if (options.id === me.id) {
+          console.log("removing all drawings");
+          me.deleteRecord();
+          resolve(true);
+        }
+      });
+    });
+  }.on('init'),
+
   load: function (layer) {
     var me = this;
     return Promise.all(
@@ -40,42 +61,33 @@ let MapDraw = DS.Model.extend({
       }));
   },
 
-  remove: function (feature) {
-    this.get('points').forEach(function (item) {
-      if (item.feature.getId() === feature.getId()) {
-        item.deleteRecord();
+  serialize: function() {
+    this.export();
+    var data = {};
+    var me = this;
+    ['lineStrings', 'points', 'polygons'].forEach(function (type) {
+      data[type] = [];
+      var items = me.get(type);
+      if (items !== null) {
+        items.forEach(function (item) {
+          data[type].pushObject(item.get('geoJSON'));
+        });
       }
     });
-    this.get('polygons').forEach(function (item) {
-      if (item.feature.getId() === feature.getId()) {
-        item.deleteRecord();
-      }
-    });
-    this.get('lineStrings').forEach(function (item) {
-      if (item.feature.getId() === feature.getId()) {
-        item.deleteRecord();
-      }
-    });
+    return data;
   },
 
-  save: function () {
-    var me = this;
-    return Promise.all(me.get('lineStrings').map(function (ls) {
-        if (ls !== null) {
-          return ls.save();
-        }
-      }).concat(me.get('points').map(function (p) {
-        if (p !== null) {
-          return p.save();
-        }
-      })).concat(me.get('polygons').map(function (p) {
-        if (p !== null) {
-          return p.save();
-        }
-      })).concat(me._super())
-    );
+  remove: function (feature) {
+    this.get('points').forEach(function (item) {
+      me.command.send("map.feature.remove", {feature: item.feature});
+    });
+    this.get('polygons').forEach(function (item) {
+      me.command.send("map.feature.remove", {feature: item.feature});
+    });
+    this.get('lineStrings').forEach(function (item) {
+      me.command.send("map.feature.remove", {feature: item.feature});
+    });
   }
-
 });
 
 export default MapDraw;

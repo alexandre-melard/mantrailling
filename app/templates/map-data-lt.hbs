@@ -5,12 +5,16 @@
             <table class="table table-hover table-striped table-condensed">
                 <thead>
                 <tr>
-                    <th>
+                    <th colspan="2">
                         <div class="input-group">
                           {{input class="form-control btn-group" placeholder="trail's name" value=addTrailName action='addTrail'}}
                             <span class="input-group-btn">
                               <button type="button" class="btn btn-default" {{action 'addTrail'}}>
                                   <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                              </button>
+                              <button type="button"
+                                      class="btn btn-default" {{action 'command' 'trail.open'}}>
+                                  <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
                               </button>
                             </span>
                         </div>
@@ -20,7 +24,20 @@
                 <tbody>
                 {{#each trail in trails}}
                     <tr class={{if trail.selected 'success' ''}} {{action 'changeTrack' trail}}>
-                        <td>{{trail.name}}</td>
+                        <td class="map-data-trails-title">{{trail.name}}</td>
+                        <td class="map-data-trails-buttons">
+                            <div class="btn-group">
+                                <button type="button" toggle="tooltip"
+                                        title="Delete the trail from your browser's memory"
+                                        class="btn btn-warning" {{action 'command' 'trail.delete' selectedTrail}}>
+                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                </button>
+                                <button type="button" toggle="tooltip" title="Export the trail to filesystem"
+                                        class="btn btn-default" {{action 'command' 'trail.export' selectedTrail}}>
+                                    <span class="glyphicon glyphicon-export" aria-hidden="true"></span>
+                                </button>
+                            </div>
+                        </td>
                     </tr>
                 {{/each}}
                 </tbody>
@@ -34,13 +51,7 @@
       <img src="assets/images/walk.png" class="inverted" width="16" height="16"/>
   </button>
   {{view 'mtgLevels'}}
-  <button type="button" class="btn btn-default" toggle="tooltip" title="Save the trail in your browser's memory" {{action 'saveTrail' selectedTrail}}>
-      <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
-  </button>
-  <button type="button" toggle="tooltip" title="Delete the trail from your browser's memory"
-          class="btn btn-warning" {{action 'deleteTrail' selectedTrail}}>
-      <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-  </button>
+  {{render "mapDataSave" controller="mapData"}}
   {{view 'mtgItems'}}
 {{/if}}
 

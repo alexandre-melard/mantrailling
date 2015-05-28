@@ -125,7 +125,7 @@ ul.map-layers-dropdown {
 }
 
 .map-data-tools-dropdown {
-  width: 340px;
+  width: 301px;
 }
 
 .map-data ul.map-data-import-dropdown {
@@ -164,9 +164,15 @@ ul.dropdown-menu {
   border-radius: 4px;
   padding: 5px;
 }
+
 ul.map-data-trails-dropdown, ul.map-data-level-dropdown {
   width: 250px;
 }
+
+.map-data-trails-buttons {
+ text-align: right;
+}
+
 ul.dropdown-menu li {
   display: block;
 }

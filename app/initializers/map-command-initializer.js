@@ -5,6 +5,7 @@ export default {
   initialize: function(container, application) {
     application.register('map-command-initializer:main', MapCmd, { instantiate: true });
     application.inject('controller', 'command', 'map-command-initializer:main');
+    application.inject('model', 'command', 'map-command-initializer:main');
   }
 };
 

@@ -5,12 +5,16 @@
             <table class="table table-hover table-striped table-condensed">
                 <thead>
                 <tr>
-                    <th>
+                    <th colspan="2">
                         <div class="input-group">
                           {{input class="form-control btn-group" placeholder="trail's name" value=addTrailName action='addTrail'}}
                             <span class="input-group-btn">
                               <button type="button" class="btn btn-default" {{action 'addTrail'}}>
-                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                              </button>
+                              <button type="button"
+                                      class="btn btn-default" {{action 'command' 'trail.open'}}>
+                                  <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
                               </button>
                             </span>
                         </div>
@@ -20,7 +24,20 @@
                 <tbody>
                 {{#each trail in trails}}
                     <tr class={{if trail.selected 'success' ''}} {{action 'changeTrack' trail}}>
-                        <td class="editable">{{trail.name}}</td>
+                        <td class="map-data-trails-title">{{trail.name}}</td>
+                        <td class="map-data-trails-buttons">
+                            <div class="btn-group">
+                                <button type="button" toggle="tooltip"
+                                        title="Delete the trail from your browser's memory"
+                                        class="btn btn-warning" {{action 'command' 'trail.delete' selectedTrail}}>
+                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                </button>
+                                <button type="button" toggle="tooltip" title="Export the trail to filesystem"
+                                        class="btn btn-default" {{action 'command' 'trail.export' selectedTrail}}>
+                                    <span class="glyphicon glyphicon-export" aria-hidden="true"></span>
+                                </button>
+                            </div>
+                        </td>
                     </tr>
                 {{/each}}
                 </tbody>
@@ -33,14 +50,14 @@
     {{#dropdown-list item="Tools" icon="th" btn-radius="no-radius" toggle="tooltip" title="Tools related to the selected trail"}}
         <ul class="dropdown-menu map-data-tools-dropdown">
             <li class="btn-group">
-              <button type="button" data-toggle="tooltip" data-original-title="Draw the Trailer's Trail"
-                      class="btn btn-pink map-draw-trailer" {{action 'command' 'data.trailer.create'}}>
-                  <img src="assets/images/walk.png" class="inverted" width="16" height="16"/>
-              </button>
-              <button type="button" data-toggle="tooltip" data-original-title="Draw the Team's Trail"
-                      class="btn btn-warning map-draw-team" {{action 'command' 'data.team.create'}}>
-                  <img src="assets/images/track.png" class="inverted" width="16" height="16"/>
-              </button>
+                <button type="button" data-toggle="tooltip" data-original-title="Draw the Trailer's Trail"
+                        class="btn btn-pink map-draw-trailer" {{action 'command' 'data.trailer.create'}}>
+                    <img src="assets/images/walk.png" class="inverted" width="16" height="16"/>
+                </button>
+                <button type="button" data-toggle="tooltip" data-original-title="Draw the Team's Trail"
+                        class="btn btn-warning map-draw-team" {{action 'command' 'data.team.create'}}>
+                    <img src="assets/images/track.png" class="inverted" width="16" height="16"/>
+                </button>
               {{view 'mtgLevels'}}
               {{view 'mtgItems'}}
               {{#dropdown-list item="Import" icon="import" toggle="tooltip" title="Import a path related ot the selected trail"}}
@@ -76,14 +93,10 @@
               {{#dropdown-list item="Export" icon="export" toggle="tooltip" title="Export the path related ot the trailer's trail"}}
                   <ul class="dropdown-menu map-data-export-dropdown">
                     {{#each format in formats}}
-                        <li><a {{action 'exportTrail' format selectedTrail}}>{{format}}</a></li>
+                        <li><a {{action 'exportTrace' format selectedTrail}}>{{format}}</a></li>
                     {{/each}}
                   </ul>
               {{/dropdown-list}}
-                <button type="button"
-                        class="btn btn-warning" {{action 'deleteTrail' selectedTrail}}>
-                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                </button>
             </li>
         </ul>
     {{/dropdown-list}}

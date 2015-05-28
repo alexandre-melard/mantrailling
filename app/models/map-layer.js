@@ -9,5 +9,17 @@ export default DS.Model.extend({
   abstract: DS.attr('string'),
   visible: DS.attr('boolean'),
   opacity: DS.attr(),
-  layer: null
+  layer: null,
+
+  bindCommand: function () {
+    var me = this;
+    this.command.register(this, 'save', function (options) {
+      return new Promise(function (resolve) {
+        console.log("saving map layers");
+        me.save();
+        resolve(true);
+      });
+    });
+  }.on('init')
+
 });
