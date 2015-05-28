@@ -1,0 +1,18 @@
+{{#each trail in trails}}
+    <tr class={{if trail.selected 'success' ''}} {{action 'changeTrack' trail}}>
+        <td class="map-data-trails-title">{{trail.name}}</td>
+        <td class="map-data-trails-buttons">
+            <div class="btn-group">
+                <button type="button" toggle="tooltip"
+                        title="Delete the trail from your browser's memory"
+                        class="btn btn-warning" {{action 'command' 'trail.delete' selectedTrail}}>
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                </button>
+                <button type="button" toggle="tooltip" title="Export the trail to filesystem"
+                        class="btn btn-default" {{action 'command' 'trail.export' selectedTrail}}>
+                    <span class="glyphicon glyphicon-export" aria-hidden="true"></span>
+                </button>
+            </div>
+        </td>
+    </tr>
+{{/each}}

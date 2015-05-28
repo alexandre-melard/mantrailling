@@ -1,0 +1,12 @@
+{{#dropdown-list item="Tools" icon="th" btn-radius="no-radius" toggle="tooltip" title="Tools related to the selected trail"}}
+    <ul class="dropdown-menu map-data-tools-dropdown">
+        <li class="btn-group">
+          {{render "mapDataTrailTraceTrailer" controller="mapData"}}
+          {{render "mapDataTrailTraceTeam" controller="mapData"}}
+          {{view 'mtgLevels'}}
+          {{view 'mtgItems'}}
+          {{render "mapDataTrailImportTraces" controller="mapData"}}
+          {{render "mapDataTrailExportTraces" controller="mapData"}}
+        </li>
+    </ul>
+{{/dropdown-list}}

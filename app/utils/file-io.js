@@ -12,6 +12,7 @@ export default {
   read: function (resolve, fail) {
     $('#input-file').on("change", function (evt) {
       // Check for the various File API support.
+      $('#input-file').off("change");
       if (window.File && window.FileReader) {
         // Great success! All the File APIs are supported.
         var f = evt.target.files[0];
@@ -38,6 +39,5 @@ export default {
       }
     });
     $('#input-file').click();
-    $('#input-file').off("change");
   }
 }

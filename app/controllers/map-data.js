@@ -216,25 +216,27 @@ export default Ember.Controller.extend({
     file.write(data, trail.get('name'), "cmp");
   },
 
-  mapImportTrailerFile: function (evt) {
-    this.importTrace(consts.TRAILER, this.get('selectedTrail'), evt);
+  mapImportTrailer: function () {
+    this.importTrace(consts.TRAILER, this.get('selectedTrail'));
   },
 
-  mapImportTeamFile: function (evt) {
-    this.importTrace(consts.TEAM, this.get('selectedTrail'), evt);
+  mapImportTeam: function () {
+    this.importTrace(consts.TEAM, this.get('selectedTrail'));
   },
 
-  importTrace: function (type, trail, evt) {
+  importTrace: function (type, trail) {
     var me = this;
-    file.read(type, function(gpx) {
-      trail.get(type).then(function (mapLineString) {
-        mapLineString.removeFromMap(this.get('controllers.map').get('currentLayer'));
-        mapLineString.importGPX(trail.layer, gpx, {type: type}).then(function (feature) {
-          var options = {
-            layer: trail.get('layer')
-          };
-          me.command.send('map.view.extent.fit', options);
-        });
+    file.read(function(gpx) {
+      var mapLineString = trail.get(type);
+      if (mapLineString === null) {
+        mapLineString = me.store.createRecord('mapLinestring');
+      }
+      mapLineString.removeFromMap(me.get('controllers.map').get('currentLayer'));
+      mapLineString.importGPX(trail.layer, gpx, consts.style[type]).then(function (feature) {
+        var options = {
+          layer: trail.get('layer')
+        };
+        me.command.send('map.view.extent.fit', options);
       });
     });
   },
@@ -360,12 +362,18 @@ export default Ember.Controller.extend({
             me.onCreatePathEnd(consts.TEAM);
           });
         });
+      } else if (command === "trail.add") {
+        this.addTrail();
       } else if (command === "trail.open") {
         this.importTrail(options);
       } else if (command === "trail.delete") {
         this.deleteTrail(options);
       } else if (command === "trail.export") {
         this.exportTrail(options);
+      } else if (command === "trail.trailer.import") {
+        this.mapImportTrailer(options);
+      } else if (command === "trail.team.import") {
+        this.mapImportTeam(options);
       }
     },
     changeTrack: function (trail) {
@@ -377,12 +385,6 @@ export default Ember.Controller.extend({
       });
       level.set('selected', true);
       this.get('selectedTrail').set('level', level);
-    },
-    addTrail: function () {
-      this.addTrail();
-    },
-    deleteTrail: function (trail) {
-      this.deleteTrail(trail);
     },
     addItem: function () {
       this.addItem();
@@ -399,18 +401,6 @@ export default Ember.Controller.extend({
     },
     exportTrace: function (format, trail) {
       this.exportTrace(format, trail);
-    },
-    triggerImport: function (target) {
-      var me = this;
-      var importFunc = this.mapImportTrailerFile;
-      console.log('importing file: ' + target);
-      if (target === 'map-data-import-team-input') {
-        importFunc = this.mapImportTeamFile;
-      }
-      $('#' + target).on("change", function (evt) {
-        importFunc.apply(me, [evt]);
-      });
-      $('#' + target).click();
     }
   }
 });

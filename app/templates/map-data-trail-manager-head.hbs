@@ -1,0 +1,12 @@
+<div class="input-group">
+    {{input class="form-control btn-group" placeholder="trail's name" value=addTrailName}}
+    <span class="input-group-btn">
+      <button type="button" class="btn btn-default" {{action 'command' 'trail.add'}}>
+          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+      </button>
+      <button type="button"
+              class="btn btn-default" {{action 'command' 'trail.open'}}>
+          <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+      </button>
+    </span>
+</div>

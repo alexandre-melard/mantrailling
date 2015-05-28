@@ -86,8 +86,11 @@ let Trail = DS.Model.extend({
     this.set("selected", true);
     this.set("level", this.store.find('mtgLevel', {name: json.level}));
 
-    // need to create new items
-TODO
+    json.items.forEach(function(i) {
+      var item = me.store.createRecord('mtgItem', i);
+      item.save();
+      me.get('items').pushObject(item);
+    });
     this.set("items", json.items);
 
     this.set('mapDraw', this.store.createRecord('mapDraw'));
@@ -108,7 +111,9 @@ TODO
     data.version = this.get("version")
     data.name = this.get("name")
     data.level = this.get("level").get('name');
-    data.items = this.get("items")
+    this.get("items").forEach(function(i) {
+      data.items.pushObject(i.serialize());
+    });
 
     var mapDraw = this.get('mapDraw');
     if (mapDraw !== null) {

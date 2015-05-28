@@ -31,7 +31,7 @@ export default GeoJSON.extend({
       $extensions = $xml.find( "extensions" );
     }
     if (value !== undefined) {
-      $extensions.append(json2xml(value));
+      $($extensions[0]).append(json2xml(value));
       return $xml;
     }
     return $extensions[0];
@@ -86,11 +86,7 @@ export default GeoJSON.extend({
     return new Promise(function(resolve) {
       if (gpx !== undefined && gpx !== null) {
         if (extensions !== undefined) {
-          for (var property in extensions) {
-            if (extensions.hasOwnProperty(property)) {
-              gpx = me.extensions(gpx, property, extensions[property]);
-            }
-          }
+          gpx = me.extensions(gpx, extensions);
         }
         me.set("gpx", new XMLSerializer().serializeToString(gpx[0]));
       }
