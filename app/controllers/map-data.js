@@ -173,22 +173,6 @@ export default Ember.Controller.extend({
     return value;
   }.property('trails.@each.selected'),
 
-  getData: function (formatName, layer) {
-    // define a format the data shall be converted to
-    var format = new ol.format[formatName]();
-    // this will be the data in the chosen format
-    var data;
-    try {
-      // convert the data of the vector_layer into the chosen format
-      data = format.writeFeatures(layer.getSource().getFeatures());
-    } catch (e) {
-      // at time of creation there is an error in the consts.GPX format (18.7.2014)
-      console.log(e.name + ": " + e.message);
-      return;
-    }
-    return data;
-  },
-
   addTrail: function () {
     var me = this;
     return this.store.find('mtgLevel', {index: 0}).then(function (levels) {
