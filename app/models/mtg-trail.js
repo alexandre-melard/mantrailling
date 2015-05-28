@@ -54,9 +54,23 @@ let Trail = DS.Model.extend({
       mapDraw.load(layer);
     }
     [consts.TRAILER, consts.TEAM].map(function (type) {
-      var item = me.get(type)
+      var item = me.get(type);
       if (item !== null) {
-        return item.loadGPX(layer);
+        item.loadGPX().then(function(feature) {
+          feature.get('extensions').type = type;
+
+          // add the feature to the feature's layer
+          layer.getSource().addFeature(feature);
+
+          // Mise à jour de la longueur de piste
+          me.command.send("map.linestring.change", {feature: feature});
+
+          var options = {
+            layer: layer
+          };
+          me.command.send('map.view.extent.fit', options);
+
+        });
       }
     });
   },
@@ -69,7 +83,7 @@ let Trail = DS.Model.extend({
       mapDraw.export();
     }
     [consts.TRAILER, consts.TEAM].map(function (type) {
-      var item = me.get(type)
+      var item = me.get(type);
       if (item !== null) {
         return item.exportToGPX();
       }
@@ -108,8 +122,8 @@ let Trail = DS.Model.extend({
     this.export();
     var data = {};
 
-    data.version = this.get("version")
-    data.name = this.get("name")
+    data.version = this.get("version");
+    data.name = this.get("name");
     data.level = this.get("level").get('name');
     this.get("items").forEach(function(i) {
       data.items.pushObject(i.serialize());
@@ -120,7 +134,7 @@ let Trail = DS.Model.extend({
       data.mapDraw = mapDraw.serialize();
     }
     [consts.TRAILER, consts.TEAM].map(function (type) {
-      var item = me.get(type)
+      var item = me.get(type);
       if (item !== null) {
         data[type] = item.get('gpx');
       }

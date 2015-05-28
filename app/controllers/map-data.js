@@ -5,7 +5,6 @@ import Ember from 'ember';
 import * as consts from '../utils/map-constants.js';
 import getStyleFunction from "../utils/map-style.js";
 import formatLength from "../utils/map-format-length.js";
-import formatArea from "../utils/map-format-area.js";
 import file from "../utils/file-io.js";
 
 export default Ember.Controller.extend({
@@ -30,8 +29,8 @@ export default Ember.Controller.extend({
         feature: options.feature,
         map: options.map,
         layer: options.layer
-      })
-      var last = me.get('selectedTrail').get(type)
+      });
+      var last = me.get('selectedTrail').get(type);
       if (last !== null) {
         last.removeFromMap(me.get('selectedTrail').layer);
       }
@@ -40,7 +39,7 @@ export default Ember.Controller.extend({
     });
   },
 
-  onCreatePathEnd: function (type, options) {
+  onCreatePathEnd: function (type) {
     var me = this;
     return new Promise(function (resolve) {
       var ls = me.get('selectedTrail').get(type);
@@ -65,7 +64,7 @@ export default Ember.Controller.extend({
 
   bindCommand: function () {
     var me = this;
-    this.command.register(this, 'map.draw.change', function (options) {
+    this.command.register(this, 'map.draw.change', function () {
       console.log("detected change in draw, exporting trail");
       var trail = me.get('selectedTrail');
       return new Promise(function (resolve) {
@@ -88,7 +87,7 @@ export default Ember.Controller.extend({
       });
     });
     this.command.register(this, 'map.linestring.change', function (options) {
-      return new Promise(function (resolve) {
+      return new Promise(function () {
         var geometry = options.feature.getGeometry();
         var length = formatLength(me.get('map').getView().getProjection(), geometry);
         if (options.feature.get('label') !== length) {
@@ -230,9 +229,20 @@ export default Ember.Controller.extend({
       var mapLineString = trail.get(type);
       if (mapLineString === null) {
         mapLineString = me.store.createRecord('mapLinestring');
+        trail.set(type, mapLineString);
       }
       mapLineString.removeFromMap(me.get('controllers.map').get('currentLayer'));
-      mapLineString.importGPX(trail.layer, gpx, consts.style[type]).then(function (feature) {
+
+      // set linestring type, used in map info for example
+      mapLineString.importGPX(gpx, consts.style[type]).then(function (feature) {
+        feature.get('extensions').type = type;
+
+        // add the feature to the feature's layer
+        trail.get('layer').getSource().addFeature(feature);
+
+        // Mise à jour de la longueur de piste
+        me.command.send("map.linestring.change", {feature: feature});
+
         var options = {
           layer: trail.get('layer')
         };
@@ -339,29 +349,27 @@ export default Ember.Controller.extend({
     this.get('selectedTrail').get('itemAtPoints').removeObject(item);
   },
 
+  addTrace: function(type) {
+    var me = this;
+    consts.style[type].type = type;
+    this.command.send("map.draw.linestring", consts.style[type], function (feature) {
+      me.onCreatePathStart(type, {
+        feature: feature,
+        map: me.get('map'),
+        layer: me.get('controllers.map').get('currentLayer')
+      }).then(function () {
+        me.onCreatePathEnd(type);
+      });
+    });
+  },
+
   actions: {
     command: function (command, options) {
       var me = this;
       if (command === "data.trailer.create") {
-        this.command.send("map.draw.linestring", consts.style[consts.TRAILER], function (feature) {
-          me.onCreatePathStart(consts.TRAILER, {
-            feature: feature,
-            map: me.get('map'),
-            layer: me.get('controllers.map').get('currentLayer')
-          }).then(function () {
-            me.onCreatePathEnd(consts.TRAILER);
-          });
-        });
+        this.addTrace(consts.TRAILER);
       } else if (command === "data.team.create") {
-        this.command.send("map.draw.linestring", consts.style[consts.TEAM], function (feature) {
-          me.onCreatePathStart(consts.TEAM, {
-            feature: feature,
-            map: me.get('map'),
-            layer: me.get('controllers.map').get('currentLayer')
-          }).then(function () {
-            me.onCreatePathEnd(consts.TEAM);
-          });
-        });
+        this.addTrace(consts.TEAM);
       } else if (command === "trail.add") {
         this.addTrail();
       } else if (command === "trail.open") {

@@ -107,11 +107,6 @@ export default function (map, command) {
       var feature = e.currentTarget;
       command.send('map.linestring.change', {feature: feature});
     }, this);
-
-    if (geometry.getType() === consts.MULTILINE_STRING) {
-      // get the first path of the file
-      geometry = geometry.getLineStrings()[0];
-    }
     var styles = [];
     var label = feature.get('label');
     var style = feature.get('extensions');

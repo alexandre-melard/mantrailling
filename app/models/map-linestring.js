@@ -5,6 +5,7 @@ import DS from 'ember-data';
 import GeoJSON from '../models/geo-json.js';
 import xml2json from '../utils/xml2json.js';
 import json2xml from '../utils/json2xml.js';
+import consts from '../utils/map-constants.js';
 
 export default GeoJSON.extend({
   gpx: DS.attr('string'), // XML GPS exchange format
@@ -59,7 +60,7 @@ export default GeoJSON.extend({
   /**
    * transform the GPX data to features layer
    */
-  loadGPX: function(layer) {
+  loadGPX: function() {
     var me = this;
     return new Promise(function(resolve) {
       var source = new ol.source.StaticVector({
@@ -69,11 +70,16 @@ export default GeoJSON.extend({
 
       // convert gpx to openlayers
       me.feature = source.readFeatures(me.get('gpx'))[0];
+
+      // Multilines are not supported yet, convert to lineString
+      if (me.feature.getGeometry().getType() === consts.MULTILINE_STRING) {
+        // get the first path of the file
+        me.feature.setGeometry(me.feature.getGeometry().getLineStrings()[0]);
+      }
+
       me.feature.setId(me.id);
       me.feature.set('extensions', xml2json(me.extensions(me.get('gpx'))));
 
-      // add the feature to the feature's layer
-      layer.getSource().addFeature(me.feature);
       resolve(me.feature);
     });
   },
@@ -81,7 +87,7 @@ export default GeoJSON.extend({
   /**
    * transform the GPX data to features layer
    */
-  importGPX: function(layer, gpx, extensions) {
+  importGPX: function(gpx, extensions) {
     var me = this;
     return new Promise(function(resolve) {
       if (gpx !== undefined && gpx !== null) {
@@ -97,9 +103,10 @@ export default GeoJSON.extend({
       // convert gpx to openlayers
       me.feature = source.readFeatures(me.get('gpx'))[0];
       me.feature.set('extensions', extensions);
-
-      // add the feature to the feature's layer
-      layer.getSource().addFeature(me.feature);
+      if (me.feature.getGeometry().getType() === consts.MULTILINE_STRING) {
+        // get the first path of the file
+        me.feature.setGeometry(me.feature.getGeometry().getLineStrings()[0]);
+      }
       resolve(me.feature);
     });
   }

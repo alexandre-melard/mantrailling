@@ -78,6 +78,7 @@ let MapDraw = DS.Model.extend({
   },
 
   remove: function (feature) {
+    var me = this;
     this.get('points').forEach(function (item) {
       me.command.send("map.feature.remove", {feature: item.feature});
     });

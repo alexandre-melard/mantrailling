@@ -52,7 +52,7 @@ export default Ember.Component.extend({
         this.$(".dropdown-menu:first").parent().removeClass("visible");
         this.$(".dropdown-menu:first").parent().addClass("hidden");
         parents = this.$(".dropdown-menu:first").parents(".dropdown-menu");
-        parents.each(function (parent) {
+        parents.each(function () {
           $(this).parent().removeClass("hidden");
           $(this).parent().addClass("visible");
         });

@@ -182,7 +182,7 @@ export default Ember.Controller.extend({
           }
         });
         var me = this;
-        $('#map').on('mouseup', function (event) {
+        $('#map').on('mouseup', function () {
           if (geom.getType() === consts.LINE_STRING && me.followPathMode) {
             var coords = geom.getCoordinates();
             var len = coords.length;
@@ -270,7 +270,7 @@ export default Ember.Controller.extend({
 
   drawPoint: function (options) {
     var me = this;
-    return new Promise(function (resolve, error) {
+    return new Promise(function (resolve) {
       if (options !== undefined && options.removeFeature !== undefined) {
         me.get('currentLayer').getSource().removeFeature(options.removeFeature);
       }
@@ -284,12 +284,12 @@ export default Ember.Controller.extend({
 
   draw: function (what, labelFunction, options) {
     var me = this;
-    return new Promise(function (resolve, error) {
+    return new Promise(function (resolve) {
       if (options !== undefined && options.removeFeature !== undefined) {
         me.get('currentLayer').getSource().removeFeature(options.removeFeature);
       }
       me.set('mtgDrawState', what);
-      me.set('onDrawStart', function (feature) {
+      me.set('onDrawStart', function () {
         me.set('onDrawStart', null);
       });
       me.set('onDrawEnd', function (feature) {
@@ -315,7 +315,7 @@ export default Ember.Controller.extend({
     return this.draw(consts.POLYGON, formatArea, options);
   },
 
-  drawLocation: function (options) {
+  drawLocation: function () {
     var me = this;
     return new Promise(function (resolve) {
       me.set('mtgDrawState', consts.LOCATION);

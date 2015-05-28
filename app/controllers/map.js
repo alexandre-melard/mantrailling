@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import constants from '../utils/map-constants.js';
 import getStyleFunction from "../utils/map-style.js";
 import conf from "../config/environment.js";
 

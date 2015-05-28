@@ -11,10 +11,6 @@ export default Ember.Controller.extend({
     this.set('store', this.container.lookup('store:main'));
   }.on('init'),
 
-  unregister: function (who, what, callback) {
-
-  },
-
   register: function (who, what, callback) {
     var registered = this.get('registered');
     registered.pushObject({

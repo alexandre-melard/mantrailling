@@ -16,12 +16,6 @@ export default {
       if (window.File && window.FileReader) {
         // Great success! All the File APIs are supported.
         var f = evt.target.files[0];
-        var file = {
-          name: f.name,
-          type: f.type || 'n/a',
-          size: f.size,
-          date: f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a'
-        };
         console.log('importing ' + f.name + " as " + f.type);
 
         var reader = new FileReader();
@@ -35,9 +29,9 @@ export default {
         // Read in the image file as a text file.
         reader.readAsText(f);
       } else {
-        fail('The File APIs are not fully supported in this browser.')
+        fail('The File APIs are not fully supported in this browser.');
       }
     });
     $('#input-file').click();
   }
-}
+};
