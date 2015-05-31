@@ -14,7 +14,6 @@ export default Ember.Controller.extend({
   addTrailName: null,
   trails: [],
   formats: [consts.GPX],
-  levels: [],
 
   getOrCreateMapDraw: function () {
     var me = this;
@@ -97,19 +96,13 @@ export default Ember.Controller.extend({
   }.property('trails.@each.selected'),
 
   addTrail: function () {
-    var me = this;
-    return this.store.find('mtgLevel', {index: 0}).then(function (levels) {
-      var level = levels.objectAt(0);
-      var trail = me.store.createRecord('mtgTrail', {
-        name: me.get('addTrailName'),
-        level: level
-      });
-      level.set('selected', true);
-      me.trails.pushObject(trail);
-      trail.set('selected', true);
-      trail = me.changeActiveTrail(trail);
-      return trail;
+    var trail = this.store.createRecord('mtgTrail', {
+      name: this.get('addTrailName')
     });
+    this.trails.pushObject(trail);
+    trail.set('selected', true);
+    trail = this.changeActiveTrail(trail);
+    return trail;
   },
 
   exportTrail: function (trail) {
@@ -185,21 +178,6 @@ export default Ember.Controller.extend({
     this.get('controllers.map').addObserver('map', this, function (sender) {
       this.set('map', sender.get('map'));
     });
-    var me = this;
-    this.store.find('mtgLevel').then(function (storedLevels) {
-      if (storedLevels.get('length') === 0) {
-        var brevet = me.store.createRecord('mtgLevel', {name: consts.BREVET, index: 0}).save();
-        me.get('levels').pushObject(brevet);
-        var lvl1 = me.store.createRecord('mtgLevel', {name: consts.LVL1, index: 1}).save();
-        me.get('levels').pushObject(lvl1);
-        var lvl2 = me.store.createRecord('mtgLevel', {name: consts.LVL2, index: 2}).save();
-        me.get('levels').pushObject(lvl2);
-        var lvl3 = me.store.createRecord('mtgLevel', {name: consts.LVL3, index: 3}).save();
-        me.get('levels').pushObject(lvl3);
-      } else {
-        me.set('levels', storedLevels.sortBy('index'));
-      }
-    });
   },
 
   actions: {
@@ -217,13 +195,6 @@ export default Ember.Controller.extend({
     },
     changeTrack: function (trail) {
       this.changeActiveTrail(trail);
-    },
-    changeLevel: function (level) {
-      this.get('levels').forEach(function (level) {
-        level.set('selected', false);
-      });
-      level.set('selected', true);
-      this.get('selectedTrail').set('level', level);
     },
     save: function (trail) {
       this.command.send('save', null, function () {

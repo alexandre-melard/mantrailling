@@ -4,9 +4,9 @@
             <table class="table table-hover table-condensed">
                 <thead>
                 <tr>
-                    <th>
+                    <th colspan="2">
                         <div class="input-group input-group-sm">
-                          {{input type="text" class="form-control" value=levelName placeholder="Level name" size="8"}}
+                          {{input type="text" class="form-control" value=addLevelName placeholder="Level name" size="8"}}
                           <span class="input-group-btn">
                             <button type="button" class="btn btn-default" {{action 'addLevel'}}>
                               <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
@@ -18,9 +18,16 @@
                 </thead>
                 <tbody>
                 {{#each level in levels}}
-                    <tr>
-                        <td class={{if level.selected 'success' ''}} {{action 'changeLevel' level }}>
+                    <tr class={{if level.selected 'success' ''}}>
+                        <td {{action 'changeLevel' level }}>
                           {{level.name}}
+                        </td>
+                        <td class="mtg-level-tools-buttons">
+                          <button type="button" toggle="tooltip"
+                                  title="Delete the level from your browser's memory"
+                                  class="btn btn-warning" {{action "deleteLevel" level}}>
+                              <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                          </button>
                         </td>
                     </tr>
                 {{/each}}

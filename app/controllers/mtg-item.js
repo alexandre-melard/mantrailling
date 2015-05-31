@@ -7,6 +7,7 @@ import consts from '../utils/map-constants.js';
 export default Ember.Controller.extend({
   needs: ["mtgTrail"],
   mtgTrail: Ember.computed.alias("controllers.mtgTrail"),
+  selectedTrail: Ember.computed.alias("controllers.mtgTrail.selectedTrail"),
   itemTypes: ['Cloth', 'Leather', 'Cardboard', 'Plastic'],
   currentItem: {position: 'P', type: 'Cloth', description: null},
   items: [],
