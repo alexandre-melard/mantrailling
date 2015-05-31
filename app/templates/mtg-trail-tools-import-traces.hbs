@@ -1,21 +1,21 @@
 {{#dropdown-list item="Import" icon="import" toggle="tooltip" title="Import a path related ot the selected trail"}}
-    <ul class="dropdown-menu map-data-import-dropdown">
+    <ul class="dropdown-menu mtg-trail-tools-import-dropdown">
         <li>
             <table class="table table-hover table-condensed">
                 <tbody>
                 <tr>
-                    <td {{action 'command' 'trail.trailer.import'}}>
+                    <td {{action 'command' 'trace.trailer.import'}}>
                     <span type="button" data-toggle="tooltip" title="Import the Trailer's Trail"
-                          class="btn btn-success map-data-import-trailer">
+                          class="btn btn-pink map-draw-trailer">
                         <img src="assets/images/walk.png" class="inverted" width="16" height="16"/>
                     </span>
                         Import trailer's track
                     </td>
                 </tr>
                 <tr>
-                    <td {{action 'command' 'trail.team.import'}}>
+                    <td {{action 'command' 'trace.team.import'}}>
                     <span type="button" data-toggle="tooltip" title="Import the Team's Trail"
-                          class="btn btn-warning map-data-import-team">
+                          class="btn btn-warning mtg-trail-import-team">
                         <img src="assets/images/track.png" class="inverted" width="16" height="16"/>
                     </span>
                         Import team's track

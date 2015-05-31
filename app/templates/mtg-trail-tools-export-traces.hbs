@@ -1,7 +1,7 @@
 {{#dropdown-list item="Export" icon="export" toggle="tooltip" title="Export the path related ot the trailer's trail"}}
-    <ul class="dropdown-menu map-data-export-dropdown">
+    <ul class="dropdown-menu mtg-trail-tools-export-dropdown">
       {{#each format in formats}}
-          <li><a {{action 'exportTrace' format selectedTrail}}>{{format}}</a></li>
+          <li><a {{action 'command' 'trace.trailer.export' format}}>{{format}}</a></li>
       {{/each}}
     </ul>
 {{/dropdown-list}}

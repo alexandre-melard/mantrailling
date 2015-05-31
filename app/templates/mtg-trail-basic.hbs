@@ -1,6 +1,6 @@
 <!--<form class="form-inline btn-group">-->
 {{#dropdown-list item="Trails" img="assets/images/track.png"}}
-    <ul class="dropdown-menu map-data-trails-dropdown">
+    <ul class="dropdown-menu mtg-trail-trails-dropdown">
         <li>
             <table class="table table-hover table-striped table-condensed">
                 <thead>
@@ -24,8 +24,8 @@
                 <tbody>
                 {{#each trail in trails}}
                     <tr class={{if trail.selected 'success' ''}} {{action 'changeTrack' trail}}>
-                        <td class="map-data-trails-title">{{trail.name}}</td>
-                        <td class="map-data-trails-buttons">
+                        <td class="mtg-trail-trails-title">{{trail.name}}</td>
+                        <td class="mtg-trail-tools-buttons">
                             <div class="btn-group">
                                 <button type="button" toggle="tooltip"
                                         title="Delete the trail from your browser's memory"
@@ -46,12 +46,9 @@
     </ul>
 {{/dropdown-list}}
 {{#if selectedTrail}}
-  <button type="button" data-toggle="tooltip" data-original-title="Draw the Trailer's Trail"
-          class="btn btn-pink map-draw-trailer" {{action 'command' 'data.trailer.create'}}>
-      <img src="assets/images/walk.png" class="inverted" width="16" height="16"/>
-  </button>
+  {{render "mtgTrailToolsTraceTrailer" controller="mtgTrace"}}
   {{view 'mtgLevels'}}
-  {{render "mapDataSave" controller="mapData"}}
-  {{view 'mtgItems'}}
+  {{render "mtgTrailSave" controller="mtgTrail"}}
+  {{render 'mtgItems' controller="mtgItem"}}
 {{/if}}
 

@@ -13,7 +13,7 @@ import formatArea from "../utils/map-format-area.js";
 
 export default Ember.Controller.extend({
 
-  needs: ['map', 'mapData'],
+  needs: ['map', 'mtgTrail'],
   olDraw: null,
   mtgDrawState: null,
   onDrawStart: null,
@@ -251,7 +251,7 @@ export default Ember.Controller.extend({
       name: 'GPS Tracker'
     });
     me.get('currentLayer').getSource().addFeature(feature);
-    feature.set('extensions', options);
+    feature.set('extensions', options.style);
     resolve(feature);
   },
 
@@ -262,7 +262,7 @@ export default Ember.Controller.extend({
       if (me.get('color') !== null) {
         feature.set('color', me.get('color'));
       }
-      feature.set('extensions', options);
+      feature.set('extensions', options.style);
       me.set('onDrawEnd', null);
       resolve(feature);
     });
@@ -357,7 +357,7 @@ export default Ember.Controller.extend({
           me.command.send('map.draw.polygon.create', {feature: feature});
         });
       } else if (command === "map.draw.point") {
-        this.drawPoint(consts.style[consts.POINT]).then(function (feature) {
+        this.drawPoint({style: consts.style[consts.POINT]}).then(function (feature) {
           console.log("point created");
           me.command.send('map.draw.point.create', {feature: feature});
         });

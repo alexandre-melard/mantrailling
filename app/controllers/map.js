@@ -55,7 +55,7 @@ export default Ember.Controller.extend({
     if (layer === undefined || layer === null) {
       var source = this.createVectorSource();
       layer = this.createVector(source);
-      layer.setStyle(getStyleFunction(this.get('map'), this.command));
+      layer.setStyle(getStyleFunction(this.command));
     } else if (this.map !== null) {
       this.map.removeLayer(this.currentLayer);
     }

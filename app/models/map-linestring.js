@@ -11,6 +11,11 @@ export default GeoJSON.extend({
   gpx: DS.attr('string'), // XML GPS exchange format
   mapDraw: DS.belongsTo('mapDraw'),
 
+  removeFromMap: function(layer) {
+    this.set('gpx', null);
+    this._super(layer);
+  },
+
   extensions: function(gpx, value) {
     var $xml;
     if (typeof gpx  === "string") {
@@ -76,7 +81,6 @@ export default GeoJSON.extend({
         // get the first path of the file
         me.feature.setGeometry(me.feature.getGeometry().getLineStrings()[0]);
       }
-
       me.feature.setId(me.id);
       me.feature.set('extensions', xml2json(me.extensions(me.get('gpx'))));
 
@@ -102,11 +106,13 @@ export default GeoJSON.extend({
       });
       // convert gpx to openlayers
       me.feature = source.readFeatures(me.get('gpx'))[0];
-      me.feature.set('extensions', extensions);
       if (me.feature.getGeometry().getType() === consts.MULTILINE_STRING) {
         // get the first path of the file
         me.feature.setGeometry(me.feature.getGeometry().getLineStrings()[0]);
       }
+      me.feature.setId(me.id);
+      me.feature.set('extensions', extensions);
+
       resolve(me.feature);
     });
   }

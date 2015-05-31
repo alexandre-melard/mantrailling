@@ -4,6 +4,7 @@
 import Ember from 'ember';
 import getLatLng from '../utils/google-geocoder-latlng.js';
 import geoLoc from '../utils/geocoding-watch-position.js';
+import consts from '../utils/map-constants.js';
 
 export default Ember.Controller.extend({
   needs: ['map'],
@@ -33,12 +34,9 @@ export default Ember.Controller.extend({
     var center = ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857');
     me.panToCoords(map, center);
     var options = {
-      radius: 10,
-      color: "#0000ff",
-      opacity: "0.3",
+      style: consts.style[consts.LOCATION],
       key: "PointType",
       value: "Location",
-      label: "",
       location: center,
       removeFeature: me.get('locationPoint')
     };
@@ -84,9 +82,7 @@ export default Ember.Controller.extend({
       view.setCenter(center);
       view.setZoom(16);
       var options = {
-        radius: 10,
-        color: "#0000ff",
-        opacity: "0.3",
+        style: consts.style[consts.LOCATION],
         key: "PointType",
         value: "GPS",
         label: "",

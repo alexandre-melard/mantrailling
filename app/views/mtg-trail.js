@@ -4,8 +4,8 @@
 import Ember from 'ember';
 
 export default Ember.View.extend({
-  templateName: "mapData",
-  classNames: ["map-data", "btn-group"],
+  templateName: "mtgTrail",
+  classNames: ["mtg-trail", "btn-group"],
   onInit: function() {
     this.$('.editable').editable({
       toggle: 'manual',

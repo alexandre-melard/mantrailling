@@ -4,8 +4,8 @@
     <img src="assets/images/canimap_cross_on_dog.png"/>
 </div>
 <div class="top-container btn-group">
-  {{render "mapData" controller="mapData"}}
-  {{render "mapDataSave" controller="mapData"}}
+  {{render "mtgTrail" controller="mtgTrail"}}
+  {{render "mtgTrailSave" controller="mtgTrail"}}
   {{render "mapWeather" controller="mapWeather"}}
   {{view "mapLayers"}}
   <div class="mtg-mode">
@@ -15,6 +15,6 @@
       </a>
   </div>
 </div>
-{{render "mapInfo" controller="mapData"}}
+{{render "mtgInfo" controller="mtgTrail"}}
 <input type="file" id="input-file" class="hidden" accept=""/>
 

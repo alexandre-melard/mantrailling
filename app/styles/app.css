@@ -124,15 +124,15 @@ ul.map-layers-dropdown {
   width: 320px;
 }
 
-.map-data-tools-dropdown {
+.mtg-trail-tools-dropdown {
   width: 301px;
 }
 
-.map-data ul.map-data-import-dropdown {
+.mtg-trail ul.mtg-trail-tools-import-dropdown {
   width: 200px;
 }
 
-.map-data-import-dropdown button {
+.mtg-trail-tools-import-dropdown button {
   width: 40px;
   margin-left: 4px;
   margin-bottom: 4px;
@@ -142,7 +142,7 @@ ul.map-items-dropdown {
   width: 480px;
 }
 
-.map-data input, .map-data select {
+.mtg-trail input, .mtg-trail select {
 //  width: 100px!important;
 }
 
@@ -154,7 +154,7 @@ ul.map-items-dropdown {
   padding-left: 5px;
 }
 
-.map-data li, .map-data label {
+.mtg-trail li, .mtg-trail label {
   cursor: pointer;
 }
 
@@ -165,11 +165,11 @@ ul.dropdown-menu {
   padding: 5px;
 }
 
-ul.map-data-trails-dropdown, ul.map-data-level-dropdown {
-  width: 250px;
+ul.mtg-trail-trails-dropdown, ul.mtg-trail-level-dropdown {
+  width: 370px;
 }
 
-.map-data-trails-buttons {
+.mtg-trail-tools-buttons {
  text-align: right;
 }
 
@@ -187,17 +187,17 @@ ul.dropdown-menu li {
   padding: 5px;
 }
 
-.map-data ul.map-data-export-dropdown {
+.mtg-trail ul.mtg-trail-tools-export-dropdown {
   display: block;
   width: 100px;
 }
 
-.map-data ul.map-data-level-dropdown {
+.mtg-trail ul.mtg-trail-level-dropdown {
   display: block;
   width: 180px;
 }
 
-.map-data ul.map-data-item-dropdown {
+.mtg-trail ul.mtg-trail-item-dropdown {
   display: block;
   width: 180px;
 }
@@ -289,12 +289,12 @@ input[type="range"].map-layer-draggable {
   vertical-align: middle;
 }
 
-.map-data .title {
+.mtg-trail .title {
   width: 60%;
   vertical-align: middle;
 }
 
-div.map-draw, div.map-weather, div.map-data, div.map-layers {
+div.map-draw, div.map-weather, div.mtg-trail, div.map-layers {
   display: inline;
 }
 

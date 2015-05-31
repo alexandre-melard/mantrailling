@@ -1,7 +1,7 @@
 {{#each trail in trails}}
     <tr class={{if trail.selected 'success' ''}} {{action 'changeTrack' trail}}>
-        <td class="map-data-trails-title">{{trail.name}}</td>
-        <td class="map-data-trails-buttons">
+        <td class="mtg-trail-trails-title">{{trail.name}}</td>
+        <td class="mtg-trail-tools-buttons">
             <div class="btn-group">
                 <button type="button" toggle="tooltip"
                         title="Delete the trail from your browser's memory"

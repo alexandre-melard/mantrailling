@@ -9,6 +9,7 @@ export const LINE_STRING = "LineString";
 export const POLYGON = "Polygon";
 export const POINT = "Point";
 export const MARKER = "Marker";
+export const ITEM = "Item";
 export const LOCATION = "Location";
 export const TRAILER = "Trailer";
 export const TEAM = "Team";
@@ -205,6 +206,74 @@ export const style = {
     stroke: {
       color: {
         hexa: '#ac2925',
+        opacity: '0.8'
+      },
+      width: 2
+    },
+    text: {
+      offset: {
+        x: 0,
+        y: 0
+      },
+      font: '18px Calibri,sans-serif',
+      fill: {
+        color: {
+          hexa: '#ac2925'
+        }
+      },
+      stroke: {
+        color: {
+          hexa: '#ac2925'
+        },
+        width: 3
+      }
+    }
+  },
+  Item: {
+    radius: 15,
+    fill: {
+      color: {
+        hexa: '#00aa00',
+        opacity: '0.3'
+      }
+    },
+    stroke: {
+      color: {
+        hexa: '#00aa00',
+        opacity: '0.8'
+      },
+      width: 2
+    },
+    text: {
+      offset: {
+        x: 0,
+        y: 0
+      },
+      font: '18px Calibri,sans-serif',
+      fill: {
+        color: {
+          hexa: '#00aa00'
+        }
+      },
+      stroke: {
+        color: {
+          hexa: '#ac2925'
+        },
+        width: 3
+      }
+    }
+  },
+  Location: {
+    radius: 10,
+    fill: {
+      color: {
+        hexa: '#0000ff',
+        opacity: '0.3'
+      }
+    },
+    stroke: {
+      color: {
+        hexa: '#0000ff',
         opacity: '0.8'
       },
       width: 2

@@ -11,7 +11,7 @@ export default DS.Model.extend({
     var me = this;
     this.command.register(this, 'save', function (options) {
       return new Promise(function (resolve) {
-        console.log("saving feature with id: " + me.feature.getId());
+        console.log("saving feature with id: " + me.id);
         me.save();
         resolve(true);
       });
@@ -39,6 +39,8 @@ export default DS.Model.extend({
   removeFromMap: function(layer) {
     if (layer !== null && this.feature !== null) {
       layer.getSource().removeFeature(this.feature);
+      this.set('feature', null);
+      this.set('geoJSON', null);
     }
   },
 
