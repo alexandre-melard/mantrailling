@@ -8,7 +8,7 @@ var Router = Ember.Router.extend({
 Router.map(function() {
   this.route('mobile');
   this.route('map', {path: '/expert'});
-  this.route('mapLt', {path: '/'});
+  this.route('mapBasic', {path: '/'});
   this.route('/beta/map');
 });
 
