@@ -22,7 +22,7 @@ export default DS.Model.extend({
     data.name = this.get('name');
     data.index = this.get('index');
     data.selected = this.get('selected');
-    return JSON.stringify(data);
+    return data;
   }
 
 });

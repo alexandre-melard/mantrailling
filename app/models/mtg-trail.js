@@ -90,12 +90,12 @@ let Trail = DS.Model.extend({
     });
   },
 
-  import: function (data, layer, map) {
+  unserialize: function (json, layer, map) {
     var me = this;
     return new Promise(function (resolve) {
       me.layer = layer;
       me.map = map;
-      var json = JSON.parse(data);
+
       me.set("version", json.version);
       me.set("name", json.name);
       me.set("selected", true);
@@ -109,21 +109,36 @@ let Trail = DS.Model.extend({
           me.set("level", me.store.find('mtgLevel', {name: json.level}));
 
           json.items.forEach(function (i) {
-            me.store.find('mtgItem', i.id).then(function(){}, function () {
+            me.store.find('mtgItem', i.id).then(function(item){
+              me.get('items').pushObject(item);
+            }, function () {
               var item = me.store.createRecord('mtgItem', i);
               item.save();
               me.get('items').pushObject(item);
             });
           });
-
-          me.set('mapDraw', me.store.createRecord('mapDraw'));
-          me.get('mapDraw').import(json.mapDraw);
-
-          me.set('Trailer', me.store.createRecord('mapLinestring'));
-          me.get('Trailer').import(json.Trailer);
-
-          me.set('Team', me.store.createRecord('mapLinestring'));
-          me.get('Team').import(json.Team);
+          if (json.mapDraw !== undefined) {
+            me.store.find('mapDraw', json.mapDraw.id).then(function(mapDraw){
+              me.set('mapDraw', mapDraw);
+            }, function () {
+              var mapDraw = me.store.createRecord('mapDraw');
+              mapDraw.import(json.mapDraw);
+              mapDraw.save();
+              me.set('mapDraw', mapDraw);
+            });
+          }
+          [consts.TRAILER, consts.TEAM].map(function (type) {
+            if (json[type] !== undefined) {
+              me.store.find('mapLinestring', json[type].id).then(function (mapLinestring) {
+                me.set(type, mapLinestring);
+              }, function () {
+                var mapLinestring = me.store.createRecord('mapLinestring');
+                mapLinestring.importGPX(json[type].gpx, consts.style[type]);
+                mapLinestring.save();
+                me.set(type, mapLinestring);
+              });
+            }
+          });
           resolve(this);
         });
       });
@@ -135,7 +150,7 @@ let Trail = DS.Model.extend({
     return new Promise(function (resolve) {
       me.export();
       var data = {};
-
+      data.id = me.id;
       data.version = me.get("version");
       data.name = me.get("name");
       data.level = me.get("level").get('name');
@@ -157,7 +172,7 @@ let Trail = DS.Model.extend({
         [consts.TRAILER, consts.TEAM].map(function (type) {
           var item = me.get(type);
           if (item !== null) {
-            data[type] = item.get('gpx');
+            data[type] = {id: item.id, gpx: item.get('gpx')};
           }
         });
         resolve(JSON.stringify(data));

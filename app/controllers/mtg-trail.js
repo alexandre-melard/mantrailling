@@ -114,10 +114,15 @@ export default Ember.Controller.extend({
   importTrail: function (options) {
     var me = this;
     file.read(function (data) {
-      var trail = me.store.createRecord('mtgTrail');
-      trail.import(data).then(function () {
-        trail.save();
-        me.get('trails').pushObject(trail);
+      var json = JSON.parse(data);
+      me.store.find('mtgTrail', json.id).then(function (mtgTrail) {
+        console.log('trail exists already');
+      }, function () {
+        me.store.createRecord('mtgTrail').unserialize(json).then(function (mtgTrail) {
+          mtgTrail.save();
+          me.get('trails').pushObject(mtgTrail);
+          me.set("selectedTrail", mtgTrail);
+        });
       });
     });
   },

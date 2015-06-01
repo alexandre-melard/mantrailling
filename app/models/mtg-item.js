@@ -27,7 +27,7 @@ export default DS.Model.extend({
     data.position = this.get('position');
     data.type = this.get('type');
     data.description = this.get('description');
-    return JSON.stringify(data);
+    return data;
   }
 
 });

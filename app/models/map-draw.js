@@ -60,10 +60,25 @@ let MapDraw = DS.Model.extend({
         }
       }));
   },
+//TODO importation
+  import: function(json) {
+    var me = this;
+    ['lineStrings', 'points', 'polygons'].forEach(function (type) {
+      var items = me.get(type);
+
+      if (items !== null) {
+        items.forEach(function (item) {
+          data[type].pushObject(item.get('geoJSON'));
+        });
+      }
+    });
+    return data;
+  },
 
   serialize: function() {
     this.export();
     var data = {};
+    data.id = this.id;
     var me = this;
     ['lineStrings', 'points', 'polygons'].forEach(function (type) {
       data[type] = [];
@@ -74,7 +89,7 @@ let MapDraw = DS.Model.extend({
         });
       }
     });
-    return JSON.stringify(data);
+    return data;
   },
 
   remove: function (feature) {
