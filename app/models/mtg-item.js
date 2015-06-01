@@ -21,6 +21,7 @@ export default DS.Model.extend({
 
   serialize: function() {
     var data = {};
+    data.id = this.id;
     data.index = this.get('index');
     data.location = this.get('location');
     data.position = this.get('position');

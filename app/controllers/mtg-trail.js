@@ -106,17 +106,19 @@ export default Ember.Controller.extend({
   },
 
   exportTrail: function (trail) {
-    var data = trail.serialize();
-    file.write(data, trail.get('name'), "cmp");
+    trail.serialize().then(function (data) {
+      file.write(data, trail.get('name'), "cmp");
+    });
   },
 
   importTrail: function (options) {
     var me = this;
-    file.read(function(data) {
-          var trail = me.store.createRecord('mtgTrail');
-          trail.import(data);
-          trail.save();
-          me.get('trails').pushObject(trail);
+    file.read(function (data) {
+      var trail = me.store.createRecord('mtgTrail');
+      trail.import(data).then(function () {
+        trail.save();
+        me.get('trails').pushObject(trail);
+      });
     });
   },
 

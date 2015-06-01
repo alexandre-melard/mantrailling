@@ -14,6 +14,15 @@ export default DS.Model.extend({
         resolve(true);
       });
     });
-  }.on('init')
+  }.on('init'),
+
+  serialize: function() {
+    var data = {};
+    data.id = this.id;
+    data.name = this.get('name');
+    data.index = this.get('index');
+    data.selected = this.get('selected');
+    return JSON.stringify(data);
+  }
 
 });

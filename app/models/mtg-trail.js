@@ -23,7 +23,7 @@ let Trail = DS.Model.extend({
 
   bindCommand: function () {
     var me = this;
-    this.command.register(this, 'save', function (options) {
+    me.command.register(this, 'save', function (options) {
       return new Promise(function (resolve) {
         console.log("saving map layers");
         me.save();
@@ -92,54 +92,77 @@ let Trail = DS.Model.extend({
 
   import: function (data, layer, map) {
     var me = this;
-    this.layer = layer;
-    this.map = map;
-    var json = JSON.parse(data);
-    this.set("version", json.version);
-    this.set("name", json.name);
-    this.set("selected", true);
-    this.set("level", this.store.find('mtgLevel', {name: json.level}));
+    return new Promise(function (resolve) {
+      me.layer = layer;
+      me.map = map;
+      var json = JSON.parse(data);
+      me.set("version", json.version);
+      me.set("name", json.name);
+      me.set("selected", true);
 
-    json.items.forEach(function(i) {
-      var item = me.store.createRecord('mtgItem', i);
-      item.save();
-      me.get('items').pushObject(item);
+      json.levels.forEach(function (l) {
+        me.store.find('mtgLevel', l.id).then(function(){}, function () {
+          // Create level if not exists
+          var level = me.store.createRecord('mtgLevel', l);
+          level.save();
+        }).finally(function () {
+          me.set("level", me.store.find('mtgLevel', {name: json.level}));
+
+          json.items.forEach(function (i) {
+            me.store.find('mtgItem', i.id).then(function(){}, function () {
+              var item = me.store.createRecord('mtgItem', i);
+              item.save();
+              me.get('items').pushObject(item);
+            });
+          });
+
+          me.set('mapDraw', me.store.createRecord('mapDraw'));
+          me.get('mapDraw').import(json.mapDraw);
+
+          me.set('Trailer', me.store.createRecord('mapLinestring'));
+          me.get('Trailer').import(json.Trailer);
+
+          me.set('Team', me.store.createRecord('mapLinestring'));
+          me.get('Team').import(json.Team);
+          resolve(this);
+        });
+      });
     });
-    this.set("items", json.items);
-
-    this.set('mapDraw', this.store.createRecord('mapDraw'));
-    this.get('mapDraw').import(json.mapDraw);
-
-    this.set('Trailer', this.store.createRecord('mapLinestring'));
-    this.get('Trailer').import(json.Trailer);
-
-    this.set('Team', this.store.createRecord('mapLinestring'));
-    this.get('Team').import(json.Team);
   },
 
   serialize: function() {
     var me = this;
-    this.export();
-    var data = {};
+    return new Promise(function (resolve) {
+      me.export();
+      var data = {};
 
-    data.version = this.get("version");
-    data.name = this.get("name");
-    data.level = this.get("level").get('name');
-    this.get("items").forEach(function(i) {
-      data.items.pushObject(i.serialize());
-    });
+      data.version = me.get("version");
+      data.name = me.get("name");
+      data.level = me.get("level").get('name');
+      data.levels = [];
+      me.store.find("mtgLevel").then(function (levels) {
+        levels.forEach(function (l) {
+          data.levels.pushObject(l.serialize());
+        });
+      }).finally(function () {
+        data.items = [];
+        me.get("items").forEach(function (i) {
+          data.items.pushObject(i.serialize());
+        });
 
-    var mapDraw = this.get('mapDraw');
-    if (mapDraw !== null) {
-      data.mapDraw = mapDraw.serialize();
-    }
-    [consts.TRAILER, consts.TEAM].map(function (type) {
-      var item = me.get(type);
-      if (item !== null) {
-        data[type] = item.get('gpx');
-      }
+        var mapDraw = me.get('mapDraw');
+        if (mapDraw !== null) {
+          data.mapDraw = mapDraw.serialize();
+        }
+        [consts.TRAILER, consts.TEAM].map(function (type) {
+          var item = me.get(type);
+          if (item !== null) {
+            data[type] = item.get('gpx');
+          }
+        });
+        resolve(JSON.stringify(data));
+      });
     });
-    return JSON.stringify(data);
   },
 
   remove: function (feature) {

@@ -74,7 +74,7 @@ let MapDraw = DS.Model.extend({
         });
       }
     });
-    return data;
+    return JSON.stringify(data);
   },
 
   remove: function (feature) {
