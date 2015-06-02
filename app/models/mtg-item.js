@@ -21,12 +21,13 @@ export default DS.Model.extend({
 
   serialize: function() {
     var data = {};
+    data.id = this.id;
     data.index = this.get('index');
     data.location = this.get('location');
     data.position = this.get('position');
     data.type = this.get('type');
     data.description = this.get('description');
-    return JSON.stringify(data);
+    return data;
   }
 
 });
