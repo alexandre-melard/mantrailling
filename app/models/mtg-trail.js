@@ -53,10 +53,9 @@ let Trail = DS.Model.extend({
     var layer = this.layer;
     if (this.get('version') !== consts.VERSION) {
       console.log("major version change, deleting model");
-      localStorage.clear();
-      this.set('version', consts.VERSION);
-      this.save();
-      location.reload();
+      //TODO gerer les montées de version
+      //localStorage.clear();
+      //location.reload();
     }
     var mapDraw = this.get('mapDraw');
     if (mapDraw !== null) {

@@ -1,10 +1,11 @@
 <div class="input-group">
-    <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
   {{input type="text" class="form-control map-location-search-input" value=locationSearch action='findLocation'}}
     <span class="input-group-btn">
-      <button type="button" data-toggle="tooltip" data-original-title="Place Lookup" class="btn btn-default" {{action 'findLocation'}}>Go
+      <button type="button" data-toggle="tooltip" data-original-title="Place Lookup" class="btn btn-default" {{action 'findLocation'}}>
+          <i class="glyphicon glyphicon-search"></i>
       </button>
-      <button type="button" data-toggle="tooltip" data-original-title="Get address on map" class="btn btn-default" {{action 'locateOnMap'}}>
+      <button type="button" data-toggle="tooltip" data-original-title="Get address on map"
+              class="btn btn-default" {{action 'locateOnMap'}}>
           <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
       </button>
       <button type="button" data-toggle="tooltip" data-original-title="Track GPS location"
