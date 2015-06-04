@@ -34,6 +34,13 @@ let Trail = DS.Model.extend({
       return new Promise(function (resolve) {
         if (options.id === me.id) {
           console.log("removing trail:" + me.get('name'));
+          if (me.get('Trailer') !== null && me.get('Trailer').feature.getId() !== undefined) {
+            me.command.send("map.feature.remove", {feature: me.get('Trailer').feature});
+          } else if (me.get('Team') !== null && me.get('Team').feature.getId() !== undefined) {
+            me.command.send("map.feature.remove", {feature: me.get('Team').feature});
+          } else if (me.get('mapDraw') !== null) {
+            me.command.send("mtg.draw.remove", {id: me.get('mapDraw').id});
+          }
           me.deleteRecord();
           resolve(true);
         }
@@ -58,7 +65,7 @@ let Trail = DS.Model.extend({
     [consts.TRAILER, consts.TEAM].map(function (type) {
       var item = me.get(type);
       if (item !== null) {
-        item.loadGPX().then(function(feature) {
+        item.loadGPX().then(function (feature) {
           feature.get('extensions').type = type;
 
           // add the feature to the feature's layer
@@ -92,62 +99,76 @@ let Trail = DS.Model.extend({
     });
   },
 
-  unserialize: function (json, layer, map) {
+  unserialize: function (json, layer) {
     var me = this;
     return new Promise(function (resolve) {
       me.layer = layer;
-      me.map = map;
 
       me.set("version", json.version);
       me.set("name", json.name);
       me.set("selected", true);
 
       json.levels.forEach(function (l) {
-        me.store.find('mtgLevel', l.id).then(function(){}, function () {
+        me.store.find('mtgLevel', l.id).then(function () {
+        }, function () {
           // Create level if not exists
+          delete l.id;
           var level = me.store.createRecord('mtgLevel', l);
           level.save();
         }).finally(function () {
           me.set("level", me.store.find('mtgLevel', {name: json.level}));
-
-          json.items.forEach(function (i) {
-            me.store.find('mtgItem', i.id).then(function(item){
-              me.get('items').pushObject(item);
-            }, function () {
-              var item = me.store.createRecord('mtgItem', i);
-              item.save();
-              me.get('items').pushObject(item);
-            });
-          });
-          if (json.mapDraw !== undefined) {
-            me.store.find('mapDraw', json.mapDraw.id).then(function(mapDraw){
-              me.set('mapDraw', mapDraw);
-            }, function () {
-              var mapDraw = me.store.createRecord('mapDraw');
-              mapDraw.import(json.mapDraw);
-              mapDraw.save();
-              me.set('mapDraw', mapDraw);
-            });
-          }
-          [consts.TRAILER, consts.TEAM].map(function (type) {
-            if (json[type] !== undefined) {
-              me.store.find('mapLinestring', json[type].id).then(function (mapLinestring) {
-                me.set(type, mapLinestring);
-              }, function () {
-                var mapLinestring = me.store.createRecord('mapLinestring');
-                mapLinestring.importGPX(json[type].gpx, consts.style[type]);
-                mapLinestring.save();
-                me.set(type, mapLinestring);
-              });
-            }
-          });
-          resolve(this);
         });
       });
+      json.items.forEach(function (i) {
+        me.store.find('mtgItem', i.id).then(function (item) {
+          me.get('items').pushObject(item);
+        }, function () {
+          delete i.id;
+          var item = me.store.createRecord('mtgItem', i);
+          item.save();
+          me.get('items').pushObject(item);
+        });
+      });
+      if (json.mapDraw !== undefined) {
+        me.store.find('mapDraw', json.mapDraw.id).then(function (mapDraw) {
+          me.set('mapDraw', mapDraw);
+        }, function () {
+          var mapDraw = me.store.createRecord('mapDraw');
+          mapDraw.import(json.mapDraw);
+          mapDraw.save();
+          me.set('mapDraw', mapDraw);
+        });
+      }
+      [consts.TRAILER, consts.TEAM].map(function (type) {
+        if (json[type] !== undefined) {
+          me.store.find('mapLinestring', json[type].id).then(function (mapLinestring) {
+            me.set(type, mapLinestring);
+          }, function () {
+            var mapLinestring = me.store.createRecord('mapLinestring');
+            mapLinestring.importGPX(json[type].gpx, consts.style[type]).then(function (feature) {
+              feature.get('extensions').type = type;
+
+              // add the feature to the feature's layer
+              layer.getSource().addFeature(feature);
+
+              // Mise à jour de la longueur de piste
+              me.command.send("map.linestring.change", {feature: feature});
+
+              var options = {
+                layer: layer
+              };
+              me.command.send('map.view.extent.fit', options);
+            });
+            mapLinestring.save();
+            me.set(type, mapLinestring);
+          });
+        }
+      });
+      resolve(me);
     });
   },
 
-  serialize: function() {
+  serialize: function () {
     var me = this;
     return new Promise(function (resolve) {
       me.export();
@@ -179,20 +200,6 @@ let Trail = DS.Model.extend({
         });
         resolve(JSON.stringify(data));
       });
-    });
-  },
-
-  remove: function (feature) {
-    var me = this;
-    return new Promise(function (resolve) {
-      if (me.get('Trailer') !== null && me.get('Trailer').feature.getId() === feature.getId()) {
-        me.command.send("map.feature.remove", {feature: me.get('Trailer').feature});
-      } else if (me.get('Team') !== null && me.get('Team').feature.getId() === feature.getId()) {
-        me.command.send("map.feature.remove", {feature: me.get('Team').feature});
-      } else if (me.get('mapDraw') !== null) {
-        me.command.send("mtg.draw.remove", {id: me.get('mapDraw').id});
-      }
-      resolve(true);
     });
   }
 });

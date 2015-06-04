@@ -10,6 +10,7 @@ import file from "../utils/file-io.js";
 export default Ember.Controller.extend({
 
   needs: ['map', 'mapDraw'],
+  layer: Ember.computed.alias("controllers.map.currentLayer"),
   map: null,
   addTrailName: null,
   trails: [],
@@ -99,9 +100,10 @@ export default Ember.Controller.extend({
     var trail = this.store.createRecord('mtgTrail', {
       name: this.get('addTrailName')
     });
-    this.trails.pushObject(trail);
     trail.set('selected', true);
+    trail.set('level', this.store.find('mtgLevel', {index: 0}));
     trail = this.changeActiveTrail(trail);
+    this.trails.pushObject(trail);
     return trail;
   },
 
@@ -118,7 +120,7 @@ export default Ember.Controller.extend({
       me.store.find('mtgTrail', json.id).then(function (mtgTrail) {
         console.log('trail exists already');
       }, function () {
-        me.store.createRecord('mtgTrail').unserialize(json).then(function (mtgTrail) {
+        me.store.createRecord('mtgTrail').unserialize(json, me.get("layer")).then(function (mtgTrail) {
           mtgTrail.save();
           me.get('trails').pushObject(mtgTrail);
           me.set("selectedTrail", mtgTrail);

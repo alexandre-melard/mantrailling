@@ -61,7 +61,9 @@ export default Ember.Controller.extend({
         });
       } else {
         me.set('levels', storedLevels.sortBy('index'));
-        me.set('selectedLevel', me.get('selectedTrail').get('level'));
+        if (me.get('selectedTrail').get('level') !== null) {
+          me.set('selectedLevel', me.get('selectedTrail').get('level'));
+        }
       }
     });
   },

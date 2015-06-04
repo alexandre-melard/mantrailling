@@ -60,19 +60,45 @@ let MapDraw = DS.Model.extend({
         }
       }));
   },
-//TODO importation
   import: function(json) {
     var me = this;
-    ['lineStrings', 'points', 'polygons'].forEach(function (type) {
-      var items = me.get(type);
-
-      if (items !== null) {
-        items.forEach(function (item) {
-          data[type].pushObject(item.get('geoJSON'));
+    var lineStrings = json[type];
+    if (lineStrings !== undefined && lineStrings !== null) {
+      lineStrings.forEach(function(lineString) {
+        me.store.find('mapLinestring', lineString.id).then(function(lineString){
+          me.get('lineStrings').pushObject(lineString);
+        }, function () {
+          var lineString = me.store.createRecord( 'mapLinestring', lineString );
+          me.get('lineStrings').pushObject(lineString);
+          lineString.save();
         });
-      }
-    });
-    return data;
+      });
+    }
+    var points = json[type];
+    if (points !== undefined && points !== null) {
+      points.forEach(function(point) {
+        me.store.find('mapPoint', point.id).then(function(point){
+          me.get('points').pushObject(point);
+        }, function () {
+          var point = me.store.createRecord( 'mapPoint', point );
+          me.get('points').pushObject(point);
+          point.save();
+        });
+      });
+    }
+    var polygons = json[type];
+    if (polygons !== undefined && polygons !== null) {
+      polygons.forEach(function(polygon) {
+        me.store.find('mapPolygon', polygon.id).then(function(polygon){
+          me.get('polygons').pushObject(polygon);
+        }, function () {
+          var polygon = me.store.createRecord( 'mapPolygon', polygon );
+          me.get('polygons').pushObject(polygon);
+          polygon.save();
+        });
+      });
+    }
+    return this;
   },
 
   serialize: function() {
