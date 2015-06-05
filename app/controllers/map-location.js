@@ -2,9 +2,9 @@
  * Created by alex on 06/04/2015.
  */
 import Ember from 'ember';
-import getLatLng from '../utils/google-geocoder-latlng.js';
-import geoLoc from '../utils/geocoding-watch-position.js';
-import consts from '../utils/map-constants.js';
+import getLatLng from '../utils/google-geocoder-latlng';
+import geoLoc from '../utils/geocoding-watch-position';
+import consts from '../utils/map-constants';
 
 export default Ember.Controller.extend({
   needs: ['map'],

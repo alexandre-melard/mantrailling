@@ -2,7 +2,7 @@
  * Created by alex on 04/04/2015.
  */
 import Ember from 'ember';
-import * as consts from '../utils/map-constants.js';
+import * as consts from '../utils/map-constants';
 
 export default Ember.Controller.extend({
   needs: ["mtgTrail"],

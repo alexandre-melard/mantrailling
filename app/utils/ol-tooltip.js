@@ -1,9 +1,9 @@
 /**
  * Created by a140980 on 17/04/2015.
  */
-import formatLength from "../utils/map-format-length.js";
-import formatArea from "../utils/map-format-area.js";
-import consts from "../utils/map-constants.js";
+import formatLength from "../utils/map-format-length";
+import formatArea from "../utils/map-format-area";
+import consts from "../utils/map-constants";
 
 /**
  * Message to show when the user is drawing a polygon.

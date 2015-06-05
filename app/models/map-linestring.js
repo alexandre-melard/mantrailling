@@ -2,10 +2,10 @@
  * Created by alex on 31/03/2015.
  */
 import DS from 'ember-data';
-import GeoJSON from '../models/geo-json.js';
-import xml2json from '../utils/xml2json.js';
-import json2xml from '../utils/json2xml.js';
-import consts from '../utils/map-constants.js';
+import GeoJSON from '../models/geo-json';
+import xml2json from '../utils/xml2json';
+import json2xml from '../utils/json2xml';
+import consts from '../utils/map-constants';
 
 export default GeoJSON.extend({
   gpx: DS.attr('string'), // XML GPS exchange format

@@ -1,6 +1,6 @@
 import Ember from 'ember';
-import getStyleFunction from "../utils/map-style.js";
-import conf from "../config/environment.js";
+import getStyleFunction from "../utils/map-style";
+import conf from "../config/environment";
 
 /**
  * Created by alex on 29/03/2015.

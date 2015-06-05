@@ -17,7 +17,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {{#each level in levels}}
+                {{#each levels as |level|}}
                     <tr class={{if level.selected 'success' ''}}>
                         <td {{action 'changeLevel' level }}>
                           {{level.name}}

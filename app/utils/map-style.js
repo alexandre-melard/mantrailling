@@ -1,9 +1,9 @@
 /**
  * Created by A140980 on 04/05/2015.
  */
-import * as consts from '../utils/map-constants.js';
-import calcBrightness from "../utils/color-get-brightness.js";
-import getRGBColor from "../utils/color-get-rgb.js";
+import * as consts from '../utils/map-constants';
+import calcBrightness from "../utils/color-get-brightness";
+import getRGBColor from "../utils/color-get-rgb";
 
 export default function (command) {
   var markerStyle = function (geometry, feature) {

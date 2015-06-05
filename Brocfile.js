@@ -30,21 +30,21 @@ app.import('bower_components/x-editable/dist/bootstrap3-editable/js/bootstrap-ed
 
 app.import('bower_components/x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css');
 app.import('bower_components/x-editable/dist/bootstrap3-editable/img/loading.gif', {
-  destDir: 'assets/images'
+    destDir: 'assets/images'
 });
 app.import('bower_components/x-editable/dist/bootstrap3-editable/img/clear.png', {
-  destDir: 'assets/images'
+    destDir: 'assets/images'
 });
 
 app.import('bower_components/bootstrap/dist/css/bootstrap.css');
 app.import('bower_components/bootstrap/dist/css/bootstrap.css.map', {
-  destDir: 'assets'
+    destDir: 'assets'
 });
 
 var bootstrapFonts = pickFiles('bower_components/bootstrap/dist/', {
-  srcDir: '/fonts',
-  files: ['*'],
-  destDir: '/fonts'
+    srcDir: '/fonts',
+    files: ['*'],
+    destDir: '/fonts'
 });
 
 

@@ -1,11 +1,12 @@
-import MapCmd from "../controllers/map-command.js";
+import MapCmd from "../controllers/map-command";
 
-export default {
-  name: 'map-command-initializer',
-  initialize: function(container, application) {
-    application.register('map-command-initializer:main', MapCmd, { instantiate: true });
-    application.inject('controller', 'command', 'map-command-initializer:main');
-    application.inject('model', 'command', 'map-command-initializer:main');
+export default({
+  name: 'map-command',
+
+  initialize: function(registry, application) {
+    application.register('map-command:main', MapCmd, { instantiate: true });
+    application.inject('controller', 'command', 'map-command:main');
+    application.inject('model', 'command', 'map-command:main');
   }
-};
+});
 

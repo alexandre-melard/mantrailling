@@ -32,7 +32,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {{#each item in selectedTrail.items itemController="mtgItem"}}
+                {{#each selectedTrail.items as |item|}}
                     <tr>
                         <td class="mtg-item-index-container">
                           {{item.model.index}}

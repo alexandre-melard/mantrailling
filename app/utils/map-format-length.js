@@ -1,4 +1,4 @@
-import mapConst from "../utils/map-const.js";
+import mapConst from "../utils/map-const";
 
 /**
  * format length output

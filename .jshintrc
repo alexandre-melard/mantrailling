@@ -1,13 +1,11 @@
 {
   "predef": [
-    "document",
-    "window",
-    "-Promise",
-    "Promise",
-    "ol",
-    "$",
-    "google"
-  ],
+  "document",
+  "window",
+  "-Promise",
+  "ol",
+  "$",
+  "google"],
   "browser": true,
   "boss": true,
   "curly": true,

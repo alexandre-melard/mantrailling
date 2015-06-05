@@ -2,14 +2,14 @@
  * Created by alex on 04/04/2015.
  */
 import Ember from 'ember';
-import * as consts from '../utils/map-constants.js';
+import * as consts from '../utils/map-constants';
 import tooltip from '../utils/ol-tooltip';
-import getRGB from "../utils/color-get-rgb.js";
-import calcBrightness from "../utils/color-get-brightness.js";
-import colorLuminance from "../utils/color-get-luminance.js";
-import getRoute from "../utils/google-route-between-a-and-b.js";
-import formatLength from "../utils/map-format-length.js";
-import formatArea from "../utils/map-format-area.js";
+import getRGB from "../utils/color-get-rgb";
+import calcBrightness from "../utils/color-get-brightness";
+import colorLuminance from "../utils/color-get-luminance";
+import getRoute from "../utils/google-route-between-a-and-b";
+import formatLength from "../utils/map-format-length";
+import formatArea from "../utils/map-format-area";
 
 export default Ember.Controller.extend({
 

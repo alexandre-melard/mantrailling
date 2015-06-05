@@ -15,10 +15,3 @@
 /libpeerconnection.log
 npm-debug.log
 testem.log
-.idea
-.bowerrc
-.editorconfig
-.ember-cli
-.jshintrc
-.travis.yml
-					 

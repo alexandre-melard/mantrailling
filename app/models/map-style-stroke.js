@@ -1,5 +1,5 @@
 import DS from 'ember-data';
-import * as consts from '../utils/map-constants.js';
+import * as consts from '../utils/map-constants';
 
 /**
  * Created by alex on 31/03/2015.

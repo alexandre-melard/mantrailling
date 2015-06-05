@@ -1,4 +1,4 @@
-{{#each trail in trails}}
+{{#each trails as |trail|}}
     <tr class={{if trail.selected 'success' ''}} {{action 'changeTrack' trail}}>
         <td class="mtg-trail-trails-title">{{trail.name}}</td>
         <td class="mtg-trail-tools-buttons">

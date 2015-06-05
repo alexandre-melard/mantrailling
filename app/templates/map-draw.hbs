@@ -26,9 +26,9 @@
                   <li>
                       <table class="">
                           <tbody>
-                          {{#each row in colors}}
+                          {{#each colors as |row|}}
                               <tr class="">
-                                {{#each color in row}}
+                                {{#each row as |color|}}
                                     <td {{action 'changeColor' color}} {{bind-attr title=color}} class="color-picker"/>
                                 {{/each}}
                               </tr>
