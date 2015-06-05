@@ -14,12 +14,12 @@
                     <tr {{bind-attr id=layer.model.identifier}}>
                         <td class="layer-id">
                             <label {{bind-attr data-toggle="tooltip" data-original-title=layer.title}}>
-                              {{input type="checkbox" checked=layer.visible}}
+                              {{input type="checkbox" checked=layer.pVisible}}
                               {{str-sub layer.title 20}}
                             </label>
                         </td>
                         <td>
-                          {{input class="map-layer-draggable range" type="range" name="range" min="0" max="100" value=layer.opacity}}
+                          {{input class="map-layer-draggable range" type="range" name="range" min="0" max="100" value=layer.pOpacity}}
                         </td>
                     </tr>
                 {{/each}}

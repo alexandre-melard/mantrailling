@@ -6,9 +6,9 @@ import conf from "../config/environment";
  * Created by alex on 29/03/2015.
  */
 export default Ember.Controller.extend({
+  needs: ["mapLayers"],
+  mapLayers: Ember.computed.alias("controllers.mapLayers"),
   map: null,
-  tileLayers: [],
-  selectedTileLayer: null,
   currentLayer: null,
   basicURL: conf.basicURL,
   expertURL: conf.expertURL,
@@ -69,99 +69,29 @@ export default Ember.Controller.extend({
     return layer;
   },
 
-  createWMTSLayer: function (layer, tms) {
-    var attribution = "&copy; <a href='http://www.ign.fr'>IGN</a>";
-    var projection = ol.proj.get(tms.SupportedCRS);
-    var resolutions = new Array(tms.TileMatrix.length);
-    var matrixIds = new Array(tms.TileMatrix.length);
-    tms.TileMatrix.forEach(function (tm) {
-      var index = tm.Identifier;
-      matrixIds[index] = index;
-      resolutions[index] = parseFloat(tm.ScaleDenominator) * 0.00028;
-    });
-
-    var tile = new ol.layer.Tile({
-      source: new ol.source.WMTS({
-        attribution: attribution,
-        url: 'http://wxs.ign.fr/6i88pkdxubzayoady4upbkjg/geoportail/wmts',
-        layer: layer.Identifier,
-        matrixSet: layer.TileMatrixSetLink[0].TileMatrixSet,
-        format: layer.Format[0],
-        projection: projection,
-        tileGrid: new ol.tilegrid.WMTS({
-          origin: tms.TileMatrix[0].TopLeftCorner,
-          resolutions: resolutions,
-          matrixIds: matrixIds
-        }),
-        style: 'normal',
-        wrapX: true
-      })
-    });
-    return tile;
-  },
-
-  loadWMTSGetCapabilities: function () {
-    var parser = new ol.format.WMTSCapabilities();
-    var createWMTSLayer = this.createWMTSLayer;
-    var olMap = this.map;
-    var tileLayers = this.tileLayers;
-    var store = this.store;
-    return $.ajax('assets/data/GetCapabilities.xml')
-      .done(function (response) {
-        var result = parser.read(response);
-        result.Contents.Layer.reverse().forEach(function (desc) {
-          var tile = createWMTSLayer(desc, result.Contents.TileMatrixSet[0]);
-          var layerPromise = store.find('mapLayer', {identifier: desc.Identifier});
-          layerPromise
-            .then(function (layers) {
-              var layer = layers.get('firstObject');
-              layer.layer = tile;
-              if (layer.opacity === null) {
-                layer.opacity = 1;
-              }
-              return layer;
-            })
-            .catch(function () {
-              var layer = store.createRecord('mapLayer', {
-                identifier: desc.Identifier,
-                title: desc.Title,
-                abstract: desc.Abstract,
-                visible: true,
-                opacity: 1,
-                layer: tile
-              });
-              return layer;
-            })
-            .then(function (tileLayer) {
-              tileLayer.save();
-              tileLayers.unshiftObject(tileLayer);
-
-              // We insert the layer before the vector layer if any
-              var len = olMap.getLayers().getArray().length;
-              len = (len > 1) ? len : 1;
-              olMap.getLayers().insertAt(len - 1, tileLayer.layer);
-              console.log("tileLayer.layer.setVisible(tileLayer.visible) : " + tileLayer.get('visible'));
-              tileLayer.layer.setVisible(tileLayer.get('visible'));
-              console.log("tileLayer.layer.setOpacity(tileLayer.opacity) : " + tileLayer.get('opacity'));
-              tileLayer.layer.setOpacity(tileLayer.get('opacity'));
-              return tileLayer;
-            });
-        });
-      })
-      .fail(function (e) {
-        console.log("could not load getcapabilities" + e);
-      });
-  },
-
-  loadWMTSLayers: function () {
-    return this.loadWMTSGetCapabilities();
-  },
 
   build: function () {
     var me = this;
     this.set('map', this.createMap());
     window.gMap = this.map;
-    this.loadWMTSLayers().then(function () {
+    this.get('mapLayers').loadLayers().then(function (layers) {
+      var map = me.get('map');
+      var vectors;
+      if (map.getLayers().get('length') !== 0) {
+        // Save current vecotr used for drawing
+        vectors = map.getLayers().getArray();
+        vectors.forEach(function(vector) {
+          map.removeLayer(vector);
+        });
+      }
+      // set Tile layers
+      layers.forEach(function(layer) {
+        map.addLayer(layer.layer);
+      });
+      // restore vecotrs
+      vectors.forEach(function(vector) {
+        map.addLayer(vector);
+      });
       if (me.currentLayer !== null) {
         me.changeCurrentLayer(me.currentLayer);
       }
