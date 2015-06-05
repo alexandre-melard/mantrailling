@@ -68,15 +68,10 @@ export default DS.Model.extend({
   loadGeoJSON: function(layer) {
     var me = this;
     return new Promise(function(resolve) {
-      var source = new ol.source.StaticVector({
-        format: new ol.format.GeoJSON(),
-        projection: 'EPSG:3857'
-      });
 
-      // convert geoJSON to openlayers
-      var feature = source.readFeatures(me.get('geoJSON'))[0];
-      feature.setId(me.id);
-
+      var format = new ol.format.GeoJSON();
+      me.feature = format.readFeatures(me.get('geoJSON'), {featureProjection: 'EPSG:3857'})[0];
+      me.feature.setId(me.id);
       me.feature = feature;
 
       // add the feature to the feature's layer

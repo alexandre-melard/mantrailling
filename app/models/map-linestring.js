@@ -68,13 +68,10 @@ export default GeoJSON.extend({
   loadGPX: function() {
     var me = this;
     return new Promise(function(resolve) {
-      var source = new ol.source.StaticVector({
-        format: new ol.format.GPX(),
-        projection: 'EPSG:3857'
-      });
 
       // convert gpx to openlayers
-      me.feature = source.readFeatures(me.get('gpx'))[0];
+      var format = new ol.format.GPX();
+      me.feature = format.readFeatures(me.get('gpx'), {featureProjection: 'EPSG:3857'})[0];
 
       // Multilines are not supported yet, convert to lineString
       if (me.feature.getGeometry().getType() === consts.MULTILINE_STRING) {
@@ -100,12 +97,9 @@ export default GeoJSON.extend({
         }
         me.set("gpx", new XMLSerializer().serializeToString(gpx[0]));
       }
-      var source = new ol.source.StaticVector({
-        format: new ol.format.GPX(),
-        projection: 'EPSG:3857'
-      });
       // convert gpx to openlayers
-      me.feature = source.readFeatures(me.get('gpx'))[0];
+      var format = new ol.format.GPX();
+      me.feature = format.readFeatures(me.get('gpx'), {featureProjection: 'EPSG:3857'})[0];
       if (me.feature.getGeometry().getType() === consts.MULTILINE_STRING) {
         // get the first path of the file
         me.feature.setGeometry(me.feature.getGeometry().getLineStrings()[0]);
