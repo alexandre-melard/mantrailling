@@ -76,11 +76,11 @@ export default Ember.Controller.extend({
     window.gMap = this.map;
     this.get('mapLayers').loadLayers().then(function (layers) {
       var map = me.get('map');
-      var vectors;
+      var vectors = [];
       if (map.getLayers().get('length') !== 0) {
         // Save current vecotr used for drawing
-        vectors = map.getLayers().getArray();
-        vectors.forEach(function(vector) {
+        map.getLayers().getArray().forEach(function(vector) {
+          vectors.push(vector);
           map.removeLayer(vector);
         });
       }
@@ -88,7 +88,7 @@ export default Ember.Controller.extend({
       layers.forEach(function(layer) {
         map.addLayer(layer.layer);
       });
-      // restore vecotrs
+      // restore vectors
       vectors.forEach(function(vector) {
         map.addLayer(vector);
       });
