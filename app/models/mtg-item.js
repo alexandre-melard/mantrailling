@@ -2,7 +2,7 @@ import DS from 'ember-data';
 
 export default DS.Model.extend({
   index: DS.attr('number'),
-  location: DS.attr('string'),
+  location: DS.belongsTo('mapPoint'),
   position: DS.attr('string'),
   type: DS.attr('string'),
   description: DS.attr('string'),
@@ -19,15 +19,32 @@ export default DS.Model.extend({
     });
   }.on('init'),
 
-  serialize: function() {
+  serialize: function () {
     var data = {};
     data.id = this.id;
     data.index = this.get('index');
-    data.location = this.get('location');
+    data.location = this.get('location').serialize();
     data.position = this.get('position');
     data.type = this.get('type');
     data.description = this.get('description');
     return data;
-  }
+  },
 
+  unserialize: function (json) {
+    var me = this;
+    this.set("index", json.index);
+    if (json.location !== undefined) {
+      me.store.find('mapPoint', json.location.id).then(function (mapPoint) {
+        me.set('location', mapPoint);
+      }, function () {
+        var mapPoint = me.store.createRecord('mapPoint');
+        mapPoint.importGeoJSON(json.location);
+        me.set('location', mapPoint);
+      });
+    }
+    this.set("position", json.position);
+    this.set("type", json.type);
+    this.set("description", json.description);
+    return this;
+  }
 });

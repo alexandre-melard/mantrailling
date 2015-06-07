@@ -8,8 +8,8 @@ export default DS.Model.extend({
   identifier: DS.attr('string'),
   title: DS.attr('string'),
   abstract: DS.attr('string'),
-  visible: DS.attr('boolean'),
-  opacity: DS.attr(),
+  _visible: DS.attr('boolean'),
+  _opacity: DS.attr('number'),
   layer: null,
 
   bindCommand: function () {
@@ -23,26 +23,30 @@ export default DS.Model.extend({
     });
   }.on('init'),
 
-  pVisible: Ember.computed('visible', {
+  visible: Ember.computed('visible', {
     get(key) {
-      return this.get('visible');
+      return this.get('_visible');
     },
     set(key, value) {
-      this.set('visible', value);
-      this.get('layer').setVisible(value);
+      this.set('_visible', value);
+      if (this.get('layer') !== null) {
+        this.get('layer').setVisible(value);
+      }
       this.save();
     }
   }),
 
-  pOpacity: Ember.computed('opacity', {
-    get(key) {
-      return this.get('opacity');
+  opacity: Ember.computed('opacity', {
+    get() {
+      return this.get('_opacity');
     },
     set(key, value) {
-      this.set('opacity', value / 100);
-      this.get('layer').setOpacity(value / 100);
+      this.set('_opacity', value);
+      if (this.get('layer') !== null) {
+        this.get('layer').setOpacity(value);
+      }
       this.save();
     }
-  }),
+  })
 
 });

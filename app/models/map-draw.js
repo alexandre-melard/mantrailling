@@ -60,15 +60,15 @@ let MapDraw = DS.Model.extend({
         }
       }));
   },
-  import: function(json) {
+  import: function (json) {
     var me = this;
     var lineStrings = json[type];
     if (lineStrings !== undefined && lineStrings !== null) {
-      lineStrings.forEach(function(lineString) {
-        me.store.find('mapLinestring', lineString.id).then(function(lineString){
+      lineStrings.forEach(function (lineString) {
+        me.store.find('mapLinestring', lineString.id).then(function (lineString) {
           me.get('lineStrings').pushObject(lineString);
         }, function () {
-          var lineString = me.store.createRecord( 'mapLinestring', lineString );
+          var lineString = me.store.createRecord('mapLinestring', lineString);
           me.get('lineStrings').pushObject(lineString);
           lineString.save();
         });
@@ -76,23 +76,24 @@ let MapDraw = DS.Model.extend({
     }
     var points = json[type];
     if (points !== undefined && points !== null) {
-      points.forEach(function(point) {
-        me.store.find('mapPoint', point.id).then(function(point){
+      points.forEach(function (pointJSON) {
+        me.store.find('mapPoint', pointJSON.id).then(function (point) {
           me.get('points').pushObject(point);
         }, function () {
-          var point = me.store.createRecord( 'mapPoint', point );
-          me.get('points').pushObject(point);
-          point.save();
+          var pointRecord = me.store.createRecord('mapPoint');
+          pointRecord.importGeoJSON(pointJSON);
+          me.get('points').pushObject(pointRecord);
+          pointRecord.save();
         });
       });
     }
     var polygons = json[type];
     if (polygons !== undefined && polygons !== null) {
-      polygons.forEach(function(polygon) {
-        me.store.find('mapPolygon', polygon.id).then(function(polygon){
+      polygons.forEach(function (polygon) {
+        me.store.find('mapPolygon', polygon.id).then(function (polygon) {
           me.get('polygons').pushObject(polygon);
         }, function () {
-          var polygon = me.store.createRecord( 'mapPolygon', polygon );
+          var polygon = me.store.createRecord('mapPolygon', polygon);
           me.get('polygons').pushObject(polygon);
           polygon.save();
         });
@@ -101,7 +102,7 @@ let MapDraw = DS.Model.extend({
     return this;
   },
 
-  serialize: function() {
+  serialize: function () {
     this.export();
     var data = {};
     data.id = this.id;

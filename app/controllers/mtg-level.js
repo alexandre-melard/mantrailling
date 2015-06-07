@@ -18,6 +18,30 @@ export default Ember.Controller.extend({
    * @param context
    * @returns {*}
    */
+  //selectedLevel: Ember.computed('levels.@each.selected', {
+  //  get: function () {
+  //    if (this.get('levels').length === 0) {
+  //      console.log("no level has been defined yet, please create a level first");
+  //      return false;
+  //    }
+  //    return this.get('levels').findBy('selected', true);
+  //  },
+  //  set: function (key, value) {
+  //    var me = this;
+  //    if (this.get('levels').length === 0) {
+  //      console.log("no level has been defined yet, please create a level first");
+  //      return false;
+  //    }
+  //    this.get('levels').forEach(function (t) {
+  //      if (t === value) {
+  //        t.set('selected', true);
+  //        me.get('selectedTrail').set('level', t);
+  //      } else {
+  //        t.set('selected', false);
+  //      }
+  //    }, this);
+  //  }
+  //}),
   selectedLevel: function (key, value, previousValue) {
     var me = this;
     if (this.get('levels').length === 0) {

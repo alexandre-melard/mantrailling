@@ -111,8 +111,8 @@ let Trail = DS.Model.extend({
         me.store.find('mtgLevel', l.id).then(function () {
         }, function () {
           // Create level if not exists
-          delete l.id;
-          var level = me.store.createRecord('mtgLevel', l);
+          var level = me.store.createRecord('mtgLevel');
+          level.unserialize(l);
           level.save();
         }).finally(function () {
           me.set("level", me.store.find('mtgLevel', {name: json.level}));
@@ -122,8 +122,8 @@ let Trail = DS.Model.extend({
         me.store.find('mtgItem', i.id).then(function (item) {
           me.get('items').pushObject(item);
         }, function () {
-          delete i.id;
-          var item = me.store.createRecord('mtgItem', i);
+          var item = me.store.createRecord('mtgItem');
+          item.unserialize(i);
           item.save();
           me.get('items').pushObject(item);
         });

@@ -22,8 +22,10 @@ export default Ember.Controller.extend({
   },
 
   deleteItem: function (item) {
+    item.get('location').removeFromMap(this.get('mtgTrail').get('layer'));
+    item.get('location').deleteRecord();
+    this.get('mtgTrail').get('selectedTrail').get('items').removeObject(item);
     item.deleteRecord();
-    this.get('mtgTrail').get('selectedTrail').get('itemAtPoints').removeObject(item);
   },
 
   actions: {
@@ -36,8 +38,13 @@ export default Ember.Controller.extend({
       this.command.send('map.draw.point', options,
         function (feature) {
           feature.set('label', item.get('index') + item.get('position'));
-          item.set("feature", feature);
-          me.command.send('map.draw.point.create', {feature: feature});
+          var mapPoint = item.get('location');
+          if (mapPoint === null) {
+            mapPoint = me.store.createRecord('mapPoint');
+            item.set('location', mapPoint);
+          }
+          mapPoint.set('feature', feature);
+          mapPoint.exportGeoJSON();
         },
         function (reason) {
           console.log('could not create item icon: ' + reason);

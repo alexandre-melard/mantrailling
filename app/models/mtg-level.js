@@ -23,6 +23,13 @@ export default DS.Model.extend({
     data.index = this.get('index');
     data.selected = this.get('selected');
     return data;
+  },
+
+  unserialize: function(json) {
+    this.set("name", json.name);
+    this.set("index", json.index);
+    this.set("selected", json.selected);
+    return this;
   }
 
 });

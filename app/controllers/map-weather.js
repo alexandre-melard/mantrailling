@@ -15,22 +15,24 @@ export default Ember.Controller.extend({
     tempC: null,
     winddir16Point: null,
     winddirDegree: null,
-    windspeedKmph : null,
-    weatherCode : null,
-    weatherIconUrl : null,
-    precipMM : null,
-    humidity : null,
-    visibility : null,
-    pressure : null,
-    cloudcover : null,
-    FeelsLikeC : null,
+    windspeedKmph: null,
+    weatherCode: null,
+    weatherIconUrl: null,
+    precipMM: null,
+    humidity: null,
+    visibility: null,
+    pressure: null,
+    cloudcover: null,
+    FeelsLikeC: null,
   },
 
-  isVisible: function() {
-    return (this.weather.tempC !== null);
-  }.property('weather'),
+  isVisible: Ember.computed('weather', {
+    get: function () {
+      return (this.weather.tempC !== null);
+    }
+  }),
 
-  loadWeather: function() {
+  loadWeather: function () {
     var center = ol.proj.transform(this.map.getView().getCenter(), 'EPSG:3857', 'EPSG:4326');
     var time = this.selectedTime;
     var date = this.date;
@@ -54,7 +56,7 @@ export default Ember.Controller.extend({
       },
 
       // Work with the response
-      success: function( response ) {
+      success: function (response) {
         if (response.data.weather !== undefined) {
           var result = response.data.weather.get("firstObject").hourly[time.key];
           result.weatherIconUrl = result.weatherIconUrl.get("firstObject").value;
@@ -68,7 +70,7 @@ export default Ember.Controller.extend({
         }
       },
 
-      fail: function() {
+      fail: function () {
         me.set('weather', null);
         me.set('error', 'The weather data is not available for the [' + date + '], please wait or choose another day');
       }
@@ -77,24 +79,24 @@ export default Ember.Controller.extend({
 
   pad: function (num, size) {
     var s = "000000000" + num;
-    return s.substr(s.length-size);
+    return s.substr(s.length - size);
   },
 
-  init: function() {
+  init: function () {
     this._super();
     for (var i = 0; i < 8; i++) {
       this.time.pushObject({
         key: i,
-        value: this.pad((i * 3),2) + "h -> " + this.pad(((i+1) * 3),2) + "h"
+        value: this.pad((i * 3), 2) + "h -> " + this.pad(((i + 1) * 3), 2) + "h"
       });
     }
-    this.get('controllers.map').addObserver('map', this, function(sender) {
-    this.set('map', sender.get('map'));
+    this.get('controllers.map').addObserver('map', this, function (sender) {
+      this.set('map', sender.get('map'));
     });
   },
 
   actions: {
-    checkWeather: function() {
+    checkWeather: function () {
       this.loadWeather();
     }
   }

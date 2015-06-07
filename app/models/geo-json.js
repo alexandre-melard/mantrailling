@@ -36,7 +36,7 @@ export default DS.Model.extend({
     });
   }.on('init'),
 
-  removeFromMap: function(layer) {
+  removeFromMap: function (layer) {
     if (layer !== null && this.feature !== null) {
       layer.getSource().removeFeature(this.feature);
       this.set('feature', null);
@@ -47,11 +47,11 @@ export default DS.Model.extend({
   /**
    * transform the layer object to GeoJSON
    */
-  exportGeoJSON: function() {
+  exportGeoJSON: function () {
     var me = this;
     var feature = me.feature;
     feature.setId(this.id);
-    return new Promise(function(resolve) {
+    return new Promise(function (resolve) {
       var format = new ol.format.GeoJSON();
       var geoJSON = format.writeFeatures([feature], {featureProjection: "EPSG:3857"});
 
@@ -65,9 +65,9 @@ export default DS.Model.extend({
   /**
    * transform the GeoJSON data to features layer
    */
-  loadGeoJSON: function(layer) {
+  loadGeoJSON: function (layer) {
     var me = this;
-    return new Promise(function(resolve) {
+    return new Promise(function (resolve) {
 
       var format = new ol.format.GeoJSON();
       me.feature = format.readFeatures(me.get('geoJSON'), {featureProjection: 'EPSG:3857'})[0];
@@ -83,9 +83,9 @@ export default DS.Model.extend({
   /**
    * transform the GeoJSON data to features layer
    */
-  importGeoJSON: function(feature, geoJSON, extensions) {
+  importGeoJSON: function (geoJSON, extensions) {
     var me = this;
-    return new Promise(function(resolve) {
+    return new Promise(function (resolve) {
       if (typeof geoJSON === 'string') {
         geoJSON = JSON.parse(geoJSON);
       }
@@ -100,4 +100,13 @@ export default DS.Model.extend({
       }
       resolve(me.loadGeoJSON());
     });
-  }});
+  },
+
+  serialize: function () {
+    return {id: this.id, geoJSON: this.get('geoJSON')};
+  },
+
+  unserialize: function (json) {
+    this.set('geoJSON', json.geoJSON);
+  }
+});

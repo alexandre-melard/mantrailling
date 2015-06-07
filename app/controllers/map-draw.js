@@ -14,6 +14,8 @@ import formatArea from "../utils/map-format-area";
 export default Ember.Controller.extend({
 
   needs: ['map', 'mtgTrail'],
+  map: Ember.computed.alias("controllers.mtgTrail.map"),
+  currentLayer: Ember.computed.alias("controllers.map.currentLayer"),
   olDraw: null,
   mtgDrawState: null,
   onDrawStart: null,
@@ -28,14 +30,6 @@ export default Ember.Controller.extend({
   followPathMode: false,
   followPathModeTitle: "Draw with straight lines",
   followPathModeIcon: "plane",
-
-  map: function () {
-    return this.get('controllers.map').get('map');
-  }.property(''),
-
-  currentLayer: function () {
-    return this.get('controllers.map').get('currentLayer');
-  }.property(''),
 
   bindCommand: function () {
     this.command.register(this, 'map.draw.point', this.drawPoint);
@@ -89,66 +83,70 @@ export default Ember.Controller.extend({
     });
   },
 
-  select: function () {
-    var me = this;
-    if (this.get('selectCache') !== undefined) {
-      return this.get('selectCache');
-    }
-    var select = new ol.interaction.Select();
+  select: Ember.computed({
+    get: function () {
+      var me = this;
+      if (this.get('selectCache') !== undefined) {
+        return this.get('selectCache');
+      }
+      var select = new ol.interaction.Select();
 
-    // grab the features from the select interaction to use in the modify interaction
-    var features = select.getFeatures();
+      // grab the features from the select interaction to use in the modify interaction
+      var features = select.getFeatures();
 
-    // when a feature is selected...
-    features.on('add', function () {
-      var vector = this.get('currentLayer');
+      // when a feature is selected...
+      features.on('add', function () {
+        var vector = this.get('currentLayer');
 
-      // listen to pressing of delete key, then delete selected features
-      $(document).on('keyup', function (event) {
-        if (event.keyCode === 46) {
+        // listen to pressing of delete key, then delete selected features
+        $(document).on('keyup', function (event) {
+          if (event.keyCode === 46) {
 
-          // remove all selected features from select and vector
-          features.forEach(function (feature) {
-            features.remove(feature);
-            var vectorFeatures = vector.getSource().getFeatures();
-            vectorFeatures.forEach(function (sourceFeature) {
-              if (sourceFeature === feature) {
-                vector.getSource().removeFeature(sourceFeature);
-                me.command.send('map.feature.remove', {feature: sourceFeature});
-              }
+            // remove all selected features from select and vector
+            features.forEach(function (feature) {
+              features.remove(feature);
+              var vectorFeatures = vector.getSource().getFeatures();
+              vectorFeatures.forEach(function (sourceFeature) {
+                if (sourceFeature === feature) {
+                  vector.getSource().removeFeature(sourceFeature);
+                  me.command.send('map.feature.remove', {feature: sourceFeature});
+                }
+              });
             });
-          });
+          }
+        });
+      }, this);
+
+      features.on('remove', function () {
+        this.command.send('map.draw.change', {features: features});
+      }, this);
+
+      this.set('selectCache', select);
+      return select;
+    }
+  }),
+
+  modify: Ember.computed({
+    get: function () {
+      if (this.get('modifyCache') !== undefined) {
+        return this.get('modifyCache');
+      }
+      var select = this.get('select');
+      var modify = new ol.interaction.Modify({
+        features: select.getFeatures(),
+        // the SHIFT key must be pressed to delete vertices, so
+        // that new vertices can be drawn at the same position
+        // of existing vertices
+        deleteCondition: function (event) {
+          return ol.events.condition.shiftKeyOnly(event) &&
+            ol.events.condition.singleClick(event);
         }
       });
-    }, this);
 
-    features.on('remove', function () {
-      this.command.send('map.draw.change', {features: features});
-    }, this);
-
-    this.set('selectCache', select);
-    return select;
-  }.property(''),
-
-  modify: function () {
-    if (this.get('modifyCache') !== undefined) {
-      return this.get('modifyCache');
+      this.set('modifyCache', modify);
+      return modify;
     }
-    var select = this.get('select');
-    var modify = new ol.interaction.Modify({
-      features: select.getFeatures(),
-      // the SHIFT key must be pressed to delete vertices, so
-      // that new vertices can be drawn at the same position
-      // of existing vertices
-      deleteCondition: function (event) {
-        return ol.events.condition.shiftKeyOnly(event) &&
-          ol.events.condition.singleClick(event);
-      }
-    });
-
-    this.set('modifyCache', modify);
-    return modify;
-  }.property(''),
+  }),
 
   createDraw: function () {
     var currentLayer = this.get('currentLayer');

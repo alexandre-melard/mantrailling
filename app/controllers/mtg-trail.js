@@ -77,6 +77,30 @@ export default Ember.Controller.extend({
    * @param context
    * @returns {*}
    */
+  //selectedTrail: Ember.computed('trails.@each.selected', {
+  //  get: function () {
+  //    if (this.get('trails').length === 0) {
+  //      console.log("no trail has been defined yet, please create a trail first");
+  //      return false;
+  //    }
+  //    return this.get('trails').findBy('selected', true);
+  //  },
+  //  set: function (key, value) {
+  //    var me = this;
+  //    if (this.get('trails').length === 0) {
+  //      console.log("no trail has been defined yet, please create a trail first");
+  //      return false;
+  //    }
+  //    this.get('trails').forEach(function (t) {
+  //      if (t === value) {
+  //        t.set('selected', true);
+  //      } else {
+  //        t.set('selected', false);
+  //      }
+  //    }, this);
+  //  }
+  //}),
+  //
   selectedTrail: function (key, value, previousValue) {
     if (this.get('trails').length === 0) {
       console.log("no trail has been defined yet, please create a trail first");
