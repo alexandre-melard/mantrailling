@@ -83,7 +83,7 @@ export default DS.Model.extend({
   /**
    * transform the GeoJSON data to features layer
    */
-  importGeoJSON: function (geoJSON, extensions) {
+  importGeoJSON: function (layer, geoJSON, extensions) {
     var me = this;
     return new Promise(function (resolve) {
       if (typeof geoJSON === 'string') {
@@ -98,7 +98,7 @@ export default DS.Model.extend({
         }
         me.set("geoJSON", JSON.stringify(geoJSON));
       }
-      resolve(me.loadGeoJSON());
+      resolve(me.loadGeoJSON(layer));
     });
   },
 

@@ -19,26 +19,45 @@ export default DS.Model.extend({
     });
   }.on('init'),
 
+  load: function (layer) {
+    var mapPoint = this.get('location');
+    if (mapPoint !== null) {
+      this.store.find('mapPoint', mapPoint.id).then(function (mp) {
+        mp.loadGeoJSON(layer);
+      });
+    }
+  },
+
+  delete: function (layer) {
+    if (this.get('location') !== null) {
+      this.get('location').removeFromMap(layer);
+      this.get('location').deleteRecord();
+    }
+  },
+
   serialize: function () {
     var data = {};
     data.id = this.id;
     data.index = this.get('index');
-    data.location = this.get('location').serialize();
+    if (this.get('location') !== null) {
+      data.location = this.get('location').serialize();
+    }
     data.position = this.get('position');
     data.type = this.get('type');
     data.description = this.get('description');
     return data;
   },
 
-  unserialize: function (json) {
+  unserialize: function (json, layer) {
     var me = this;
     this.set("index", json.index);
     if (json.location !== undefined) {
       me.store.find('mapPoint', json.location.id).then(function (mapPoint) {
         me.set('location', mapPoint);
+        mapPoint.loadGeoJSON(layer);
       }, function () {
         var mapPoint = me.store.createRecord('mapPoint');
-        mapPoint.importGeoJSON(json.location);
+        mapPoint.importGeoJSON(layer, json.location);
         me.set('location', mapPoint);
       });
     }

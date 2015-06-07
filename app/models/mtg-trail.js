@@ -41,6 +41,11 @@ let Trail = DS.Model.extend({
           } else if (me.get('mapDraw') !== null) {
             me.command.send("mtg.draw.remove", {id: me.get('mapDraw').id});
           }
+          if (me.get('items') !== null) {
+            me.get("items").forEach(function (i) {
+              i.delete(me.get('layer'));
+            });
+          }
           me.deleteRecord();
           resolve(true);
         }
@@ -56,6 +61,11 @@ let Trail = DS.Model.extend({
       //TODO gerer les montées de version
       //localStorage.clear();
       //location.reload();
+    }
+    if (me.get('items') !== null) {
+      me.get("items").forEach(function (i) {
+        i.load(me.get('layer'));
+      });
     }
     var mapDraw = this.get('mapDraw');
     if (mapDraw !== null) {
@@ -123,7 +133,7 @@ let Trail = DS.Model.extend({
           me.get('items').pushObject(item);
         }, function () {
           var item = me.store.createRecord('mtgItem');
-          item.unserialize(i);
+          item.unserialize(i, layer);
           item.save();
           me.get('items').pushObject(item);
         });

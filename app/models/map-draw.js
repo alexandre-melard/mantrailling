@@ -81,7 +81,7 @@ let MapDraw = DS.Model.extend({
           me.get('points').pushObject(point);
         }, function () {
           var pointRecord = me.store.createRecord('mapPoint');
-          pointRecord.importGeoJSON(pointJSON);
+          pointRecord.importGeoJSON(me.get('layer'), pointJSON);
           me.get('points').pushObject(pointRecord);
           pointRecord.save();
         });
