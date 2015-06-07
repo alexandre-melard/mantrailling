@@ -108,5 +108,18 @@ export default DS.Model.extend({
 
   unserialize: function (json) {
     this.set('geoJSON', json.geoJSON);
-  }
+  },
+
+  label: Ember.computed('feature', {
+    get(key) {
+      if (this.get('feature') !== null) {
+        return this.get('feature').get('label');
+      }
+    },
+    set(key, value) {
+      if (this.get('feature') !== null) {
+        this.get('feature').set('label', value);
+      }
+    }
+  })
 });
