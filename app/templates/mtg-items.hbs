@@ -35,22 +35,22 @@
                 {{#each selectedTrail.items as |item|}}
                     <tr>
                         <td class="mtg-item-index-container">
-                          {{item.model.index}}
+                          {{item.index}}
                         </td>
                         <td class="mtg-item-position-container">
-                          {{item.model.position}}
+                          {{item.position}}
                         </td>
                         <td class="item-type">
-                          {{item.model.type}}
+                          {{item.type}}
                         </td>
                         <td>
-                          {{item.model.description}}
+                          {{item.description}}
                         </td>
                         <td class="btn-group">
-                            <button type="button" class="btn btn-success btn-sm" {{bind-attr disabled=isPositionDisabled}} {{action 'positionItem' item.model}}>
+                            <button type="button" class="btn btn-success btn-sm" {{bind-attr disabled=isPositionDisabled}} {{action 'positionItem' item}}>
                                 <span class="glyphicon glyphicon-record" aria-hidden="true"></span>
                             </button>
-                            <button type="button" class="btn btn-danger btn-sm" {{action 'deleteItem' item.model}}>
+                            <button type="button" class="btn btn-danger btn-sm" {{action 'deleteItem' item}}>
                                  <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                             </button>
                         </td>
