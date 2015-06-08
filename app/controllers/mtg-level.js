@@ -68,7 +68,6 @@ export default Ember.Controller.extend({
     this.store.find('mtgLevel').then(function (storedLevels) {
       if (storedLevels.get('length') === 0) {
         var brevet = me.store.createRecord('mtgLevel', {name: consts.BREVET, index: 0, selected: true});
-        me.get('selectedTrail').set('level', brevet);
         var lvl1 = me.store.createRecord('mtgLevel', {name: consts.LVL1, index: 1, selected: false});
         var lvl2 = me.store.createRecord('mtgLevel', {name: consts.LVL2, index: 2, selected: false});
         var lvl3 = me.store.createRecord('mtgLevel', {name: consts.LVL3, index: 3, selected: false});
@@ -82,6 +81,7 @@ export default Ember.Controller.extend({
           me.get('levels').pushObject(lvl1);
           me.get('levels').pushObject(lvl2);
           me.get('levels').pushObject(lvl3);
+          me.get('selectedTrail').set('level', brevet);
         });
       } else {
         me.set('levels', storedLevels.sortBy('index'));

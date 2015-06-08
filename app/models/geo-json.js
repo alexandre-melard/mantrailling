@@ -68,15 +68,13 @@ export default DS.Model.extend({
   loadGeoJSON: function (layer) {
     var me = this;
     return new Promise(function (resolve) {
-
       var format = new ol.format.GeoJSON();
       me.feature = format.readFeatures(me.get('geoJSON'), {featureProjection: 'EPSG:3857'})[0];
       me.feature.setId(me.id);
-      me.feature = feature;
 
       // add the feature to the feature's layer
-      layer.getSource().addFeature(feature);
-      resolve(feature);
+      layer.getSource().addFeature(me.feature);
+      resolve(me.feature);
     });
   },
 

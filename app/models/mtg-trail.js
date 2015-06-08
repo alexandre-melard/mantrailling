@@ -31,30 +31,40 @@ let Trail = DS.Model.extend({
       });
     });
     this.command.register(this, 'mtg.trail.remove', function (options) {
+      var me = this;
       return new Promise(function (resolve) {
         if (options.id === me.id) {
           console.log("removing trail:" + me.get('name'));
-          if (trail.layer !== null) {
-            this.get('map').removeLayer(this.layer);
+          if (options.layer !== undefined && options.map != undefined) {
+            options.map.removeLayer(options.layer);
           }
           if (me.get('Trailer') !== null && me.get('Trailer').feature.getId() !== undefined) {
             me.command.send("map.feature.remove", {feature: me.get('Trailer').feature});
-          } else if (me.get('Team') !== null && me.get('Team').feature.getId() !== undefined) {
+          }
+          if (me.get('Team') !== null && me.get('Team').feature.getId() !== undefined) {
             me.command.send("map.feature.remove", {feature: me.get('Team').feature});
-          } else if (me.get('mapDraw') !== null) {
+          }
+          if (me.get('mapDraw') !== null) {
             me.command.send("mtg.draw.remove", {id: me.get('mapDraw').id});
           }
+          //TODO montrer ça à un expert !
           if (me.get('items') !== null) {
-            me.get("items").forEach(function (i) {
-              me.command.send("mtg.item.remove", {id: i.id, layer: me.get('layer')}, function() {
+            Promise.all(me.get("items").map(function (i) {
+              me.command.send("mtg.item.remove", {id: i.id, layer: options.layer}, function() {
                 console.log("item deleted");
+                return true;
               }, function(e) {
                 console.log("failed to delete item with reason: " + e);
+                return false;
               });
+            })).then(function() {
+              me.deleteRecord();
+              resolve(true);
             });
+          } else {
+            me.deleteRecord();
+            resolve(true);
           }
-          me.deleteRecord();
-          resolve(true);
         }
       });
     });

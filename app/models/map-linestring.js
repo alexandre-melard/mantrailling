@@ -62,7 +62,7 @@ export default GeoJSON.extend({
       $(gpx).attr("xmlns:geotracker", "http://ilyabogdanovich.com/gpx/extensions/geotracker");
       $(gpx).attr("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
       $(gpx).attr("xsi:schemaLocation", "http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd");
-      me.set('gpx', (new XMLSerializer()).serializeToString(gpx[0]));
+      me.set('gpx', (new XMLSerializer()).serializeToString(gpx));
       resolve(me.get('gpx'));
     });
   },
@@ -100,7 +100,13 @@ export default GeoJSON.extend({
         if (extensions !== undefined) {
           gpx = me.extensions(gpx, extensions);
         }
-        me.set("gpx", new XMLSerializer().serializeToString(gpx[0]));
+        // we want the gpx as string format
+        // add missing xmlns removed by openlayers
+        gpx = gpx[0];
+        $(gpx).attr("xmlns:geotracker", "http://ilyabogdanovich.com/gpx/extensions/geotracker");
+        $(gpx).attr("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        $(gpx).attr("xsi:schemaLocation", "http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd");
+        me.set("gpx", (new XMLSerializer()).serializeToString(gpx));
       }
       // convert gpx to openlayers
       var format = new ol.format.GPX();

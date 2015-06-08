@@ -11,7 +11,7 @@ export default Ember.Controller.extend({
 
   needs: ['map', 'mapDraw'],
   layer: Ember.computed.alias("controllers.map.currentLayer"),
-  map: null,
+  map:  Ember.computed.alias("controllers.map.map"),
   addTrailName: null,
   trails: [],
   formats: [consts.GPX],
@@ -192,7 +192,7 @@ export default Ember.Controller.extend({
     this.get('trails').removeObject(trail);
     this.set('selectedTrail', this.get('trails').get('firstObject'));
 
-    this.command.send('mtg.trail.remove', {id: trail.id});
+    this.command.send('mtg.trail.remove', {id: trail.id, layer: this.get('layer'), map: this.get('map')});
 
     // saving state
     this.command.send('save');
@@ -209,9 +209,6 @@ export default Ember.Controller.extend({
       // if no layers yet, create a new one :)
       mapCtrl.changeCurrentLayer(null);
     }
-    this.get('controllers.map').addObserver('map', this, function (sender) {
-      this.set('map', sender.get('map'));
-    });
   },
 
   actions: {

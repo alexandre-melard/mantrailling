@@ -25,9 +25,15 @@ let MapDraw = DS.Model.extend({
       });
     });
     this.command.register(this, 'mtg.draw.remove', function (options) {
+      var me = this;
       return new Promise(function (resolve) {
         if (options.id === me.id) {
           console.log("removing all drawings");
+          ['lineStrings', 'points', 'polygons'].forEach(function(typeArray) {
+            me.get(typeArray).forEach(function(type) {
+              me.command.send("map.feature.remove", {feature: type.feature});
+            });
+          });
           me.deleteRecord();
           resolve(true);
         }
