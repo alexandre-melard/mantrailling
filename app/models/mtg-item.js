@@ -21,7 +21,7 @@ export default DS.Model.extend({
       return new Promise(function (resolve) {
         console.log("deleting mtg item");
         if (me.get('location') !== null) {
-          me.get('location').removeFromMap(layer);
+          me.get('location').removeFromMap(options.layer);
           me.get('location').deleteRecord();
         }
         me.deleteRecord();
@@ -61,7 +61,7 @@ export default DS.Model.extend({
         mapPoint.loadGeoJSON(layer);
       }, function () {
         var mapPoint = me.store.createRecord('mapPoint');
-        mapPoint.importGeoJSON(layer, json.location);
+        mapPoint.importGeoJSON(layer, json.location.geoJSON);
         me.set('location', mapPoint);
       });
     }

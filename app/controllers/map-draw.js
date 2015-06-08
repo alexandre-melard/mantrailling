@@ -38,47 +38,37 @@ export default Ember.Controller.extend({
     this.command.register(this, 'map.draw.polygon', this.drawPolygon);
   }.on('init'),
 
-  resetInteractions: function (map) {
-    if (map == null) {
-      return;
-    }
-    map.removeInteraction(this.get('select'));
-    map.removeInteraction(this.get('modify'));
-    map.removeInteraction(this.get('olDraw'));
-    $('#map').off('mouseup');
-  },
+  initSelectAndModify: function() {
+    var map = this.get('map');
+    map.addInteraction(this.get('select'));
+    map.addInteraction(this.get('modify'));
+    this.changeCursorOnFeature();
+  }.on('init'),
 
   onGeometryChange: function () {
     var map = this.get('map');
     if (map == null) {
       return;
     }
-    this.resetInteractions(map);
-    if (this.get('mtgDrawState') === "Modify") {
-      tooltip.deleteTooltips(this.get('map'));
-      map.addInteraction(this.get('select'));
-      map.addInteraction(this.get('modify'));
-      this.changeCursorOnFeature();
-    } else if (this.get('mtgDrawState') !== null) {
-      $(map.getViewport()).off('mousemove');
+    map.removeInteraction(this.get('olDraw'));
+    $('#map').off('mouseup');
+    if (this.get('mtgDrawState') !== null) {
       this.createDraw();
       map.addInteraction(this.get('olDraw'));
     }
   }.observes('mtgDrawState'),
 
   changeCursorOnFeature: function () {
-    var target = this.get('map').getTarget();
     var map = this.get('map');
-    var jTarget = typeof target === "string" ? $("#" + target) : $(target);
-    $(this.get('map').getViewport()).on('mousemove', function (e) {
+    $("#map").on('mousemove', function (e) {
       var pixel = map.getEventPixel(e.originalEvent);
       var hit = map.forEachFeatureAtPixel(pixel, function () {
         return true;
       });
       if (hit) {
-        jTarget.css("cursor", "pointer");
+        $("#map").css("cursor", "pointer");
       } else {
-        jTarget.css("cursor", "");
+        $("#map").css("cursor", "");
       }
     });
   },

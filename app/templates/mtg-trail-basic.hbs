@@ -6,40 +6,12 @@
                 <thead>
                 <tr>
                     <th colspan="2">
-                        <div class="input-group">
-                          {{input class="form-control btn-group" placeholder="trail's name" value=addTrailName action='addTrail'}}
-                            <span class="input-group-btn">
-                              <button type="button" class="btn btn-default" {{action 'addTrail'}}>
-                                  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                              </button>
-                              <button type="button"
-                                      class="btn btn-default" {{action 'command' 'trail.open'}}>
-                                  <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
-                              </button>
-                            </span>
-                        </div>
+                      {{render "mtgTrailManagerHead" controller="mtgTrail"}}
                     </th>
                 </tr>
                 </thead>
                 <tbody>
-                {{#each trails as |trail|}}
-                    <tr class={{if trail.selected 'success' ''}} {{action 'changeTrack' trail}}>
-                        <td class="mtg-trail-trails-title">{{trail.name}}</td>
-                        <td class="mtg-trail-tools-buttons">
-                            <div class="btn-group">
-                                <button type="button" toggle="tooltip"
-                                        title="Delete the trail from your browser's memory"
-                                        class="btn btn-warning" {{action 'command' 'trail.delete' selectedTrail}}>
-                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                                </button>
-                                <button type="button" toggle="tooltip" title="Export the trail to filesystem"
-                                        class="btn btn-default" {{action 'command' 'trail.export' selectedTrail}}>
-                                    <span class="glyphicon glyphicon-export" aria-hidden="true"></span>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                {{/each}}
+                {{render "mtgTrailManagerTrails" controller="mtgTrail"}}
                 </tbody>
             </table>
         </li>
@@ -47,8 +19,9 @@
 {{/dropdown-list}}
 {{#if selectedTrail}}
   {{render "mtgTrailToolsTraceTrailer" controller="mtgTrace"}}
-  {{view 'mtgLevels'}}
-  {{render "mtgTrailSave" controller="mtgTrail"}}
+  {{render "mapDrawBasic" controller="mapDraw"}}
+  {{render 'mtgLevels' controller="mtgLevel"}}
   {{render 'mtgItems' controller="mtgItem"}}
+  {{render "mtgTrailSave" controller="mtgTrail"}}
 {{/if}}
 

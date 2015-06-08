@@ -5,13 +5,12 @@
 </div>
 <div class="top-container btn-group">
   {{render "mtgTrailBasic" controller="mtgTrail"}}
-  {{render "mapDrawBasic" controller="mapDraw"}}
   <div class="mtg-mode">
     <a role="button" class="btn btn-success radius-right" data-toggle="tooltip"
        title="Switch to expert mode"  {{bind-attr href=expertURL}}>
         Expert
     </a>
   </div>
-  {{render "mapLayers" controller="map"}}
+  {{render "mapLayers" controller="mapLayers"}}
 </div>
 

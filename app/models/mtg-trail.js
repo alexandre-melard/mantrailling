@@ -32,11 +32,14 @@ let Trail = DS.Model.extend({
     });
     this.command.register(this, 'mtg.trail.remove', function (options) {
       var me = this;
+      var layer = options.layer;
+      var id = options.id;
+      var map = options.map;
       return new Promise(function (resolve) {
-        if (options.id === me.id) {
+        if (id === me.id) {
           console.log("removing trail:" + me.get('name'));
-          if (options.layer !== undefined && options.map != undefined) {
-            options.map.removeLayer(options.layer);
+          if (layer !== undefined && map != undefined) {
+            map.removeLayer(layer);
           }
           if (me.get('Trailer') !== null && me.get('Trailer').feature.getId() !== undefined) {
             me.command.send("map.feature.remove", {feature: me.get('Trailer').feature});
@@ -50,21 +53,17 @@ let Trail = DS.Model.extend({
           //TODO montrer ça à un expert !
           if (me.get('items') !== null) {
             Promise.all(me.get("items").map(function (i) {
-              me.command.send("mtg.item.remove", {id: i.id, layer: options.layer}, function() {
+              me.command.send("mtg.item.remove", {id: i.id, layer: layer}, function() {
                 console.log("item deleted");
                 return true;
               }, function(e) {
                 console.log("failed to delete item with reason: " + e);
                 return false;
               });
-            })).then(function() {
-              me.deleteRecord();
-              resolve(true);
-            });
-          } else {
-            me.deleteRecord();
-            resolve(true);
+            }));
           }
+          me.deleteRecord();
+          resolve(true);
         }
       });
     });
