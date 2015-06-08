@@ -34,6 +34,9 @@ let Trail = DS.Model.extend({
       return new Promise(function (resolve) {
         if (options.id === me.id) {
           console.log("removing trail:" + me.get('name'));
+          if (trail.layer !== null) {
+            this.get('map').removeLayer(this.layer);
+          }
           if (me.get('Trailer') !== null && me.get('Trailer').feature.getId() !== undefined) {
             me.command.send("map.feature.remove", {feature: me.get('Trailer').feature});
           } else if (me.get('Team') !== null && me.get('Team').feature.getId() !== undefined) {
@@ -43,7 +46,11 @@ let Trail = DS.Model.extend({
           }
           if (me.get('items') !== null) {
             me.get("items").forEach(function (i) {
-              i.delete(me.get('layer'));
+              me.command.send("mtg.item.remove", {id: i.id, layer: me.get('layer')}, function() {
+                console.log("item deleted");
+              }, function(e) {
+                console.log("failed to delete item with reason: " + e);
+              });
             });
           }
           me.deleteRecord();

@@ -17,6 +17,17 @@ export default DS.Model.extend({
         resolve(true);
       });
     });
+    this.command.register(this, 'mtg.item.remove', function (options) {
+      return new Promise(function (resolve) {
+        console.log("deleting mtg item");
+        if (me.get('location') !== null) {
+          me.get('location').removeFromMap(layer);
+          me.get('location').deleteRecord();
+        }
+        me.deleteRecord();
+        resolve(true);
+      });
+    });
   }.on('init'),
 
   load: function (layer) {
@@ -25,13 +36,6 @@ export default DS.Model.extend({
       this.store.find('mapPoint', mapPoint.id).then(function (mp) {
         mp.loadGeoJSON(layer);
       });
-    }
-  },
-
-  delete: function (layer) {
-    if (this.get('location') !== null) {
-      this.get('location').removeFromMap(layer);
-      this.get('location').deleteRecord();
     }
   },
 

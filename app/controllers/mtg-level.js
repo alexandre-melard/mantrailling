@@ -108,7 +108,7 @@ export default Ember.Controller.extend({
       console.log("level deleted: " + level.get('name'));
       this.get('levels').removeObject(level);
       this.set('selectedLevel', this.get('levels').get('firstObject'));
-      level.destroyRecord();
+      level.deleteRecord();
     }
   }
 });

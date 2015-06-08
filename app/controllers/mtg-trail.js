@@ -189,12 +189,13 @@ export default Ember.Controller.extend({
 
   deleteTrail: function (trail) {
     console.log("trail deleted: " + trail.get('name'));
-    if (trail.layer !== null) {
-      this.get('map').removeLayer(trail.layer);
-    }
     this.get('trails').removeObject(trail);
     this.set('selectedTrail', this.get('trails').get('firstObject'));
-    trail.destroyRecord();
+
+    this.command.send('mtg.trail.remove', {id: trail.id});
+
+    // saving state
+    this.command.send('save');
   },
 
   init: function () {
@@ -215,7 +216,6 @@ export default Ember.Controller.extend({
 
   actions: {
     command: function (command, options) {
-      var me = this;
       if (command === "trail.add") {
         this.addTrail();
       } else if (command === "trail.open") {

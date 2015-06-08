@@ -56,19 +56,18 @@ export default Ember.Controller.extend({
               identifier: desc.Identifier,
               title: desc.Title,
               abstract: desc.Abstract,
-              visible: true,
-              opacity: 1,
+              _visible: true,
+              _opacity: 1,
               layer: tile
-            });
+            }).save();
             return layer;
           });
         })).then(function (tl) {
           tl.forEach(function (tileLayer) {
-            tileLayer.save();
-            console.log("tileLayer.layer.setVisible(tileLayer.visible) : " + tileLayer.get('visible'));
-            tileLayer.layer.setVisible(tileLayer.get('visible'));
-            console.log("tileLayer.layer.setOpacity(tileLayer.opacity) : " + tileLayer.get('opacity'));
-            tileLayer.layer.setOpacity(tileLayer.get('opacity'));
+            console.log("tileLayer.layer.setVisible(tileLayer.visible) : " + tileLayer.get('_visible'));
+            tileLayer.layer.setVisible(tileLayer.get('_visible'));
+            console.log("tileLayer.layer.setOpacity(tileLayer.opacity) : " + tileLayer.get('_opacity'));
+            tileLayer.layer.setOpacity(tileLayer.get('_opacity'));
           });
           me.set('tileLayers', tl.copy().reverse());
           resolve(tl);
