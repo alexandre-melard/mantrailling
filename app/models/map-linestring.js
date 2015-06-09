@@ -37,6 +37,7 @@ export default GeoJSON.extend({
       $extensions = $xml.find( "extensions" );
     }
     if (value !== undefined) {
+      $($extensions[0]).empty();
       $($extensions[0]).append(json2xml(value));
       return $xml;
     }
@@ -59,9 +60,9 @@ export default GeoJSON.extend({
       // we want the gpx as string format
       // add missing xmlns removed by openlayers
       gpx = gpx[0];
-      $(gpx).attr("xmlns:geotracker", "http://ilyabogdanovich.com/gpx/extensions/geotracker");
-      $(gpx).attr("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-      $(gpx).attr("xsi:schemaLocation", "http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd");
+      $(gpx).find("gpx").attr("xmlns:geotracker", "http://ilyabogdanovich.com/gpx/extensions/geotracker");
+      $(gpx).find("gpx").attr("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+      $(gpx).find("gpx").attr("xsi:schemaLocation", "http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd");
       me.set('gpx', (new XMLSerializer()).serializeToString(gpx));
       resolve(me.get('gpx'));
     });
@@ -103,9 +104,9 @@ export default GeoJSON.extend({
         // we want the gpx as string format
         // add missing xmlns removed by openlayers
         gpx = gpx[0];
-        $(gpx).attr("xmlns:geotracker", "http://ilyabogdanovich.com/gpx/extensions/geotracker");
-        $(gpx).attr("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-        $(gpx).attr("xsi:schemaLocation", "http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd");
+        $(gpx).find("gpx").attr("xmlns:geotracker", "http://ilyabogdanovich.com/gpx/extensions/geotracker");
+        $(gpx).find("gpx").attr("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        $(gpx).find("gpx").attr("xsi:schemaLocation", "http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd");
         me.set("gpx", (new XMLSerializer()).serializeToString(gpx));
       }
       // convert gpx to openlayers

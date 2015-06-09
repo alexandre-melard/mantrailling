@@ -41,16 +41,17 @@ let Trail = DS.Model.extend({
           if (layer !== undefined && map != undefined) {
             map.removeLayer(layer);
           }
-          if (me.get('Trailer') !== null && me.get('Trailer').feature.getId() !== undefined) {
+          if (me.get('Trailer') !== null && me.get('Trailer').feature !== null) {
             me.command.send("map.feature.remove", {feature: me.get('Trailer').feature});
           }
-          if (me.get('Team') !== null && me.get('Team').feature.getId() !== undefined) {
+          if (me.get('Team') !== null && me.get('Team').feature !== null) {
             me.command.send("map.feature.remove", {feature: me.get('Team').feature});
           }
           if (me.get('mapDraw') !== null) {
             me.command.send("mtg.draw.remove", {id: me.get('mapDraw').id});
           }
           //TODO montrer ça à un expert !
+          me.deleteRecord();
           if (me.get('items') !== null) {
             Promise.all(me.get("items").map(function (i) {
               me.command.send("mtg.item.remove", {id: i.id, layer: layer}, function() {
@@ -62,7 +63,6 @@ let Trail = DS.Model.extend({
               });
             }));
           }
-          me.deleteRecord();
           resolve(true);
         }
       });
