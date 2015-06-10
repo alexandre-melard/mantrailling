@@ -10,11 +10,11 @@
   {{render "mapLayers" controller="mapLayers"}}
   <div class="mtg-mode">
       <a role="button" class="btn btn-success radius-right" data-toggle="tooltip"
-         title="Switch to basic mode" {{bind-attr href=basicURL}}>
-          Basic
+         title={{t "map.menu.switch.basic.tooltip"}} {{bind-attr href=basicURL}}>
+        {{t "map.menu.switch.basic"}}
       </a>
   </div>
 </div>
 {{render "mtgInfo" controller="mtgTrail"}}
-<input type="file" id="input-file" class="hidden" accept=""/>
+<input type="file" id="input-file" class="hidden" accept=".cmp|.gpx"/>
 

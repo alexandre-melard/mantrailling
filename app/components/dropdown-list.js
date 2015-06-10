@@ -2,6 +2,7 @@
  * Created by alex on 04/04/2015.
  */
 import Ember from 'ember';
+import { translationMacro as t } from "ember-i18n";
 
 export default Ember.Component.extend({
   classNames: ['btn-group', 'dropdown-list'],
@@ -9,12 +10,23 @@ export default Ember.Component.extend({
   img: false,
   icon: false,
   resetView: "true",
+  tTitle: null,
+  title: function (key, value) {
+    if (arguments.length > 1) {
+      var trans = t(value);
+      if (trans === undefined) {
+        trans = value;
+      }
+      this.set('tTitle', trans);
+    }
+    return this.get('tTitle');
+  }.property('tTitle'),
 
   glyphicon: function () {
     return "glyphicon-" + this.get('icon');
   }.property('icon'),
 
-  btnRadius: function() {
+  btnRadius: function () {
     return this.get('btn-radius');
   }.property('btn-radius'),
 

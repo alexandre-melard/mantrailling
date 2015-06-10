@@ -75,8 +75,8 @@ let Trail = DS.Model.extend({
     if (this.get('version') !== consts.VERSION) {
       console.log("major version change, deleting model");
       //TODO gerer les montées de version
-      //localStorage.clear();
-      //location.reload();
+      localStorage.clear();
+      location.reload();
     }
     if (me.get('items') !== null) {
       me.get("items").forEach(function (i) {

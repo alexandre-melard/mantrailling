@@ -332,34 +332,34 @@ export default Ember.Controller.extend({
   },
 
   actions: {
-    commandAction: function (command) {
+    drawLineStringAction: function() {
       var me = this;
-      if (command === "map.draw.linestring") {
-        this.drawLineString(consts.style[consts.LINE_STRING]).then(function (feature) {
-          console.log("line string created");
-          me.command.send('map.draw.linestring.create', {feature: feature});
+      $(".map-draw-linestring").addClass('hidden');
+      $(".map-draw-follow-path").removeClass('hidden');
+      this.drawLineString(consts.style[consts.LINE_STRING]).then(function (feature) {
+        console.log("line string created");
+        me.command.send('map.draw.linestring.create', {feature: feature}, function() {
+          $(".map-draw-follow-path").addClass('hidden');
+          $(".map-draw-linestring").removeClass('hidden');
         });
-      } else if (command === "map.draw.polygon") {
-        this.drawPolygon(consts.style[consts.POLYGON]).then(function (feature) {
-          console.log("polygon created");
-          me.command.send('map.draw.polygon.create', {feature: feature});
-        });
-      } else if (command === "map.draw.point") {
-        this.drawPoint({style: consts.style[consts.POINT]}).then(function (feature) {
-          console.log("point created");
-          me.command.send('map.draw.point.create', {feature: feature});
-        });
-      }
+      });
     },
-
-    toggleModify: function () {
-      if (this.get('mtgDrawState') === 'Modify') {
-        $(".mtg-modify").removeClass("active");
-        this.set('mtgDrawState', null);
-      } else {
-        $(".mtg-modify").addClass("active");
-        this.set('mtgDrawState', 'Modify');
-      }
+    drawPolygonAction: function() {
+      var me = this;
+      this.drawPolygon(consts.style[consts.POLYGON]).then(function (feature) {
+        console.log("polygon created");
+        me.command.send('map.draw.polygon.create', {feature: feature});
+      });
+    },
+    drawPointAction: function() {
+      var me = this;
+      this.drawPoint({style: consts.style[consts.POINT]}).then(function (feature) {
+        console.log("point created");
+        me.command.send('map.draw.point.create', {feature: feature});
+      });
+    },
+    changeColor: function (color) {
+      this.changeColor(color);
     },
     toggleFollowPathMode: function () {
       this.toggleProperty('followPathMode');
@@ -375,10 +375,6 @@ export default Ember.Controller.extend({
         .attr('data-original-title', this.get('followPathModeTitle'))
         .tooltip('fixTitle')
         .tooltip('show');
-    },
-
-    changeColor: function (color) {
-      this.changeColor(color);
     }
   }
 });

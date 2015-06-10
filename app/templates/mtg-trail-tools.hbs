@@ -2,6 +2,10 @@
     <ul class="dropdown-menu mtg-trail-tools-dropdown">
         <li class="btn-group">
           {{render "mtgTrailToolsTraceTrailer" controller="mtgTrace"}}
+          <button type="button" data-toggle="tooltip" data-original-title="{{followPathModeTitle}}"
+                  class="btn btn-brown-red map-draw-follow-path hidden" {{action 'toggleFollowPathMode'}}>
+              <span class="glyphicon glyphicon-{{followPathModeIcon}}" aria-hidden="true"></span>
+          </button>
           {{render "mtgTrailToolsTraceTeam" controller="mtgTrace"}}
           {{render 'mtgLevels' controller="mtgLevel"}}
           {{render 'mtgItems' controller="mtgItem"}}

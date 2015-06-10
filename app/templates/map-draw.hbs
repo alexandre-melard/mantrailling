@@ -1,27 +1,27 @@
-{{#dropdown-list item="Draw" icon="pencil" btn-radius="no-radius" toggle="tooltip" title="Display drawing tools"}}
+{{#dropdown-list item="Draw" icon="pencil" btn-radius="no-radius" toggle="tooltip" title="map.menu.draw.tooltip"}}
     <ul class="dropdown-menu map-draw-dropdown">
         <li class="btn-group">
-            <button type="button" data-toggle="tooltip" data-original-title="Draw a Point"
-                    class="btn btn-danger map-draw-point" {{action 'commandAction' 'map.draw.point'}}>
+            <button type="button" data-toggle="tooltip" data-original-title={{t "map.menu.draw.point.tooltip"}}
+                    class="btn btn-danger map-draw-point" {{action 'drawPointAction'}}>
                 <img src="assets/images/point.png" class="inverted" width="12" height="12"/>
             </button>
-            <button type="button" data-toggle="tooltip" data-original-title="Add description"
+            <button type="button" data-toggle="tooltip" data-original-title={{t "map.menu.draw.marker.tooltip"}}
                     class="hidden btn btn-success map-draw-marker" {{action 'toggleDraw' 'Marker'}}>
                 <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
             </button>
-            <button type="button" data-toggle="tooltip" data-original-title="Draw a Zone"
-                    class="btn btn-primary map-draw-polygon" {{action 'commandAction' 'map.draw.polygon'}}>
+            <button type="button" data-toggle="tooltip" data-original-title={{t "map.menu.draw.polygon.tooltip"}}
+                    class="btn btn-primary map-draw-polygon" {{action 'drawPolygonAction'}}>
                 <span class="glyphicon glyphicon-retweet" aria-hidden="true"></span>
             </button>
-            <button type="button" data-toggle="tooltip" data-original-title="Draw a LineString"
-                    class="btn btn-pink map-draw-linestring" {{action 'commandAction' 'map.draw.linestring'}}>
+            <button type="button" data-toggle="tooltip" data-original-title={{t "map.menu.draw.linestring.tooltip"}}
+                    class="btn btn-pink map-draw-linestring" {{action 'drawLineStringAction'}}>
                 <img src="assets/images/winding-road.png" class="inverted" width="16" height="16"/>
             </button>
             <button type="button" data-toggle="tooltip" data-original-title="{{followPathModeTitle}}"
-                    class="btn btn-brown-red map-draw-follow-path" {{action 'toggleFollowPathMode'}}>
+                    class="btn btn-brown-red map-draw-follow-path hidden" {{action 'toggleFollowPathMode'}}>
                 <span class="glyphicon glyphicon-{{followPathModeIcon}}" aria-hidden="true"></span>
             </button>
-          {{#dropdown-list item="Color" img="assets/images/palette.gif" toggle="tooltip" title="Color palette, you need to select the color before drawing"}}
+          {{#dropdown-list item="Color" img="assets/images/palette.gif" toggle="tooltip" title="map.menu.draw.palette.tooltip"}}
               <ul {{bind-attr class=":dropdown-menu :map-draw-color-dropdown"}}>
                   <li>
                       <table class="">

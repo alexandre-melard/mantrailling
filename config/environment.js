@@ -1,6 +1,6 @@
 /* jshint node: true */
 
-module.exports = function(environment) {
+module.exports = function (environment) {
   var ENV = {
     modulePrefix: 'mantrailling',
     environment: environment,
@@ -25,6 +25,9 @@ module.exports = function(environment) {
       'img-src': "'self' *.opencyclemap.org *.ign.fr *.mapquest.com *.mqcdn.com data: cdn.worldweatheronline.net",
       'style-src': "'self' 'unsafe-inline'",
       'frame-src': ""
+    },
+    i18n: {
+      'defaultLocale': 'fr'
     }
   };
 

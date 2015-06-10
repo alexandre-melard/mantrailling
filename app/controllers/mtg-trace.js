@@ -133,32 +133,47 @@ export default Ember.Controller.extend({
 
   addTrace: function(type) {
     var me = this;
-    consts.style[type].type = type;
-    this.command.send("map.draw.linestring", consts.style[type], function (feature) {
-      me.onCreatePathStart(type, {
-        feature: feature,
-        map: me.get('mtgTrail').get('map'),
-        layer: me.get('mtgTrail').get('controllers.map').get('currentLayer')
-      }).then(function () {
-        me.onCreatePathEnd(type);
+    return new Promise(function(resolve) {
+      consts.style[type].type = type;
+      me.command.send("map.draw.linestring", consts.style[type], function (feature) {
+        me.onCreatePathStart(type, {
+          feature: feature,
+          map: me.get('mtgTrail').get('map'),
+          layer: me.get('mtgTrail').get('controllers.map').get('currentLayer')
+        }).then(function () {
+          me.onCreatePathEnd(type).then(function() {
+            resolve(true);
+          });
+        });
       });
     });
   },
 
   actions: {
-    command: function (command, options) {
-      var me = this;
-      if (command === "trace.trailer.create") {
-        this.addTrace(consts.TRAILER);
-      } else if (command === "trace.team.create") {
-        this.addTrace(consts.TEAM);
-      } else if (command === "trace.trailer.import") {
-        this.mapImportTrailer(options);
-      } else if (command === "trace.team.import") {
-        this.mapImportTeam(options);
-      } else if (command === "trace.trailer.export") {
-        this.exportTrace(format, this.get('mtgTrail').get('selectedTrail'));
-      }
+    trailerTraceCreateAction: function() {
+      $(".mtg-trail-create-trailer").addClass('hidden');
+      $(".map-draw-follow-path").removeClass('hidden');
+      this.addTrace(consts.TRAILER).then(function() {
+        $(".map-draw-follow-path").addClass('hidden');
+        $(".mtg-trail-create-trailer").removeClass('hidden');
+      });
+    },
+    teamTraceCreateAction: function() {
+      $(".mtg-trail-create-team").addClass('hidden');
+      $(".map-draw-follow-path").removeClass('hidden');
+      this.addTrace(consts.TEAM).then(function() {
+        $(".map-draw-follow-path").addClass('hidden');
+        $(".mtg-trail-create-team").removeClass('hidden');
+      });
+    },
+    trailerTraceImportAction: function() {
+      this.mapImportTrailer();
+    },
+    teamTraceImportAction: function() {
+      this.mapImportTeam();
+    },
+    trailerTraceExportAction: function() {
+      this.exportTrace(format, this.get('mtgTrail').get('selectedTrail'));
     }
   }
 });

@@ -7,8 +7,8 @@
   {{render "mtgTrailBasic" controller="mtgTrail"}}
   <div class="mtg-mode">
     <a role="button" class="btn btn-success radius-right" data-toggle="tooltip"
-       title="Switch to expert mode"  {{bind-attr href=expertURL}}>
-        Expert
+       title={{t "map.menu.switch.expert.tooltip"}} {{bind-attr href=expertURL}}>
+      {{t "map.menu.switch.expert"}}
     </a>
   </div>
   {{render "mapLayers" controller="mapLayers"}}
