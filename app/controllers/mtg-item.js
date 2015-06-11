@@ -3,13 +3,20 @@
  */
 import Ember from 'ember';
 import consts from '../utils/map-constants';
+import { translationMacro as t } from "ember-i18n";
 
 export default Ember.Controller.extend({
   needs: ["mtgTrail"],
   mtgTrail: Ember.computed.alias("controllers.mtgTrail"),
   items: Ember.computed.alias("controllers.mtgTrail.selectedTrail.items"),
-  itemTypes: ['Cloth', 'Leather', 'Cardboard', 'Plastic'],
-  currentItem: {position: 'P', type: 'Cloth', description: null},
+  itemTypes: [
+    t("map.menu.mtg.trail.items.item.cloth"),
+    t("map.menu.mtg.trail.items.item.leather"),
+    t("map.menu.mtg.trail.items.item.cardboard"),
+    t("map.menu.mtg.trail.items.item.plastic"),
+    t("map.menu.mtg.trail.items.item.wood")
+  ],
+  currentItem: {position: t("map.menu.mtg.trail.items.item.ground"), type: t("map.menu.mtg.trail.items.item.cloth"), description: null},
 
   addItem: function () {
     var items = this.get('items');
@@ -17,7 +24,7 @@ export default Ember.Controller.extend({
     var mtgItem = this.store.createRecord('mtgItem', this.get('currentItem'));
     this.get('items').pushObject(mtgItem);
     console.log('new item created ' + mtgItem.get('index'));
-    this.set('currentItem', {position: 'P', type: 'Cloth', description: null});
+    this.set('currentItem', {position: t("map.menu.mtg.trail.items.item.ground"), type: t("map.menu.mtg.trail.items.item.cloth"), description: null});
   },
 
   deleteItem: function (itemToDel) {

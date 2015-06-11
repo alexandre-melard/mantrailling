@@ -35,7 +35,12 @@ export default {
   "map.menu.mtg.trail.items.item.suspended": "S",
   "map.menu.mtg.trail.items.item.hidden.tooltip": "Hidden",
   "map.menu.mtg.trail.items.item.hidden": "H",
-  "map.menu.mtg.trail.items.item.description": "Item description",
+  "map.menu.mtg.trail.items.item.description.placeholder": "Item description",
+  "map.menu.mtg.trail.items.item.cloth": 'Cloth',
+  "map.menu.mtg.trail.items.item.leather": 'Leather',
+  "map.menu.mtg.trail.items.item.cardboard": 'Cardboard',
+  "map.menu.mtg.trail.items.item.plastic": 'Plastic',
+  "map.menu.mtg.trail.items.item.wood": 'Wood',
 
   'e': ''
 };

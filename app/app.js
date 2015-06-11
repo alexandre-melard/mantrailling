@@ -31,12 +31,6 @@ Ember.Route.reopen({
   }
 });
 
-Ember.Handlebars.helpers.input.extend({
-  placeholder : function(value){
-    return Ember.I18n.t(value);
-  }.property()
-});
-
 Ember.View.reopen({
   init: function() {
     this._super();
