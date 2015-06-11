@@ -1,4 +1,4 @@
-{{#dropdown-list item="Items" img="assets/images/basket.png" btn-radius="no-radius" toggle="tooltip" title="Manage the trail's items"}}
+{{#dropdown-list item="Items" img="assets/images/basket.png" btn-radius="no-radius" toggle="tooltip" title="map.menu.mtg.trail.items.tooltip"}}
     <ul {{bind-attr class=":dropdown-menu :map-items-dropdown"}}>
         <li>
             <table class="table table-hover table-striped table-condensed">
@@ -7,14 +7,14 @@
                     <th></th>
                     <th class="mtg-item-position-container">
                         <div class="btn-group">
-                            <label class="btn btn-default btn-sm mtg-item-position" data-toggle="tooltip" title="On the ground">
-                              {{ radio-button name='position' value='P' groupValue=currentItem.position }}G
+                            <label class="btn btn-default btn-sm mtg-item-position" data-toggle="tooltip" title="map.menu.mtg.trail.items.item.ground.tooltip">
+                              {{ radio-button name='position' value='P' groupValue=currentItem.position }}{{t "map.menu.mtg.trail.items.item.ground" }}
                             </label>
-                            <label class="btn btn-default btn-sm mtg-item-position" data-toggle="tooltip" title="Suspended">
-                              {{ radio-button name='position' value='S' groupValue=currentItem.position }}S
+                            <label class="btn btn-default btn-sm mtg-item-position" data-toggle="tooltip" title="map.menu.mtg.trail.items.item.suspended.tooltip">
+                              {{ radio-button name='position' value='S' groupValue=currentItem.position }}{{t "map.menu.mtg.trail.items.item.suspended" }}
                             </label>
-                            <label class="btn btn-default btn-sm mtg-item-position" data-toggle="tooltip" title="Hidden">
-                              {{ radio-button name='position' value='C' groupValue=currentItem.position }}H
+                            <label class="btn btn-default btn-sm mtg-item-position" data-toggle="tooltip" title="map.menu.mtg.trail.items.item.hidden.tooltip">
+                              {{ radio-button name='position' value='C' groupValue=currentItem.position }}{{t "map.menu.mtg.trail.items.item.hidden" }}
                             </label>
                         </div>
                     </th>
@@ -22,7 +22,7 @@
                       {{view "select" class="form-control input-sm" content=itemTypes value=currentItem.type}}
                     </th>
                     <th>
-                      {{input type="text" class="form-control input-sm" value=currentItem.description placeholder="Item description" size="14"}}
+                      {{input type="text" class="form-control input-sm" value=currentItem.description placeholder="map.menu.mtg.trail.items.item.description" size="14"}}
                     </th>
                     <th>
                         <button type="button" class="btn btn-default btn-sm" {{action 'addItem'}}>
