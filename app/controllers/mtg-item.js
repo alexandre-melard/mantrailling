@@ -9,14 +9,28 @@ export default Ember.Controller.extend({
   needs: ["mtgTrail"],
   mtgTrail: Ember.computed.alias("controllers.mtgTrail"),
   items: Ember.computed.alias("controllers.mtgTrail.selectedTrail.items"),
-  itemTypes: [
-    t("map.menu.mtg.trail.items.item.cloth"),
-    t("map.menu.mtg.trail.items.item.leather"),
-    t("map.menu.mtg.trail.items.item.cardboard"),
-    t("map.menu.mtg.trail.items.item.plastic"),
-    t("map.menu.mtg.trail.items.item.wood")
-  ],
-  currentItem: {position: t("map.menu.mtg.trail.items.item.ground"), type: t("map.menu.mtg.trail.items.item.cloth"), description: null},
+  itemTypes: [],
+  currentItem: {position: null, type: null, description: null},
+
+
+  ground: t("map.menu.mtg.trail.items.item.ground"),
+  cloth: t("map.menu.mtg.trail.items.item.cloth"),
+  leather: t("map.menu.mtg.trail.items.item.leather"),
+  cardboard: t("map.menu.mtg.trail.items.item.cardboard"),
+  plastic: t("map.menu.mtg.trail.items.item.plastic"),
+  wood: t("map.menu.mtg.trail.items.item.wood"),
+
+  loadTypes: function() {
+    this.get('itemTypes').pushObject(this.get('cloth'));
+    this.get('itemTypes').pushObject(this.get('leather'));
+    this.get('itemTypes').pushObject(this.get('cardboard'));
+    this.get('itemTypes').pushObject(this.get('plastic'));
+    this.get('itemTypes').pushObject(this.get('wood'));
+  }.on('init'),
+
+  loadCurrentItem: function() {
+    this.set('currentItem', {position: this.get('ground'), type: this.get('cloth'), description: null});
+  }.on('init'),
 
   addItem: function () {
     var items = this.get('items');
@@ -24,7 +38,7 @@ export default Ember.Controller.extend({
     var mtgItem = this.store.createRecord('mtgItem', this.get('currentItem'));
     this.get('items').pushObject(mtgItem);
     console.log('new item created ' + mtgItem.get('index'));
-    this.set('currentItem', {position: t("map.menu.mtg.trail.items.item.ground"), type: t("map.menu.mtg.trail.items.item.cloth"), description: null});
+    this.set('currentItem', {position: this.get('ground'), type: this.get('cloth'), description: null});
   },
 
   deleteItem: function (itemToDel) {
