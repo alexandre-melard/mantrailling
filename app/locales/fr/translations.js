@@ -41,5 +41,14 @@ export default {
   "map.menu.mtg.trail.items.item.cardboard": 'Carton',
   "map.menu.mtg.trail.items.item.plastic": 'Plastique',
   "map.menu.mtg.trail.items.item.wood": 'Bois',
+  "map.menu.mtg.trail.items.item.position.tooltip": "Cliquez sur la carte à l'endroit où vous voulez poser l'objet",
+  "map.menu.mtg.trail.items.item.delete.tooltip": "Effacer l'objet",
+  "map.menu.mtg.trail.levels.tooltip": "Gérer le niveau de la piste",
+  "map.menu.mtg.trail.levels.level.name.placeholder": "Nom du niveau",
+  "map.menu.mtg.trail.levels.level.delete": "Effacer le niveau",
+  "map.menu.mtg.trail.levels.level.basic": "Brevet",
+  "map.menu.mtg.trail.levels.level.intermediate": "Niveau 1",
+  "map.menu.mtg.trail.levels.level.advanced": "Niveau 2",
+  "map.menu.mtg.trail.levels.level.master": "Niveau 3",
     'e': ''
 };

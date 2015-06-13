@@ -3,12 +3,17 @@
  */
 import Ember from 'ember';
 import * as consts from '../utils/map-constants';
+import { translationMacro as t } from "ember-i18n";
 
 export default Ember.Controller.extend({
   needs: ["mtgTrail"],
   mtgLevel: Ember.computed.alias("controllers.mtgLevel"),
   selectedTrail: Ember.computed.alias("controllers.mtgTrail.selectedTrail"),
-  levelName: null,
+  addLevelName: "",
+  tBrevet: t("map.menu.mtg.trail.levels.level.basic"),
+  tLevel1: t("map.menu.mtg.trail.levels.level.intermediate"),
+  tLevel2: t("map.menu.mtg.trail.levels.level.advanced"),
+  tLevel3: t("map.menu.mtg.trail.levels.level.master"),
   levels: [],
 
   /**
@@ -67,10 +72,10 @@ export default Ember.Controller.extend({
     var me = this;
     this.store.find('mtgLevel').then(function (storedLevels) {
       if (storedLevels.get('length') === 0) {
-        var brevet = me.store.createRecord('mtgLevel', {name: consts.BREVET, index: 0, selected: true});
-        var lvl1 = me.store.createRecord('mtgLevel', {name: consts.LVL1, index: 1, selected: false});
-        var lvl2 = me.store.createRecord('mtgLevel', {name: consts.LVL2, index: 2, selected: false});
-        var lvl3 = me.store.createRecord('mtgLevel', {name: consts.LVL3, index: 3, selected: false});
+        var brevet = me.store.createRecord('mtgLevel', {name: this.get("tBrevet"), index: 0, selected: true});
+        var lvl1 = me.store.createRecord('mtgLevel', {name: this.get("tLevel1"), index: 1, selected: false});
+        var lvl2 = me.store.createRecord('mtgLevel', {name: this.get("tLevel2"), index: 2, selected: false});
+        var lvl3 = me.store.createRecord('mtgLevel', {name: this.get("tLevel3"), index: 3, selected: false});
         Promise.all([
           brevet.save(),
           lvl1.save(),

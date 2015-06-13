@@ -9,14 +9,26 @@ export default Ember.Controller.extend({
   needs: ["mtgTrail"],
   mtgTrail: Ember.computed.alias("controllers.mtgTrail"),
   items: Ember.computed.alias("controllers.mtgTrail.selectedTrail.items"),
-  itemTypes: [
-    t("map.menu.mtg.trail.items.item.cloth"),
-    t("map.menu.mtg.trail.items.item.leather"),
-    t("map.menu.mtg.trail.items.item.cardboard"),
-    t("map.menu.mtg.trail.items.item.plastic"),
-    t("map.menu.mtg.trail.items.item.wood")
-  ],
-  currentItem: {position: t("map.menu.mtg.trail.items.item.ground"), type: t("map.menu.mtg.trail.items.item.cloth"), description: null},
+
+  itemTypes: [],
+  currentItem: null,
+
+  tGround: t("map.menu.mtg.trail.items.item.ground"),
+  tCloth: t("map.menu.mtg.trail.items.item.cloth"),
+  tLeather: t("map.menu.mtg.trail.items.item.leather"),
+  tCardboard: t("map.menu.mtg.trail.items.item.cardboard"),
+  tPlastic: t("map.menu.mtg.trail.items.item.plastic"),
+  tWood: t("map.menu.mtg.trail.items.item.wood"),
+
+  loadItems: function() {
+    var types = this.get('itemTypes');
+    types.pushObject(this.get('tCloth'));
+    types.pushObject(this.get('tLeather'));
+    types.pushObject(this.get('tCardboard'));
+    types.pushObject(this.get('tPlastic'));
+    types.pushObject(this.get('tWood'));
+    this.set('currentItem', {position: this.get('tGround'), type: this.get("tCloth"), description: null});
+  }.on('init'),
 
   addItem: function () {
     var items = this.get('items');
@@ -24,11 +36,10 @@ export default Ember.Controller.extend({
     var mtgItem = this.store.createRecord('mtgItem', this.get('currentItem'));
     this.get('items').pushObject(mtgItem);
     console.log('new item created ' + mtgItem.get('index'));
-    this.set('currentItem', {position: t("map.menu.mtg.trail.items.item.ground"), type: t("map.menu.mtg.trail.items.item.cloth"), description: null});
+    this.set('currentItem', {position: this.get('tGround'), type: this.get("tCloth"), description: null});
   },
 
   deleteItem: function (itemToDel) {
-    var me = this;
     this.get('items').forEach(function(currentItem) {
       var indexToDel = itemToDel.get('index');
       var currentIndex = currentItem.get("index");

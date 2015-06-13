@@ -41,6 +41,15 @@ export default {
   "map.menu.mtg.trail.items.item.cardboard": 'Cardboard',
   "map.menu.mtg.trail.items.item.plastic": 'Plastic',
   "map.menu.mtg.trail.items.item.wood": 'Wood',
+  "map.menu.mtg.trail.items.item.position.tooltip": "Click on the map where you want to set the item",
+  "map.menu.mtg.trail.items.item.delete.tooltip": "Delete the item",
+  "map.menu.mtg.trail.levels.tooltip": "Select the trail's level",
+  "map.menu.mtg.trail.levels.level.name.placeholder": "Level name",
+  "map.menu.mtg.trail.levels.level.delete": "Delete the level",
+  "map.menu.mtg.trail.levels.level.basic": "Basic",
+  "map.menu.mtg.trail.levels.level.intermediate": "Intermediate",
+  "map.menu.mtg.trail.levels.level.advanced": "Advanced",
+  "map.menu.mtg.trail.levels.level.master": "Master",
 
   'e': ''
 };
