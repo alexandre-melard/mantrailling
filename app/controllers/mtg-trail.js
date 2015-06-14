@@ -212,13 +212,24 @@ export default Ember.Controller.extend({
   },
 
   actions: {
+    addTrailAction: function() {
+      this.addTrail();
+    },
+    deleteTrailAction: function(trail) {
+      this.deleteTrail(trail);
+    },
+    importTrailAction: function() {
+      this.importTrail();
+    },
+    exportTrailAction: function(trail) {
+      this.exportTrail(trail);
+    },
     command: function (command, options) {
       if (command === "trail.add") {
         this.addTrail();
       } else if (command === "trail.open") {
         this.importTrail(options);
       } else if (command === "trail.delete") {
-        this.deleteTrail(options);
       } else if (command === "trail.export") {
         this.exportTrail(options);
       }

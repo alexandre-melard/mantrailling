@@ -1,24 +1,28 @@
-{{#dropdown-list item="Import" icon="import" toggle="tooltip" title="Import a path related ot the selected trail"}}
+{{#dropdown-list item="Import" icon="import" toggle="tooltip" title="map.menu.mtg.trail.tools.import.tooltip"}}
     <ul class="dropdown-menu mtg-trail-tools-import-dropdown">
         <li>
             <table class="table table-hover table-condensed">
                 <tbody>
                 <tr>
                     <td {{action 'trailerTraceImportAction'}}>
-                    <span type="button" data-toggle="tooltip" title="Import the Trailer's Trail"
-                          class="btn btn-pink mtg-trail-import-trailer">
+                    <span type="button"
+                          class="btn btn-pink mtg-trail-import-trailer"
+                          data-toggle="tooltip"
+                          title={{t "map.menu.mtg.trail.tools.import.trailer.tooltip" }}>
                         <img src="assets/images/walk.png" class="inverted" width="16" height="16"/>
                     </span>
-                        Import trailer's track
+                      {{t "map.menu.mtg.trail.tools.import.trailer" }}
                     </td>
                 </tr>
                 <tr>
                     <td {{action 'teamTraceImportAction'}}>
-                    <span type="button" data-toggle="tooltip" title="Import the Team's Trail"
-                          class="btn btn-warning mtg-trail-import-team">
+                    <span type="button"
+                          class="btn btn-warning mtg-trail-import-team"
+                          data-toggle="tooltip"
+                          title={{t "map.menu.mtg.trail.tools.import.team.tooltip" }}>
                         <img src="assets/images/track.png" class="inverted" width="16" height="16"/>
                     </span>
-                        Import team's track
+                      {{t "map.menu.mtg.trail.tools.import.team" }}
                     </td>
                 </tr>
                 </tbody>

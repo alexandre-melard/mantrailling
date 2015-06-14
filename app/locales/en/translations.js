@@ -50,6 +50,20 @@ export default {
   "map.menu.mtg.trail.levels.level.intermediate": "Intermediate",
   "map.menu.mtg.trail.levels.level.advanced": "Advanced",
   "map.menu.mtg.trail.levels.level.master": "Master",
-
+  "map.menu.mtg.trail.delete.tooltip": "Delete the trail",
+  "map.menu.mtg.trail.export.tooltip": "Export the trail to file",
+  "map.menu.mtg.trail.add.tooltip": "Add a trail",
+  "map.menu.mtg.trail.import.tooltip": "Open a trail from a cmp file",
+  "map.menu.mtg.trail.save.tooltip": "Save the current trail in your browser memory",
+  "map.menu.mtg.trail.tools.tooltip": "Tools related to the selected trail",
+  "map.menu.mtg.trail.tools.export.trailer.tooltip": "Export the path related ot the trailer's trail",
+  "map.menu.mtg.trail.tools.import.tooltip": "Import a path related ot the selected trail",
+  "map.menu.mtg.trail.tools.import.trailer.tooltip": "Import the Trailer's Trail",
+  "map.menu.mtg.trail.tools.import.team.tooltip": "Import the Team's Trail",
+  "map.menu.mtg.trail.tools.import.trailer": "Import trailer's track",
+  "map.menu.mtg.trail.tools.import.team": "Import team's track",
+  "map.menu.mtg.trail.tools.trace.team.tooltip": "Draw the Team's Trail",
+  "map.menu.mtg.trail.tools.trace.trailer.tooltip": "Draw the Trailer's Trail",
+  "map.menu.mtg.trail.tooltip": "Manage the trails",
   'e': ''
 };

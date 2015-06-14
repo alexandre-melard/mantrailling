@@ -1,8 +1,10 @@
-{{#dropdown-list item="Tools" icon="th" btn-radius="no-radius" toggle="tooltip" title="Tools related to the selected trail"}}
+{{#dropdown-list item="Tools" icon="th" btn-radius="no-radius" toggle="tooltip" title="map.menu.mtg.trail.tools.tooltip"}}
     <ul class="dropdown-menu mtg-trail-tools-dropdown">
         <li class="btn-group">
           {{render "mtgTrailToolsTraceTrailer" controller="mtgTrace"}}
-          <button type="button" data-toggle="tooltip" data-original-title="{{followPathModeTitle}}"
+          <button type="button"
+                  data-toggle="tooltip"
+                  title="{{followPathModeTitle}}"
                   class="btn btn-brown-red map-draw-follow-path hidden" {{action 'toggleFollowPathMode'}}>
               <span class="glyphicon glyphicon-{{followPathModeIcon}}" aria-hidden="true"></span>
           </button>
