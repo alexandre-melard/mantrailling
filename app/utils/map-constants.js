@@ -74,6 +74,7 @@ export const style = {
     }
   },
   Trailer: {
+    type: "Trailer",
     stroke: {
       color: {
         hexa: '#e727c0',
@@ -108,6 +109,10 @@ export const style = {
         width: 2
       },
       text: {
+        offset: {
+          x: 0,
+          y: 0
+        },
         fill: {
           color: {
             hexa: '#FFFF00'
@@ -130,6 +135,10 @@ export const style = {
         width: 2
       },
       text: {
+        offset: {
+          x: 0,
+          y: 0
+        },
         fill: {
           color: {
             hexa: '#FF0000'
@@ -146,6 +155,7 @@ export const style = {
     }
   },
   Team: {
+    type: "Team",
     stroke: {
       color: {
         hexa: '#ec971f',

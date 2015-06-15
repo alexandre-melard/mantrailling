@@ -72,10 +72,10 @@ export default Ember.Controller.extend({
     var me = this;
     this.store.find('mtgLevel').then(function (storedLevels) {
       if (storedLevels.get('length') === 0) {
-        var brevet = me.store.createRecord('mtgLevel', {name: this.get("tBrevet"), index: 0, selected: true});
-        var lvl1 = me.store.createRecord('mtgLevel', {name: this.get("tLevel1"), index: 1, selected: false});
-        var lvl2 = me.store.createRecord('mtgLevel', {name: this.get("tLevel2"), index: 2, selected: false});
-        var lvl3 = me.store.createRecord('mtgLevel', {name: this.get("tLevel3"), index: 3, selected: false});
+        var brevet = me.store.createRecord('mtgLevel', {name: me.get("tBrevet"), index: 0, selected: true});
+        var lvl1 = me.store.createRecord('mtgLevel', {name: me.get("tLevel1"), index: 1, selected: false});
+        var lvl2 = me.store.createRecord('mtgLevel', {name: me.get("tLevel2"), index: 2, selected: false});
+        var lvl3 = me.store.createRecord('mtgLevel', {name: me.get("tLevel3"), index: 3, selected: false});
         Promise.all([
           brevet.save(),
           lvl1.save(),

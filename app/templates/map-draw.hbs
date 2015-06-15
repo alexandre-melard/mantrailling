@@ -17,10 +17,7 @@
                     class="btn btn-pink map-draw-linestring" {{action 'drawLineStringAction'}}>
                 <img src="assets/images/winding-road.png" class="inverted" width="16" height="16"/>
             </button>
-            <button type="button" data-toggle="tooltip" data-original-title="{{followPathModeTitle}}"
-                    class="btn btn-brown-red map-draw-follow-path hidden" {{action 'toggleFollowPathMode'}}>
-                <span class="glyphicon glyphicon-{{followPathModeIcon}}" aria-hidden="true"></span>
-            </button>
+            {{#path-mode command=command }}{{/path-mode}}
           {{#dropdown-list item="Color" img="assets/images/palette.gif" toggle="tooltip" title="map.menu.draw.palette.tooltip"}}
               <ul {{bind-attr class=":dropdown-menu :map-draw-color-dropdown"}}>
                   <li>

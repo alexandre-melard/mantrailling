@@ -129,7 +129,7 @@ ul.map-layers-dropdown {
 }
 
 .mtg-trail ul.mtg-trail-tools-import-dropdown {
-  width: 200px;
+  width: 240px;
 }
 
 .mtg-trail-tools-import-dropdown button {
@@ -230,7 +230,7 @@ ul.dropdown-menu li {
 
 .map-weather .dropdown-menu {
   display: block;
-  width: 300px;
+  width: 345px;
 }
 
 .map-weather .wind-direction {

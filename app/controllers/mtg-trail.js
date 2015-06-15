@@ -162,7 +162,7 @@ export default Ember.Controller.extend({
       storedTrails.forEach(function (trail) {
         var vectorSource = mapController.createVectorSource();
         var vectorLayer = mapController.createVector(vectorSource);
-        vectorLayer.setStyle(getStyleFunction(me.command));
+        vectorLayer.setStyle(getStyleFunction(me.command, me.i18n));
         trail.layer = vectorLayer;
         trail.load();
         if (trail.get('selected')) {

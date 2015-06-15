@@ -28,14 +28,19 @@ export default Ember.Controller.extend({
   resetColor: null,
   popups: [],
   followPathMode: false,
-  followPathModeTitle: "Draw with straight lines",
-  followPathModeIcon: "plane",
 
   bindCommand: function () {
+    var me = this;
     this.command.register(this, 'map.draw.point', this.drawPoint);
     this.command.register(this, 'map.draw.location', this.drawLocation);
     this.command.register(this, 'map.draw.linestring', this.drawLineString);
     this.command.register(this, 'map.draw.polygon', this.drawPolygon);
+    this.command.register(this, 'map.draw.linestring.mode', function(options) {
+      return new Promise(function (resolve) {
+        me.followPathMode = options.followPathMode;
+        resolve(true);
+      });
+    });
   }.on('init'),
 
   initSelectAndModify: function() {
@@ -360,21 +365,6 @@ export default Ember.Controller.extend({
     },
     changeColor: function (color) {
       this.changeColor(color);
-    },
-    toggleFollowPathMode: function () {
-      this.toggleProperty('followPathMode');
-      if (this.get('followPathMode')) {
-        this.set('followPathModeTitle', "Follow the roads and path (click to switch to straight mode)");
-        this.set('followPathModeIcon', "road");
-      } else {
-        this.set('followPathModeTitle', "Draw with straight lines (click to switch to follow mode)");
-        this.set('followPathModeIcon', "plane");
-      }
-      // Fix tooltip
-      $('.map-draw-follow-path').tooltip('hide')
-        .attr('data-original-title', this.get('followPathModeTitle'))
-        .tooltip('fixTitle')
-        .tooltip('show');
     }
   }
 });
