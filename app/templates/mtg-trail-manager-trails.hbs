@@ -3,13 +3,16 @@
         <td class="mtg-trail-trails-title">{{trail.name}}</td>
         <td class="mtg-trail-tools-buttons">
             <div class="btn-group">
-                <button type="button" toggle="tooltip"
-                        title="Delete the trail from your browser's memory"
-                        class="btn btn-warning" {{action 'command' 'trail.delete' selectedTrail}}>
+                <button type="button"
+                        data-toggle="tooltip"
+                        title={{t "map.menu.mtg.trail.delete.tooltip" }}
+                        class="btn btn-warning" {{action 'deleteTrailAction' selectedTrail}}>
                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                 </button>
-                <button type="button" toggle="tooltip" title="Export the trail to filesystem"
-                        class="btn btn-default" {{action 'command' 'trail.export' selectedTrail}}>
+                <button type="button"
+                        data-toggle="tooltip"
+                        title={{t "map.menu.mtg.trail.export.tooltip"}}
+                        class="btn btn-default" {{action 'exportTrailAction' selectedTrail}}>
                     <span class="glyphicon glyphicon-export" aria-hidden="true"></span>
                 </button>
             </div>

@@ -1,5 +1,8 @@
 {{#if selectedTrail}}
-    <button type="button" class="btn btn-default" {{action 'save' selectedTrail}}>
+    <button type="button"
+            data-toggle="tooltip"
+            title={{t "map.menu.mtg.trail.save.tooltip" }}
+            class="btn btn-default" {{action 'save' selectedTrail}}>
         <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
     </button>
 {{/if}}

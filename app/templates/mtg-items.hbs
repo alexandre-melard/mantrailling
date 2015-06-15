@@ -7,13 +7,16 @@
                     <th></th>
                     <th class="mtg-item-position-container">
                         <div class="btn-group">
-                            <label class="btn btn-default btn-sm mtg-item-position" data-toggle="tooltip" title={{t "map.menu.mtg.trail.items.item.ground.tooltip" }}>
-                              {{ radio-button name='position' value=(t "map.menu.mtg.trail.items.item.ground") groupValue=currentItem.position }}{{t "map.menu.mtg.trail.items.item.ground" }}
+                            <label class="btn btn-default btn-sm mtg-item-position" data-toggle="tooltip"
+                                   title={{t "map.menu.mtg.trail.items.item.ground.tooltip" }}>
+                              {{ radio-button name='position' value=(t "map.menu.mtg.trail.items.item.ground") groupValue=currentItem.position }}{{t "map.menu.mtg.trail.items.item.ground"}}
                             </label>
-                            <label class="btn btn-default btn-sm mtg-item-position" data-toggle="tooltip" title={{t "map.menu.mtg.trail.items.item.suspended.tooltip" }}>
+                            <label class="btn btn-default btn-sm mtg-item-position" data-toggle="tooltip"
+                                   title={{t "map.menu.mtg.trail.items.item.suspended.tooltip" }}>
                               {{ radio-button name='position' value=(t "map.menu.mtg.trail.items.item.suspended") groupValue=currentItem.position }}{{t "map.menu.mtg.trail.items.item.suspended" }}
                             </label>
-                            <label class="btn btn-default btn-sm mtg-item-position" data-toggle="tooltip" title={{t "map.menu.mtg.trail.items.item.hidden.tooltip" }}>
+                            <label class="btn btn-default btn-sm mtg-item-position" data-toggle="tooltip"
+                                   title={{t "map.menu.mtg.trail.items.item.hidden.tooltip" }}>
                               {{ radio-button name='position' value=(t "map.menu.mtg.trail.items.item.hidden") groupValue=currentItem.position }}{{t "map.menu.mtg.trail.items.item.hidden" }}
                             </label>
                         </div>
@@ -47,11 +50,16 @@
                           {{item.description}}
                         </td>
                         <td class="btn-group">
-                            <button type="button" class="btn btn-success btn-sm" {{bind-attr disabled=isPositionDisabled}} {{action 'positionItem' item}}>
+                            <button type="button" class="btn btn-success btn-sm" data-toggle="tooltip"
+                                    title={{t "map.menu.mtg.trail.items.item.position.tooltip" }}
+                                    {{bind-attr disabled=isPositionDisabled}}
+                                    {{action 'positionItem' item}}>
                                 <span class="glyphicon glyphicon-record" aria-hidden="true"></span>
                             </button>
-                            <button type="button" class="btn btn-danger btn-sm" {{action 'deleteItem' item}}>
-                                 <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                            <button type="button" class="btn btn-danger btn-sm" data-toggle="tooltip"
+                                    title={{t "map.menu.mtg.trail.items.item.delete.tooltip" }}
+                                    {{action 'deleteItem' item}}>
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                             </button>
                         </td>
                     </tr>

@@ -1,6 +1,7 @@
 /**
  * Created by A140980 on 04/05/2015.
  */
+
 export const VERSION = "2.3.0";
 
 // Geometrie
@@ -18,10 +19,6 @@ export const TEAM = "Team";
 export const GEO_JSON = "GeoJSON";
 export const KML = "KML";
 export const GPX = "GPX";
-export const BREVET = "Basic";
-export const LVL1 = "Intermediate";
-export const LVL2 = "Advanced";
-export const LVL3 = "Master";
 
 export const COLORS = [
   ["#ffffff", "#000000", "#eeece1", "#1f497d", "#4f81bd", "#c0504d", "#9bbb59", "#8064a2", "#4bacc6", "#f79646", "#ffff00"],

@@ -460,3 +460,7 @@ label.mtg-item-position input[type="radio"] {
   filter: brightness(0) invert(100%);
   -webkit-filter: brightness(0) invert(100%);
 }
+
+.width-full {
+  width: 100%;
+}
