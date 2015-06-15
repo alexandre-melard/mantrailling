@@ -4,8 +4,9 @@
 import * as consts from '../utils/map-constants';
 import calcBrightness from "../utils/color-get-brightness";
 import getRGBColor from "../utils/color-get-rgb";
+import t from "../utils/i18n-utils";
 
-export default function (command) {
+export default function (command, i18n) {
   var markerStyle = function (geometry, feature) {
     return [new ol.style.Style({
       image: new ol.style.Icon(({
@@ -151,6 +152,19 @@ export default function (command) {
             rgb = getRGBColor(style.start.color);
             styles.push(new ol.style.Style({
               geometry: new ol.geom.Point(start),
+              text: new ol.style.Text({
+                offsetX: parseInt(style.text.offset.x) || 0,
+                offsetY: parseInt(style.text.offset.y) || 0,
+                font: style.text.font || '18px Calibri,sans-serif',
+                text: t(i18n, style.start.label),
+                fill: new ol.style.Fill({
+                  color: style.start.text.fill.color.hexa || '#000000'
+                }),
+                stroke: new ol.style.Stroke({
+                  color: (calcBrightness(getRGBColor(style.start.text.stroke.color.hexa || '#000000')) < 220) ? "#FFFFFF" : "#000000",
+                  width: parseInt(style.text.stroke.width) || 4
+                })
+              }),
               image: new ol.style.Circle({
                 radius: parseInt(style.start.radius),
                 fill: new ol.style.Fill({
@@ -169,6 +183,19 @@ export default function (command) {
             rgb = getRGBColor(style.end.color);
             styles.push(new ol.style.Style({
               geometry: new ol.geom.Point(end),
+              text: new ol.style.Text({
+                offsetX: parseInt(style.text.offset.x) || 0,
+                offsetY: parseInt(style.text.offset.y) || 0,
+                font: style.text.font || '18px Calibri,sans-serif',
+                text: t(i18n, style.end.label),
+                fill: new ol.style.Fill({
+                  color: style.end.text.fill.color.hexa || '#000000'
+                }),
+                stroke: new ol.style.Stroke({
+                  color: (calcBrightness(getRGBColor(style.end.text.stroke.color.hexa || '#000000')) < 220) ? "#FFFFFF" : "#000000",
+                  width: parseInt(style.text.stroke.width) || 4
+                })
+              }),
               image: new ol.style.Circle({
                 radius: parseInt(style.end.radius),
                 fill: new ol.style.Fill({

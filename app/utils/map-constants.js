@@ -100,19 +100,48 @@ export const style = {
       }
     },
     start: {
+      label: 'map.mtg.trail.trailer.start',
       color: '#FFFF00',
       radius: 10,
       opacity: 0.5,
       stroke: {
         width: 2
+      },
+      text: {
+        fill: {
+          color: {
+            hexa: '#FFFF00'
+          }
+        },
+        stroke: {
+          color: {
+            hexa: '#FFFF00'
+          },
+          width: 2
+        }
       }
     },
     end: {
+      label: 'map.mtg.trail.trailer.end',
       color: '#FF0000',
       radius: 10,
       opacity: 0.5,
       stroke: {
         width: 2
+      },
+      text: {
+        fill: {
+          color: {
+            hexa: '#FF0000'
+          },
+          width: 2
+        },
+        stroke: {
+          color: {
+            hexa: '#FF0000'
+          },
+          width: 2
+        }
       }
     }
   },

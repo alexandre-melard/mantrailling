@@ -65,5 +65,7 @@ export default {
   "map.menu.mtg.trail.tools.trace.team.tooltip": "Dessiner la piste de l'equipe",
   "map.menu.mtg.trail.tools.trace.trailer.tooltip": "Dessiner la piste du traceur",
   "map.menu.mtg.trail.tooltip": "Gérer les pistes",
-    'e': ''
+  "map.mtg.trail.trailer.start": "Départ",
+  "map.mtg.trail.trailer.end": "Arrivée",
+  'e': ''
 };

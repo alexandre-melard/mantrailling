@@ -65,5 +65,7 @@ export default {
   "map.menu.mtg.trail.tools.trace.team.tooltip": "Draw the Team's Trail",
   "map.menu.mtg.trail.tools.trace.trailer.tooltip": "Draw the Trailer's Trail",
   "map.menu.mtg.trail.tooltip": "Manage the trails",
+  "map.mtg.trail.trailer.start": "Start",
+  "map.mtg.trail.trailer.end": "End",
   'e': ''
 };
