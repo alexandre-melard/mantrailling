@@ -289,7 +289,9 @@ export default Ember.Controller.extend({
         var geometry = feature.getGeometry();
         var label = labelFunction(me.get('map').getView().getProjection(), geometry);
         feature.set('label', label);
-        options.type = what;
+        if (options.type === undefined) {
+          options.type = what;
+        }
         if (me.get('color') !== null) {
           feature.set('color', me.get('color'));
         }

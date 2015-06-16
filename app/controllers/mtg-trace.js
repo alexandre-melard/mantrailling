@@ -11,6 +11,8 @@ export default Ember.Controller.extend({
   mtgTrail: Ember.computed.alias("controllers.mtgTrail"),
   map: Ember.computed.alias("controllers.mtgTrail.map"),
   formats: [consts.GPX],
+  isInfoLength: false,
+  isInfoLocation: false,
 
   onCreatePathStart: function (type, options) {
     var me = this;
@@ -58,10 +60,11 @@ export default Ember.Controller.extend({
       });
     });
     this.command.register(this, 'map.linestring.change', function (options) {
+      var me = this;
       return new Promise(function () {
         var geometry = options.feature.getGeometry();
         var length = formatLength(me.get('map').getView().getProjection(), geometry);
-        if (options.feature.get('label') !== length) {
+        if (options.feature.get('label') !== length || !me.get('isInfoLength')) {
           options.feature.set('label', length);
           if (options.feature.get('extensions').type === consts.TRAILER) {
             me.command.send('map.info.length', {
@@ -77,13 +80,17 @@ export default Ember.Controller.extend({
       });
     });
     this.command.register(this, 'map.info.length', function (options) {
+      var me = this;
       return new Promise(function (resolve) {
+        me.set('isInfoLength', true);
         me.get('mtgTrail').get('selectedTrail').set('length', options.length);
         resolve(true);
       });
     });
     this.command.register(this, 'map.info.location', function (options) {
+      var me = this;
       return new Promise(function (resolve) {
+        me.set('isInfoLocation', true);
         me.get('mtgTrail').get('selectedTrail').set('location', options.location);
         resolve(true);
       });
