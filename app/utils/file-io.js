@@ -9,10 +9,10 @@ export default {
     a.click();
   },
 
-  read: function (resolve, fail) {
-    $('#input-file').on("change", function (evt) {
+  read: function (type, resolve, fail) {
+    $('#input-file-' + type).on("change", function (evt) {
       // Check for the various File API support.
-      $('#input-file').off("change");
+      $('#input-file-' + type).off("change");
       if (window.File && window.FileReader) {
         // Great success! All the File APIs are supported.
         var f = evt.target.files[0];
@@ -32,6 +32,6 @@ export default {
         fail('The File APIs are not fully supported in this browser.');
       }
     });
-    $('#input-file').click();
+    $('#input-file-' + type).click();
   }
 };

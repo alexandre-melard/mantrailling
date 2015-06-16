@@ -104,7 +104,7 @@ export default Ember.Controller.extend({
   selectedTrail: function (key, value, previousValue) {
     if (this.get('trails').length === 0) {
       console.log("no trail has been defined yet, please create a trail first");
-      return false;
+      return null;
     }
     if (arguments.length <= 1) {
       value = this.get('trails').findBy('selected', true);
@@ -139,7 +139,7 @@ export default Ember.Controller.extend({
 
   importTrail: function (options) {
     var me = this;
-    file.read(function (data) {
+    file.read('cmp', function (data) {
       var json = JSON.parse(data);
       me.store.find('mtgTrail', json.id).then(function (mtgTrail) {
         console.log('trail exists already');

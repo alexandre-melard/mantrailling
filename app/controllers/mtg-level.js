@@ -59,7 +59,6 @@ export default Ember.Controller.extend({
       this.get('levels').forEach(function (t) {
         if (t === value) {
           t.set('selected', true);
-          me.get('selectedTrail').set('level', t);
         } else {
           t.set('selected', false);
         }
@@ -67,6 +66,26 @@ export default Ember.Controller.extend({
     }
     return value;
   }.property('levels.@each.selected'),
+
+  onSelectLevel: function() {
+    var selectedTrail = this.get('selectedTrail');
+    if (selectedTrail === null) {
+      return;
+    }
+    selectedTrail.set('level', this.get('selectedLevel'));
+  }.observes('selectedLevel'),
+
+  onSelectTrail: function() {
+    var selectedTrail = this.get('selectedTrail');
+    if (selectedTrail === null) {
+      return;
+    }
+    if (selectedTrail.get('level') !== null) {
+      this.set('selectedLevel', selectedTrail.get('level'));
+    } else {
+      selectedTrail.set('level', this.get('levels').objectAt(0));
+    }
+  }.observes('selectedTrail'),
 
   loadLevels: function () {
     var me = this;
@@ -86,13 +105,9 @@ export default Ember.Controller.extend({
           me.get('levels').pushObject(lvl1);
           me.get('levels').pushObject(lvl2);
           me.get('levels').pushObject(lvl3);
-          me.get('selectedTrail').set('level', brevet);
         });
       } else {
         me.set('levels', storedLevels.sortBy('index'));
-        if (me.get('selectedTrail').get('level') !== null) {
-          me.set('selectedLevel', me.get('selectedTrail').get('level'));
-        }
       }
     });
   },

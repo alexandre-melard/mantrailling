@@ -112,7 +112,7 @@ export default Ember.Controller.extend({
 
   importTrace: function (type, trail) {
     var me = this;
-    file.read(function(gpx) {
+    file.read('gpx', function(gpx) {
       var mapLineString = trail.get(type);
       if (mapLineString === null) {
         mapLineString = me.store.createRecord('mapLinestring');

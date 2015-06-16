@@ -14,7 +14,7 @@ import formatArea from "../utils/map-format-area";
 export default Ember.Controller.extend({
 
   needs: ['map', 'mtgTrail'],
-  map: Ember.computed.alias("controllers.mtgTrail.map"),
+  map: Ember.computed.alias("controllers.map.map"),
   currentLayer: Ember.computed.alias("controllers.map.currentLayer"),
   olDraw: null,
   mtgDrawState: null,
@@ -45,10 +45,12 @@ export default Ember.Controller.extend({
 
   initSelectAndModify: function() {
     var map = this.get('map');
-    map.addInteraction(this.get('select'));
-    map.addInteraction(this.get('modify'));
-    this.changeCursorOnFeature();
-  }.on('init'),
+    if (map !== null) {
+      map.addInteraction(this.get('select'));
+      map.addInteraction(this.get('modify'));
+      this.changeCursorOnFeature();
+    }
+  }.observes('map'),
 
   onGeometryChange: function () {
     var map = this.get('map');

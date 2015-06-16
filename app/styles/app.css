@@ -219,7 +219,11 @@ ul.dropdown-menu li {
 }
 
 .hidden {
-  visibility: hidden;
+  display: none;
+}
+
+.visible {
+  display: inline;
 }
 
 .map-weather td {

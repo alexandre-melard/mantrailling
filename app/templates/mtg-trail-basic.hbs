@@ -17,11 +17,10 @@
         </li>
     </ul>
 {{/dropdown-list}}
-{{#if selectedTrail}}
+<div class={{if selectedTrail "visible btn-group" "hidden"}}>
   {{render "mtgTrailToolsTraceTrailer" controller="mtgTrace"}}
   {{render "mapDrawBasic" controller="mapDraw"}}
   {{render 'mtgLevels' controller="mtgLevel"}}
   {{render 'mtgItems' controller="mtgItem"}}
   {{render "mtgTrailSave" controller="mtgTrail"}}
-{{/if}}
-
+</div>

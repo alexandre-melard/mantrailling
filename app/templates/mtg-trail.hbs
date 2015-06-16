@@ -1,6 +1,5 @@
 {{render "mtgTrailManager" controller="mtgTrail"}}
-{{#if selectedTrail}}
+<div class={{if selectedTrail "visible btn-group" "hidden"}}>
   {{render "mtgTrailTools" controller="mtgTrail"}}
   {{render "mapDraw" controller="mapDraw"}}
-{{/if}}
-
+</div>
