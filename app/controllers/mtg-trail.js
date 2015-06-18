@@ -213,6 +213,9 @@ export default Ember.Controller.extend({
     addTrailAction: function () {
       this.addTrail();
     },
+    renameTrailAction: function (id) {
+      $("#" + id).editable('toggle');
+    },
     deleteTrailAction: function (trail) {
       this.deleteTrail(trail);
     },
