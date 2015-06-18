@@ -71,6 +71,7 @@ let Trail = DS.Model.extend({
 
   load: function () {
     var me = this;
+    var promises = [];
     var layer = this.layer;
     if (this.get('version') !== consts.VERSION) {
       console.log("major version change, deleting model");
@@ -80,17 +81,19 @@ let Trail = DS.Model.extend({
     }
     if (me.get('items') !== null) {
       me.get("items").forEach(function (i) {
-        i.load(me.get('layer'));
+        promises.pushObject(i.load(me.get('layer')));
       });
     }
     var mapDraw = this.get('mapDraw');
     if (mapDraw !== null) {
-      mapDraw.load(layer);
+      promises.pushObject(mapDraw.load(layer));
     }
     [consts.TRAILER, consts.TEAM].map(function (type) {
       var item = me.get(type);
       if (item !== null) {
-        item.loadGPX().then(function (feature) {
+        var loadGPXPromise = item.loadGPX();
+        promises.pushObject(loadGPXPromise);
+        loadGPXPromise.then(function (feature) {
           feature.get('extensions').type = type;
 
           // add the feature to the feature's layer
@@ -107,6 +110,7 @@ let Trail = DS.Model.extend({
         });
       }
     });
+    return Promise.all(promises);
   },
 
   export: function () {

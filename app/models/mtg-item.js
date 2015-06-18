@@ -31,12 +31,15 @@ export default DS.Model.extend({
   }.on('init'),
 
   load: function (layer) {
-    var mapPoint = this.get('location');
-    if (mapPoint !== null) {
-      this.store.find('mapPoint', mapPoint.id).then(function (mp) {
-        mp.loadGeoJSON(layer);
-      });
-    }
+    var me = this;
+    return new Promise(function(resolve) {
+      var mapPoint = me.get('location');
+      if (mapPoint !== null) {
+        me.store.find('mapPoint', mapPoint.id).then(function (mp) {
+         resolve(mp.loadGeoJSON(layer));
+        });
+      }
+    });
   },
 
   serialize: function () {

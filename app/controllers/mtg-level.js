@@ -77,7 +77,7 @@ export default Ember.Controller.extend({
 
   onSelectTrail: function() {
     var selectedTrail = this.get('selectedTrail');
-    if (selectedTrail === null) {
+    if (selectedTrail === undefined || selectedTrail === null ) {
       return;
     }
     if (selectedTrail.get('level') !== null) {

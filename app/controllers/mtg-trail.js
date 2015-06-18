@@ -162,11 +162,12 @@ export default Ember.Controller.extend({
       var vectorLayer = mapController.createVector(vectorSource);
       vectorLayer.setStyle(getStyleFunction(me.command, me.i18n));
       trail.layer = vectorLayer;
-      trail.load();
-      if (trail.get('selected')) {
-        me.changeActiveTrail(trail, me);
-      }
-      trails.pushObject(trail);
+      trail.load().then(function() {
+        if (trail.get('selected')) {
+          me.changeActiveTrail(trail, me);
+        }
+        trails.pushObject(trail);
+      });
     });
   },
 
@@ -220,16 +221,6 @@ export default Ember.Controller.extend({
     },
     exportTrailAction: function (trail) {
       this.exportTrail(trail);
-    },
-    command: function (command, options) {
-      if (command === "trail.add") {
-        this.addTrail();
-      } else if (command === "trail.open") {
-        this.importTrail(options);
-      } else if (command === "trail.delete") {
-      } else if (command === "trail.export") {
-        this.exportTrail(options);
-      }
     },
     changeTrack: function (trail) {
       this.changeActiveTrail(trail);
