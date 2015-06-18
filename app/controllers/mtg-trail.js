@@ -11,7 +11,7 @@ export default Ember.Controller.extend({
 
   needs: ['map', 'mapDraw'],
   layer: Ember.computed.alias("controllers.map.currentLayer"),
-  map:  Ember.computed.alias("controllers.map.map"),
+  map: Ember.computed.alias("controllers.map.map"),
   addTrailName: null,
   trails: [],
   formats: [consts.GPX],
@@ -157,19 +157,16 @@ export default Ember.Controller.extend({
     var me = this;
     var mapController = this.get('controllers.map');
     var trails = this.get('trails');
-    var storedTrails = this.store.find('mtgTrail');
-    storedTrails.then(function (storedTrails) {
-      storedTrails.forEach(function (trail) {
-        var vectorSource = mapController.createVectorSource();
-        var vectorLayer = mapController.createVector(vectorSource);
-        vectorLayer.setStyle(getStyleFunction(me.command, me.i18n));
-        trail.layer = vectorLayer;
-        trail.load();
-        if (trail.get('selected')) {
-          me.changeActiveTrail(trail, me);
-        }
-        trails.pushObject(trail);
-      });
+    this.store.all('mtgTrail').forEach(function (trail) {
+      var vectorSource = mapController.createVectorSource();
+      var vectorLayer = mapController.createVector(vectorSource);
+      vectorLayer.setStyle(getStyleFunction(me.command, me.i18n));
+      trail.layer = vectorLayer;
+      trail.load();
+      if (trail.get('selected')) {
+        me.changeActiveTrail(trail, me);
+      }
+      trails.pushObject(trail);
     });
   },
 
@@ -212,16 +209,16 @@ export default Ember.Controller.extend({
   },
 
   actions: {
-    addTrailAction: function() {
+    addTrailAction: function () {
       this.addTrail();
     },
-    deleteTrailAction: function(trail) {
+    deleteTrailAction: function (trail) {
       this.deleteTrail(trail);
     },
-    importTrailAction: function() {
+    importTrailAction: function () {
       this.importTrail();
     },
-    exportTrailAction: function(trail) {
+    exportTrailAction: function (trail) {
       this.exportTrail(trail);
     },
     command: function (command, options) {
