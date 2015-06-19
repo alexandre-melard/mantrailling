@@ -169,6 +169,14 @@ ul.mtg-trail-trails-dropdown, ul.mtg-trail-level-dropdown {
   width: 370px;
 }
 
+.mtg-trail-trails-select {
+  width: 45px;
+}
+
+.mtg-trail-trails-name {
+  width: 180px;
+}
+
 .mtg-trail-tools-buttons {
  text-align: right;
 }

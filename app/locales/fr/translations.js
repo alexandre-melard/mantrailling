@@ -54,6 +54,7 @@ export default {
   "map.menu.mtg.trail.export.tooltip": "Exporter la piste dans un fichier cmp",
   "map.menu.mtg.trail.add.tooltip": "Ajouter une piste",
   "map.menu.mtg.trail.import.tooltip": "Ouvrir une piste d'après un fichier .cmp",
+  "map.menu.mtg.trail.select.tooltip": "Selectionner la piste",
   "map.menu.mtg.trail.save.tooltip": "Sauvegarde la piste courante dans la mémoire du navigateur",
   "map.menu.mtg.trail.tools.tooltip": "Outils relatif à la piste selectionnée",
   "map.menu.mtg.trail.tools.export.trailer.tooltip": "Exporter la piste courante au format GPS",

@@ -1,12 +1,20 @@
 {{#each trails as |trail|}}
-    <tr class={{if trail.selected 'success' ''}} {{action 'changeTrack' trail}}>
-        <td class="mtg-trail-trails-title" id={{trail.id}}>{{trail.name}}</td>
+    <tr class={{if trail.selected 'success' ''}}>
+        <td class="mtg-trail-trails-select">
+            <button type="button"
+                    data-toggle="tooltip"
+                    title={{t "map.menu.mtg.trail.select.tooltip" }}
+                    class="btn btn-default" {{action 'changeTrack' trail}}>
+            <span class="glyphicon glyphicon-hand-up" aria-hidden="true"></span>
+            </button>
+        </td>
+        <td class="mtg-trail-trails-name"><span id={{trail.id}}>{{trail.name}}</span></td>
         <td class="mtg-trail-tools-buttons">
             <div class="btn-group">
                 <button type="button"
                         data-toggle="tooltip"
                         title={{t "map.menu.mtg.trail.rename.tooltip" }}
-                                class="btn btn-default" {{action 'renameTrailAction' trail.id}}>
+                                class="btn btn-default" {{action 'renameTrailAction' trail bubbles=false}}>
                 <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                 </button>
                 <button type="button"

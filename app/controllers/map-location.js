@@ -57,17 +57,18 @@ export default Ember.Controller.extend({
     var re = /(\d+)° (\d+)′ (\d+)″ \w+ (\d+)° (\d+)′ (\d+)″ \w+/;
     if (re.test(location)) {
       var match = re.exec(location);
-      var lat = parseFloat(match[1]) + parseFloat(match[2])/60.0 + parseFloat(match[3])/3600.0 * 1/1000000;
-      var lon = parseFloat(match[4]) + parseFloat(match[5])/60.0 + parseFloat(match[6])/3600.0 * 1/1000000;
+      var lat = parseFloat(match[1]) + parseFloat(match[2])/60.0 + parseFloat(match[3])/3600.0;
+      var lon = parseFloat(match[4]) + parseFloat(match[5])/60.0 + parseFloat(match[6])/3600.0;
       me.centerTo(map, lat, lon, me);
+    } else {
+      getLatLng(location).then(function (latLng) {
+        var lat = parseFloat(latLng.lat);
+        var lon = parseFloat(latLng.lng);
+        me.centerTo(map, lat, lon, me);
+      }, function (reason) {
+        console.log(reason);
+      });
     }
-    getLatLng(location).then(function (latLng) {
-      var lat = parseFloat(latLng.lat);
-      var lon = parseFloat(latLng.lng);
-      me.centerTo(map, lat, lon, me);
-    }, function (reason) {
-      console.log(reason);
-    });
   },
 
   gpsLocation: function () {

@@ -139,15 +139,24 @@ export default Ember.Controller.extend({
 
   importTrail: function (options) {
     var me = this;
+    var mapController = this.get('controllers.map');
+    var trails = this.get('trails');
     file.read('cmp', function (data) {
       var json = JSON.parse(data);
       me.store.find('mtgTrail', json.id).then(function (mtgTrail) {
         console.log('trail exists already');
       }, function () {
-        me.store.createRecord('mtgTrail').unserialize(json, me.get("layer")).then(function (mtgTrail) {
-          mtgTrail.save();
-          me.get('trails').pushObject(mtgTrail);
-          me.set("selectedTrail", mtgTrail);
+        var trail = me.store.createRecord('mtgTrail');
+        var vectorSource = mapController.createVectorSource();
+        var vectorLayer = mapController.createVector(vectorSource);
+        vectorLayer.setStyle(getStyleFunction(me.command, me.i18n));
+        trail.layer = vectorLayer;
+        trail.unserialize(json).then(function () {
+          trail.save();
+          if (trail.get('selected')) {
+            me.changeActiveTrail(trail, me);
+          }
+          trails.pushObject(trail);
         });
       });
     });
@@ -213,8 +222,17 @@ export default Ember.Controller.extend({
     addTrailAction: function () {
       this.addTrail();
     },
-    renameTrailAction: function (id) {
-      $("#" + id).editable('toggle');
+    renameTrailAction: function (trail) {
+      $("#" + trail.id).editable({
+        type: 'text',
+        title: 'Entrez le nom de la piste',
+        toggle: 'manual',
+        success: function (response, newValue) {
+          trail.set('name', newValue);
+          console.log("renamed trail:" + newValue);
+        }
+      });
+      $("#" + trail.id).editable('toggle');
     },
     deleteTrailAction: function (trail) {
       this.deleteTrail(trail);

@@ -128,10 +128,10 @@ let Trail = DS.Model.extend({
     });
   },
 
-  unserialize: function (json, layer) {
+  unserialize: function (json) {
     var me = this;
     return new Promise(function (resolve) {
-      me.layer = layer;
+      var layer = me.layer;
 
       me.set("version", json.version);
       me.set("name", json.name);
