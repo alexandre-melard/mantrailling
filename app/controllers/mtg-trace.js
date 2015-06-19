@@ -59,6 +59,20 @@ export default Ember.Controller.extend({
         });
       });
     });
+    this.command.register(this, 'map.linestring.remove', function (options) {
+      var me = this;
+      return new Promise(function () {
+        if (options.feature.get('extensions').type === consts.TRAILER) {
+          me.command.send('map.info.length', {
+            length: 0
+          });
+          me.command.send('map.info.location', {
+            location: ""
+          });
+        }
+
+      });
+    });
     this.command.register(this, 'map.linestring.change', function (options) {
       var me = this;
       return new Promise(function () {

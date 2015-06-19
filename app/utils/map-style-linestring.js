@@ -6,10 +6,6 @@ import getRGBColor from "../utils/color-get-rgb";
 import t from "../utils/i18n-utils";
 
 export default function (command, i18n, geometry, feature) {
-  // mise à jour de la longeur de piste dans le trail et de la position de piste dans le trail
-  feature.on('change', function (e) {
-    command.send('map.linestring.change', {feature: e.currentTarget});
-  });
   var styles = [];
   var label = feature.get('label');
   var style = feature.get('extensions');

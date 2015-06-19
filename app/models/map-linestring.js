@@ -11,6 +11,18 @@ export default GeoJSON.extend({
   gpx: DS.attr('string'), // XML GPS exchange format
   mapDraw: DS.belongsTo('mapDraw'),
 
+  registerCommands: function() {
+    var me = this;
+    this.command.register(this, 'map.feature.remove', function (options) {
+      return new Promise(function (resolve) {
+        if (options.feature.getId() === me.feature.getId()) {
+          me.command.send('map.linestring.remove', {feature: me.feature});
+          resolve(true);
+        }
+      });
+    });
+  }.on('init'),
+
   removeFromMap: function(layer) {
     this.set('gpx', null);
     this._super(layer);

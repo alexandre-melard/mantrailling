@@ -81,9 +81,9 @@ export default Ember.Controller.extend({
   },
 
   deleteSelectionFactory: function(features, vector, me) {
+    var me = this;
     this.deleteSelection = function(event) {
       if (event.keyCode === 46) {
-
         // remove all selected features from select and vector
         features.forEach(function (feature) {
           features.remove(feature);
@@ -183,6 +183,10 @@ export default Ember.Controller.extend({
         // set sketch
         var feature = evt.feature;
         var geom = feature.getGeometry();
+
+        feature.on('change', function (e) {
+          this.command.send('map.linestring.change', {feature: e.currentTarget});
+        }, this);
 
         if (this.get('onDrawStart') !== null) {
           this.get('onDrawStart')(feature);
@@ -300,13 +304,7 @@ export default Ember.Controller.extend({
         me.get('currentLayer').getSource().removeFeature(options.removeFeature);
       }
       me.set('mtgDrawState', what);
-      me.set('onDrawStart', function () {
-        me.set('onDrawStart', null);
-      });
-      me.set('onDrawEnd', function (feature) {
-        var geometry = feature.getGeometry();
-        var label = labelFunction(me.get('map').getView().getProjection(), geometry);
-        feature.set('label', label);
+      me.set('onDrawStart', function (feature) {
         if (options.type === undefined) {
           options.type = what;
         }
@@ -314,6 +312,12 @@ export default Ember.Controller.extend({
           feature.set('color', me.get('color'));
         }
         feature.set('extensions', options);
+        me.set('onDrawStart', null);
+      });
+      me.set('onDrawEnd', function (feature) {
+        var geometry = feature.getGeometry();
+        var label = labelFunction(me.get('map').getView().getProjection(), geometry);
+        feature.set('label', label);
         me.set('onDrawEnd', null);
         resolve(feature);
       });

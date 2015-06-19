@@ -54,6 +54,8 @@ export default {
   "map.menu.mtg.trail.export.tooltip": "Export the trail to file",
   "map.menu.mtg.trail.add.tooltip": "Add a trail",
   "map.menu.mtg.trail.import.tooltip": "Open a trail from a cmp file",
+  "map.menu.mtg.trail.select.tooltip": "Select the trail",
+  "map.menu.mtg.trail.rename.tooltip": "Rename the trail",
   "map.menu.mtg.trail.save.tooltip": "Save the current trail in your browser memory",
   "map.menu.mtg.trail.tools.tooltip": "Tools related to the selected trail",
   "map.menu.mtg.trail.tools.export.trailer.tooltip": "Export the path related ot the trailer's trail",
