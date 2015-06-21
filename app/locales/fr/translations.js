@@ -15,6 +15,7 @@ export default {
   "map.menu.location.search.tooltip": "Recherche d'une adresse",
   'map.menu.location.info.tooltip': "Récupérer la position GPS sur la carte",
   'map.menu.location.gps.tooltip': "Afficher et suivre votre position GPS",
+  'map.location.coordinates.tooltip': "Cliquer quelque part sur la carte pour obtenir les coordonnées GPS du lieu",
   "map.menu.weather.tooltip": "Récupérer la météo à une date donnée correspondant au centre de la carte",
   "map.menu.weather.get": "Récupérer",
   "map.menu.weather.result.time": "Heure (hhmm)",

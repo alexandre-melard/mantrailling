@@ -40,7 +40,7 @@ export default Ember.Controller.extend({
         resolve(true);
       });
     });
-    this.command.register(this, 'map.draw.polygon.create', function (options) {
+    this.command.register(this, 'map.draw.polygon.created', function (options) {
       var feature = options.feature;
       var trail = me.get('selectedTrail');
       return new Promise(function (resolve) {
@@ -54,7 +54,7 @@ export default Ember.Controller.extend({
         });
       });
     });
-    this.command.register(this, 'map.draw.point.create', function (options) {
+    this.command.register(this, 'map.draw.point.created', function (options) {
       var feature = options.feature;
       var trail = me.get('selectedTrail');
       return new Promise(function (resolve) {

@@ -45,7 +45,7 @@ export default Ember.Controller.extend({
 
   bindCommand: function () {
     var me = this;
-    this.command.register(this, 'map.draw.linestring.create', function (options) {
+    this.command.register(this, 'map.draw.linestring.created', function (options) {
       var feature = options.feature;
       var trail = me.get('mtgTrail').get('selectedTrail');
       return new Promise(function (resolve) {

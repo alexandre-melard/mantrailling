@@ -15,6 +15,7 @@ export default {
   "map.menu.location.search.tooltip": "Place Lookup",
   'map.menu.location.info.tooltip': "Get address on map",
   'map.menu.location.gps.tooltip': "Track GPS location",
+  'map.location.coordinates.tooltip': "Click on the map to get the coordinates",
   "map.menu.weather.tooltip": "Select the weather registered from the map's center",
   "map.menu.weather.get": "Get",
   "map.menu.weather.result.time": "Time (hhmm)",

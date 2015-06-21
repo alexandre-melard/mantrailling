@@ -29,6 +29,50 @@ export default Ember.Controller.extend({
   popups: [],
   followPathMode: false,
 
+  bindActions: function () {
+    var me = this;
+    this.command.register(this, 'actions.map.draw.point', function (options) {
+      var me = this;
+      return new Promise(function (resolve) {
+        me.command.send('map.draw.point', {style: consts.style[consts.POINT]}, function (feature) {
+          console.log("point created");
+          me.command.send('map.draw.point.created', {feature: feature});
+        });
+      });
+    });
+    this.command.register(this, 'actions.map.draw.polygon', function (options) {
+      var me = this;
+      return new Promise(function (resolve) {
+        me.command.send('map.draw.polygon', consts.style[consts.POLYGON], function (feature) {
+          console.log("polygon created");
+          me.command.send('map.draw.polygon.created', {feature: feature});
+        });
+      });
+    });
+    this.command.register(this, 'actions.map.draw.linestring', function (options) {
+      var me = this;
+      return new Promise(function (resolve) {
+        $(".map-draw-linestring").addClass('hidden');
+        $(".map-draw-follow-path").removeClass('hidden');
+        me.command.send('map.draw.linestring', consts.style[consts.LINE_STRING], function (feature) {
+          console.log("line string created");
+          me.command.send('map.draw.linestring.created', {feature: feature}, function () {
+            $(".map-draw-follow-path").addClass('hidden');
+            $(".map-draw-linestring").removeClass('hidden');
+            resolve(this);
+          });
+        });
+      });
+    });
+    this.command.register(this, 'actions.map.draw.color', function (color) {
+      var me = this;
+      return new Promise(function (resolve) {
+        me.changeColor(color);
+        resolve(this);
+      });
+    });
+  }.on('init'),
+
   bindCommand: function () {
     var me = this;
     this.command.register(this, 'map.draw.point', this.drawPoint);
@@ -80,9 +124,9 @@ export default Ember.Controller.extend({
     });
   },
 
-  deleteSelectionFactory: function(features, vector, me) {
+  deleteSelectionFactory: function (features, vector, me) {
     var me = this;
-    this.deleteSelection = function(event) {
+    this.deleteSelection = function (event) {
       if (event.keyCode === 46) {
         // remove all selected features from select and vector
         features.forEach(function (feature) {
@@ -150,8 +194,8 @@ export default Ember.Controller.extend({
     }
   }),
 
-  removeLastPointFactory: function(geom) {
-    this.removeLastPoint = function(event) {
+  removeLastPointFactory: function (geom) {
+    this.removeLastPoint = function (event) {
       if (event.keyCode === 27) {
         if (geom.getType() === consts.LINE_STRING) {
           var coords = geom.getCoordinates();
@@ -184,10 +228,11 @@ export default Ember.Controller.extend({
         var feature = evt.feature;
         var geom = feature.getGeometry();
 
-        feature.on('change', function (e) {
-          this.command.send('map.linestring.change', {feature: e.currentTarget});
-        }, this);
-
+        if (geom.getType() === consts.LINE_STRING) {
+          feature.on('change', function (e) {
+            this.command.send('map.linestring.change', {feature: e.currentTarget});
+          }, this);
+        }
         if (this.get('onDrawStart') !== null) {
           this.get('onDrawStart')(feature);
         }
@@ -362,33 +407,16 @@ export default Ember.Controller.extend({
 
   actions: {
     drawLineStringAction: function () {
-      var me = this;
-      $(".map-draw-linestring").addClass('hidden');
-      $(".map-draw-follow-path").removeClass('hidden');
-      this.drawLineString(consts.style[consts.LINE_STRING]).then(function (feature) {
-        console.log("line string created");
-        me.command.send('map.draw.linestring.create', {feature: feature}, function () {
-          $(".map-draw-follow-path").addClass('hidden');
-          $(".map-draw-linestring").removeClass('hidden');
-        });
-      });
+      this.command.send('actions.map.draw.linestring');
     },
     drawPolygonAction: function () {
-      var me = this;
-      this.drawPolygon(consts.style[consts.POLYGON]).then(function (feature) {
-        console.log("polygon created");
-        me.command.send('map.draw.polygon.create', {feature: feature});
-      });
+      this.command.send('actions.map.draw.polygon');
     },
     drawPointAction: function () {
-      var me = this;
-      this.drawPoint({style: consts.style[consts.POINT]}).then(function (feature) {
-        console.log("point created");
-        me.command.send('map.draw.point.create', {feature: feature});
-      });
+      this.command.send('actions.map.draw.point');
     },
     changeColor: function (color) {
-      this.changeColor(color);
+      this.command.send('actions.map.draw.color', color);
     }
   }
 });
