@@ -29,6 +29,7 @@ export default {
   "map.menu.weather.result.visibility": "Visibility",
   "map.menu.weather.result.pressure": "Pressure",
   "map.menu.weather.result.cloudcover": "Cloud Coverage",
+  "map.weather.result.error": "The weather data is not available for the [" + date + "}}], please wait or choose another day",
   "map.menu.mtg.trail.items.tooltip": "Manage the trail's items",
   "map.menu.mtg.trail.items.item.ground.tooltip": "On the ground",
   "map.menu.mtg.trail.items.item.ground": "G",

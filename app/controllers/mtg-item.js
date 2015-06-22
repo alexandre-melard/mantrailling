@@ -30,6 +30,45 @@ export default Ember.Controller.extend({
     this.set('currentItem', {position: this.get('tGround'), type: this.get("tCloth"), description: null});
   }.on('init'),
 
+  bindActions: function () {
+    var me = this;
+    this.command.register(this, 'actions.mtg.item.position', function (item) {
+      return new Promise(function (resolve) {
+        me.command.send('mtg.item.position', item, function (item) {
+          console.log("item positionned");
+          me.command.send('mtg.item.positioned', item, resolve);
+        });
+      });
+    });
+  }.on('init'),
+
+  bindCommand: function () {
+    this.command.register(this, 'mtg.item.position', this.positionItem);
+  }.on('init'),
+
+  positionItem: function(item) {
+    var me = this;
+
+    var options = {
+      style: consts.style[consts.ITEM],
+      removeFeature: item.get("feature")
+    };
+    this.command.send('map.draw.point', options,
+      function (feature) {
+        var mapPoint = item.get('location');
+        if (mapPoint === null) {
+          mapPoint = me.store.createRecord('mapPoint');
+          item.set('location', mapPoint);
+        }
+        mapPoint.set('feature', feature);
+        mapPoint.set('label', item.get('index') + item.get('position'));
+        mapPoint.exportGeoJSON();
+      },
+      function (reason) {
+        console.log('could not create item icon: ' + reason);
+      });
+  },
+
   addItem: function () {
     var items = this.get('items');
     this.get('currentItem').index = (items.get('length') + 1);
@@ -62,25 +101,7 @@ export default Ember.Controller.extend({
 
   actions: {
     positionItem: function (item) {
-      var me = this;
-      var options = {
-        style: consts.style[consts.ITEM],
-        removeFeature: item.get("feature")
-      };
-      this.command.send('map.draw.point', options,
-        function (feature) {
-          var mapPoint = item.get('location');
-          if (mapPoint === null) {
-            mapPoint = me.store.createRecord('mapPoint');
-            item.set('location', mapPoint);
-          }
-          mapPoint.set('feature', feature);
-          mapPoint.set('label', item.get('index') + item.get('position'));
-          mapPoint.exportGeoJSON();
-        },
-        function (reason) {
-          console.log('could not create item icon: ' + reason);
-        });
+      this.command.send('actions.mtg.item.position', item);
     },
     addItem: function () {
       this.addItem();

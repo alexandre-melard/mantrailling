@@ -2,6 +2,7 @@
  * Created by alex on 04/04/2015.
  */
 import Ember from 'ember';
+import { translationMacro as t } from "ember-i18n";
 
 export default Ember.Controller.extend({
 
@@ -10,7 +11,7 @@ export default Ember.Controller.extend({
   date: null,
   time: [],
   selectedTime: null,
-  error: "You must choose a day and time interval in order to see the weather for the map's center",
+  error: t("map.weather.result.tips"),
   weather: {
     tempC: null,
     winddir16Point: null,
@@ -32,48 +33,72 @@ export default Ember.Controller.extend({
     }
   }),
 
-  loadWeather: function () {
-    var center = ol.proj.transform(this.map.getView().getCenter(), 'EPSG:3857', 'EPSG:4326');
-    var time = this.selectedTime;
-    var date = this.date;
+  bindActions: function () {
     var me = this;
-    $.ajax({
-      url: "http://api.worldweatheronline.com/free/v2/past-weather.ashx",
-
-      // The name of the callback parameter, as specified by the YQL service
-      jsonp: "callback",
-
-      // Tell jQuery we're expecting JSONP
-      dataType: "jsonp",
-
-      // Tell YQL what we want and that we want JSON
-      data: {
-        key: "4ade74420c51c89bdb66153847cd2",
-        format: "json",
-        q: center[1] + "," + center[0],
-        tp: 1,
-        date: date
-      },
-
-      // Work with the response
-      success: function (response) {
-        if (response.data.weather !== undefined) {
-          var result = response.data.weather.get("firstObject").hourly[time.key];
-          result.weatherIconUrl = result.weatherIconUrl.get("firstObject").value;
-          var rotation = result.winddirDegree;
-          $(".wind-direction").find("img").rotate(rotation - 270);
+    this.command.register(this, 'actions.map.weather.load', function (options) {
+      return new Promise(function (resolve, fail) {
+        me.command.send('map.weather.load', options, function (result) {
+          me.command.send('map.weather.loaded', options, resolve);
           me.set('weather', result);
           me.set('error', null);
-        } else {
+          resolve(result);
+        }, function (reason) {
+          console.log('failed loading weather: ' + reason);
           me.set('weather', null);
-          me.set('error', 'The weather data is not available for the [' + date + '], please wait or choose another day');
-        }
-      },
+          me.set('error', t("map.weather.result.error"));
+          fail(reason);
+        });
+      });
+    });
+  }.on('init'),
 
-      fail: function () {
-        me.set('weather', null);
-        me.set('error', 'The weather data is not available for the [' + date + '], please wait or choose another day');
-      }
+  bindCommand: function () {
+    this.command.register(this, 'map.weather.load', this.loadWeather);
+  }.on('init'),
+
+  loadWeather: function (options) {
+    var center = ol.proj.transform(this.map.getView().getCenter(), 'EPSG:3857', 'EPSG:4326');
+    var time = options.time;
+    var date = options.date;
+    var me = this;
+    return new Promise(function (resolve, fail) {
+      $.ajax({
+        url: "http://api.worldweatheronline.com/free/v2/past-weather.ashx",
+
+        // The name of the callback parameter, as specified by the YQL service
+        jsonp: "callback",
+
+        // Tell jQuery we're expecting JSONP
+        dataType: "jsonp",
+
+        // Tell YQL what we want and that we want JSON
+        data: {
+          key: "4ade74420c51c89bdb66153847cd2",
+          format: "json",
+          q: center[1] + "," + center[0],
+          tp: 1,
+          date: date
+        },
+
+        // Work with the response
+        success: function (response) {
+          if (response.data.weather !== undefined) {
+            var result = response.data.weather.get("firstObject").hourly[time.key];
+            result.weatherIconUrl = result.weatherIconUrl.get("firstObject").value;
+            var rotation = result.winddirDegree;
+            $(".wind-direction").find("img").rotate(rotation - 270);
+            resolve(result);
+          } else {
+            fail('no data');
+          }
+        },
+
+        statusCode: {
+          400: function () {
+            fail("bad request");
+          }
+        }
+      });
     });
   },
 
@@ -97,7 +122,7 @@ export default Ember.Controller.extend({
 
   actions: {
     checkWeather: function () {
-      this.loadWeather();
+      this.command.send('actions.map.weather.load', {date: this.date, time: this.selectedTime});
     }
   }
 

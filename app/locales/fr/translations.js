@@ -29,6 +29,8 @@ export default {
   "map.menu.weather.result.visibility": "Visibilité",
   "map.menu.weather.result.pressure": "Pression Atmosphérique",
   "map.menu.weather.result.cloudcover": "Couverture nuageuse",
+  "map.weather.result.error": "Les données météo ne sont pas disponible pour la date: [{{date}}] choisie, merci de choisir un autre jour.",
+  "map.weather.result.tips": "Vous devez choisir une date et une heure pour pouvoir voir la météo relative au centre de la carte.",
   "map.menu.mtg.trail.items.tooltip": "Gérez les objets de la piste",
   "map.menu.mtg.trail.items.item.ground.tooltip": "Posé au sol",
   "map.menu.mtg.trail.items.item.ground": "P",
