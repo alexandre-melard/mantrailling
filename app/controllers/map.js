@@ -96,5 +96,35 @@ export default Ember.Controller.extend({
         me.changeCurrentLayer(me.currentLayer);
       }
     });
+  },
+
+  actions: {
+    screenshot: function() {
+      var map = this.get('map');
+      var interaction = new ol.interaction.DragBox({
+        style: new ol.style.Style({
+          stroke: new ol.style.Stroke({
+            color: 'red',
+            width: 2
+          })
+        })
+      });
+      interaction.on('boxend', function(e) {
+        var format = new ol.format.GeoJSON();
+        var geom = e.target.getGeometry();
+        var tl = gMap.getPixelFromCoordinate(geom.getCoordinates()[0][0]);
+        var bl = gMap.getPixelFromCoordinate(geom.getCoordinates()[0][1]);
+        var br = gMap.getPixelFromCoordinate(geom.getCoordinates()[0][2]);
+        var tr = gMap.getPixelFromCoordinate(geom.getCoordinates()[0][3]);
+        console.log("bbox: [" + tl + ", " + bl + ", " + br + ", " + tr + "]" );
+        var ctx = $("canvas")[0].getContext("2d");
+        var topLeftArray = tl.split(',');
+        var bottomRightArray = br.split(',');
+        var data = ctx.getImageData(topLeftArray[0],topLeftArray[1],bottomRightArray[0] - topLeftArray[0],bottomRightArray[1] - topLeftArray[1]);
+
+        map.removeInteraction(interaction);
+      });
+      map.addInteraction(interaction);
+    }
   }
 });
