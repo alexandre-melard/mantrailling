@@ -12,6 +12,7 @@ export default Ember.Controller.extend({
   currentLayer: null,
   basicURL: conf.basicURL,
   expertURL: conf.expertURL,
+  displayScreenshot: false,
 
   bindCommand: function () {
     this.command.register(this, 'map.view.extent.fit', function(options) {
@@ -101,30 +102,27 @@ export default Ember.Controller.extend({
   actions: {
     screenshot: function() {
       var map = this.get('map');
-      var interaction = new ol.interaction.DragBox({
-        style: new ol.style.Style({
-          stroke: new ol.style.Stroke({
-            color: 'red',
-            width: 2
-          })
-        })
+      this.set("displayScreenshot", true);
+      $("#screenshot-box-outer").css({position:'absolute', top: 200, left: 200, width: 200, height: 200, border: "2px solid red", "z-index": 1000});
+      $('#screenshot-box-outer')
+        .draggable()
+        .resizable({
+          handles: "all"
+        });
+      $("#screenshot-box").css({width: "100%", height: "100%"});
+      $("#screenshot-box-buttons").css({float: "right"});
+      $("#screenshot-box-buttons").find("button").on('click', function() {
+        map.once('postcompose', function(event) {
+          var canvas = event.context.canvas;
+          var data = canvas.toDataURL('image/png');
+        });
+        map.renderSync();
+// http://fengyuanchen.github.io/cropper/
+        var left = $('#screenshot-box').offset().left;
+        var top = $('#screenshot-box').offset().top;
+        var data = ctx.getImageData(left,top,$('#screenshot-box').width(),$('#screenshot-box').height());
+        this.set("displayScreenshot", false);
       });
-      interaction.on('boxend', function(e) {
-        var format = new ol.format.GeoJSON();
-        var geom = e.target.getGeometry();
-        var tl = gMap.getPixelFromCoordinate(geom.getCoordinates()[0][0]);
-        var bl = gMap.getPixelFromCoordinate(geom.getCoordinates()[0][1]);
-        var br = gMap.getPixelFromCoordinate(geom.getCoordinates()[0][2]);
-        var tr = gMap.getPixelFromCoordinate(geom.getCoordinates()[0][3]);
-        console.log("bbox: [" + tl + ", " + bl + ", " + br + ", " + tr + "]" );
-        var ctx = $("canvas")[0].getContext("2d");
-        var topLeftArray = tl.split(',');
-        var bottomRightArray = br.split(',');
-        var data = ctx.getImageData(topLeftArray[0],topLeftArray[1],bottomRightArray[0] - topLeftArray[0],bottomRightArray[1] - topLeftArray[1]);
-
-        map.removeInteraction(interaction);
-      });
-      map.addInteraction(interaction);
     }
   }
 });

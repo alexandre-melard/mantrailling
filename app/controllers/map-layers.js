@@ -19,6 +19,7 @@ export default Ember.Controller.extend({
 
     var tile = new ol.layer.Tile({
       source: new ol.source.WMTS({
+        crossOrigin: "Anonymous",
         attribution: attribution,
         url: 'http://wxs.ign.fr/6i88pkdxubzayoady4upbkjg/geoportail/wmts',
         layer: layer.Identifier,

@@ -24,6 +24,13 @@ app.import('bower_components/ol3/css/ol.css');
 
 app.import('bower_components/jquery-rotate/jquery.rotate.js');
 
+app.import('bower_components/jquery-ui/themes/ui-lightness/jquery-ui.min.css');
+app.import('bower_components/jquery-ui/ui/core.js');
+app.import('bower_components/jquery-ui/ui/widget.js');
+app.import('bower_components/jquery-ui/ui/mouse.js');
+app.import('bower_components/jquery-ui/ui/draggable.js');
+app.import('bower_components/jquery-ui/ui/resizable.js');
+
 app.import('bower_components/bootstrap/js/tooltip.js');
 app.import('bower_components/bootstrap/js/popover.js');
 app.import('bower_components/x-editable/dist/bootstrap3-editable/js/bootstrap-editable.js');

@@ -7,7 +7,7 @@
             <th colspan="2">
               <div class="col-lg-12">
                 <div class="input-group input-group-sm">
-                  {{date-picker class="form-control" date=date valueFormat='YYYY-MM-DD' size="8"}}
+                  {{date-picker-i18n class="form-control" date=date valueFormat='YYYY-MM-DD' size="8"}}
                   {{view "select" class="form-control" content=time optionLabelPath="content.value" value=selectedTime}}
                   <span class="input-group-btn">
                     <button type="button" class="btn btn-default btn-sm" {{action 'checkWeather'}}>{{t "map.menu.weather.get"}}</button>
