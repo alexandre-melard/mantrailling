@@ -476,3 +476,7 @@ label.mtg-item-position input[type="radio"] {
 .width-full {
   width: 100%;
 }
+
+#screenshot-box-buttons {
+  float: right;
+}

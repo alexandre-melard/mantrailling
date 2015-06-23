@@ -19,9 +19,10 @@
 {{render "mtgInfo" controller="mtgTrail"}}
 <input type="file" id="input-file-cmp" class="hidden" accept=".cmp"/>
 <input type="file" id="input-file-gpx" class="hidden" accept=".gpx"/>
-<div id='screenshot-box-outer' class={{if displayScreenshot "visible" "hidden"}}>
-    <div id='screenshot-box'></div>
-    <div id='screenshot-box-buttons'>
-        <button>photo</button>
+<div id="container" class="hidden">
+    <div id='screenshot-box-buttons' class={{if displayScreenshot "visible" "hidden"}}>
+        <button class="btn btn-default">
+            <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+        </button>
     </div>
 </div>

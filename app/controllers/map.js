@@ -12,7 +12,7 @@ export default Ember.Controller.extend({
   currentLayer: null,
   basicURL: conf.basicURL,
   expertURL: conf.expertURL,
-  displayScreenshot: false,
+  isScreenshotLoading: false,
 
   bindCommand: function () {
     this.command.register(this, 'map.view.extent.fit', function(options) {
@@ -102,27 +102,39 @@ export default Ember.Controller.extend({
   actions: {
     screenshot: function() {
       var map = this.get('map');
-      this.set("displayScreenshot", true);
-      $("#screenshot-box-outer").css({position:'absolute', top: 200, left: 200, width: 200, height: 200, border: "2px solid red", "z-index": 1000});
-      $('#screenshot-box-outer')
-        .draggable()
-        .resizable({
-          handles: "all"
+      var me = this;
+      console.log("screenshot loading");
+      this.set("isScreenshotLoading", true);
+      setTimeout(function() {
+        $('#map >> canvas').cropper({
+          guides: false,
+          zoomable: false,
+          mouseWheelZoom: false,
+          built: function() {
+            var topLeft = map.getPixelFromCoordinate(me.get("currentLayer").getSource().getExtent().slice(0,2));
+            var bottomRight = map.getPixelFromCoordinate(me.get("currentLayer").getSource().getExtent().slice(2,4));
+            $("#map >> canvas").cropper("setCropBoxData",
+              {
+                "left":topLeft[0] - 30,
+                "top":bottomRight[1] - 30,
+                "width":bottomRight[0] - topLeft[0] + 60,
+                "height":topLeft[1] - bottomRight[1] + 60
+              }
+            );
+
+            me.set("displayScreenshot", true);
+            $('#screenshot-box-buttons').appendTo(".cropper-crop-box");
+            $("#screenshot-box-buttons").find("button").on('click', function() {
+              var data = $('#map >> canvas').cropper("getCroppedCanvas").toDataURL('image/png');
+              $('#screenshot-box-buttons').appendTo("#container");
+              me.set("displayScreenshot", false);
+              $('#map >> canvas').cropper("destroy");
+            });
+            me.set("isScreenshotLoading", false);
+            console.log("screenshot loaded");
+          }
         });
-      $("#screenshot-box").css({width: "100%", height: "100%"});
-      $("#screenshot-box-buttons").css({float: "right"});
-      $("#screenshot-box-buttons").find("button").on('click', function() {
-        map.once('postcompose', function(event) {
-          var canvas = event.context.canvas;
-          var data = canvas.toDataURL('image/png');
-        });
-        map.renderSync();
-// http://fengyuanchen.github.io/cropper/
-        var left = $('#screenshot-box').offset().left;
-        var top = $('#screenshot-box').offset().top;
-        var data = ctx.getImageData(left,top,$('#screenshot-box').width(),$('#screenshot-box').height());
-        this.set("displayScreenshot", false);
-      });
+      }, 1);
     }
   }
 });
