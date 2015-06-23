@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import getStyleFunction from "../utils/map-style";
 import conf from "../config/environment";
+import file from "../utils/file-io";
 
 /**
  * Created by alex on 29/03/2015.
@@ -126,6 +127,7 @@ export default Ember.Controller.extend({
             $('#screenshot-box-buttons').appendTo(".cropper-crop-box");
             $("#screenshot-box-buttons").find("button").on('click', function() {
               var data = $('#map >> canvas').cropper("getCroppedCanvas").toDataURL('image/png');
+              file.write(data, "carte", "png", "image/png");
               $('#screenshot-box-buttons').appendTo("#container");
               me.set("displayScreenshot", false);
               $('#map >> canvas').cropper("destroy");

@@ -2,9 +2,12 @@
  * Created by alex on 25/05/2015.
  */
 export default {
-  write: function (data, fileName, format) {
+  write: function (data, fileName, format, mime) {
+    if (mime === undefined) {
+      mime = 'application/mantralling';
+    }
     var a = document.createElement("a");
-    a.href = window.URL.createObjectURL(new Blob([data], {type: 'application/mantralling'}));
+    a.href = window.URL.createObjectURL(new Blob([data], {type: mime}));
     a.download = fileName + '.' + format.toLowerCase();
     a.click();
   },
