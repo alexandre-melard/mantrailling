@@ -27,12 +27,13 @@ app.import('bower_components/jquery-rotate/jquery.rotate.js');
 app.import('bower_components/cropper/dist/cropper.css');
 app.import('bower_components/cropper/dist/cropper.js');
 
-//app.import('bower_components/jquery-ui/themes/ui-lightness/jquery-ui.min.css');
-//app.import('bower_components/jquery-ui/ui/core.js');
-//app.import('bower_components/jquery-ui/ui/widget.js');
-//app.import('bower_components/jquery-ui/ui/mouse.js');
-//app.import('bower_components/jquery-ui/ui/draggable.js');
-//app.import('bower_components/jquery-ui/ui/resizable.js');
+app.import("bower_components/font-awesome/css/font-awesome.css");
+app.import("bower_components/font-awesome/fonts/fontawesome-webfont.eot", { destDir: "fonts" });
+app.import("bower_components/font-awesome/fonts/fontawesome-webfont.svg", { destDir: "fonts" });
+app.import("bower_components/font-awesome/fonts/fontawesome-webfont.ttf", { destDir: "fonts" });
+app.import("bower_components/font-awesome/fonts/fontawesome-webfont.woff", { destDir: "fonts" });
+app.import("bower_components/font-awesome/fonts/fontawesome-webfont.woff2", { destDir: "fonts" });
+app.import("bower_components/font-awesome/fonts/FontAwesome.otf", { destDir: "fonts" });
 
 app.import('bower_components/bootstrap/js/tooltip.js');
 app.import('bower_components/bootstrap/js/popover.js');

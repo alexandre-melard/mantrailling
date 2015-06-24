@@ -171,11 +171,11 @@ export default Ember.Controller.extend({
       var vectorLayer = mapController.createVector(vectorSource);
       vectorLayer.setStyle(getStyleFunction(me.command, me.i18n));
       trail.layer = vectorLayer;
+      trails.pushObject(trail);
       trail.load().then(function() {
         if (trail.get('selected')) {
           me.changeActiveTrail(trail, me);
         }
-        trails.pushObject(trail);
       });
     });
   },

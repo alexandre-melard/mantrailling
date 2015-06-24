@@ -7,7 +7,17 @@ export default {
       mime = 'application/mantralling';
     }
     var a = document.createElement("a");
-    a.href = window.URL.createObjectURL(new Blob([data], {type: mime}));
+    var blob = data;
+    if (mime === "image/png") {
+      data = atob( data.substring( "data:image/png;base64,".length ) );
+      var asArray = new Uint8Array(data.length);
+
+      for( var i = 0, len = data.length; i < len; ++i ) {
+        asArray[i] = data.charCodeAt(i);
+      }
+      blob = asArray.buffer;
+    }
+    a.href = window.URL.createObjectURL(new Blob([blob], {type: mime}));
     a.download = fileName + '.' + format.toLowerCase();
     a.click();
   },

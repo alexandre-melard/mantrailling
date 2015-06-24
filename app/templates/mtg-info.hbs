@@ -1,20 +1,34 @@
 {{#if selectedTrail }}
     <div class="map-info">
-      {{selectedTrail.name}}
-        <span class="map-info-detail">
-          {{#if selectedTrail.level.name }}
-              <img src="assets/images/rocket.png"/> {{selectedTrail.level.name}}
-          {{/if}}
-          {{#if selectedTrail.items.length }}
-              <img src="assets/images/basket.png"/> {{selectedTrail.items.length}}
-          {{/if}}
-          {{#if selectedTrail.length }}
-              <span class="glyphicon glyphicon-road" aria-hidden="true"></span> {{selectedTrail.length}}
-          {{/if}}
-          {{#if selectedTrail.location }}
-              <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span> {{selectedTrail.location}}
-          {{/if}}
-        </span>
-        &nbsp;
+      <span id="map-info-trail-name">
+        {{selectedTrail.name}}
+      </span>
+      <span class="map-info-detail">
+        {{#if selectedTrail.level.name }}
+          <img src="assets/images/rocket.png"/>
+          <span id="map-info-trail-level">
+            {{selectedTrail.level.name}}
+          </span>
+        {{/if}}
+        {{#if selectedTrail.items.length }}
+          <img src="assets/images/basket.png"/>
+          <span id="map-info-trail-items">
+            {{selectedTrail.items.length}}
+          </span>
+        {{/if}}
+        {{#if selectedTrail.length }}
+          <span class="glyphicon glyphicon-road" aria-hidden="true"></span>
+          <span id="map-info-trail-length">
+            {{selectedTrail.length}}
+          </span>
+        {{/if}}
+        {{#if selectedTrail.location }}
+          <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>
+          <span id="map-info-trail-location">
+            {{selectedTrail.location}}
+          </span>
+        {{/if}}
+      </span>
+      &nbsp;
     </div>
 {{/if}}

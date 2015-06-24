@@ -106,37 +106,95 @@ export default Ember.Controller.extend({
       var me = this;
       console.log("screenshot loading");
       this.set("isScreenshotLoading", true);
-      setTimeout(function() {
+      setTimeout(function () {
         $('#map >> canvas').cropper({
           guides: false,
           zoomable: false,
           mouseWheelZoom: false,
-          built: function() {
-            var topLeft = map.getPixelFromCoordinate(me.get("currentLayer").getSource().getExtent().slice(0,2));
-            var bottomRight = map.getPixelFromCoordinate(me.get("currentLayer").getSource().getExtent().slice(2,4));
+          built: function () {
+            document.addEventListener('keyup', function(event) {
+              if (event.keyCode === 27) {
+                $('#screenshot-box-buttons').appendTo("#container");
+                me.set("displayScreenshot", false);
+                $('#map >> canvas').cropper("destroy");
+                $("#screenshot-box-buttons").find("button").off('click');
+              }
+            });
+
+            var topLeft = map.getPixelFromCoordinate(me.get("currentLayer").getSource().getExtent().slice(0, 2));
+            var bottomRight = map.getPixelFromCoordinate(me.get("currentLayer").getSource().getExtent().slice(2, 4));
             $("#map >> canvas").cropper("setCropBoxData",
               {
-                "left":topLeft[0] - 30,
-                "top":bottomRight[1] - 30,
-                "width":bottomRight[0] - topLeft[0] + 60,
-                "height":topLeft[1] - bottomRight[1] + 60
+                "left": topLeft[0] - 30,
+                "top": bottomRight[1] - 30,
+                "width": bottomRight[0] - topLeft[0] + 60,
+                "height": topLeft[1] - bottomRight[1] + 60
               }
             );
 
             me.set("displayScreenshot", true);
             $('#screenshot-box-buttons').appendTo(".cropper-crop-box");
-            $("#screenshot-box-buttons").find("button").on('click', function() {
+            $("#screenshot-box-buttons").find("button.save").on('click', function () {
               var data = $('#map >> canvas').cropper("getCroppedCanvas").toDataURL('image/png');
               file.write(data, "carte", "png", "image/png");
               $('#screenshot-box-buttons').appendTo("#container");
               me.set("displayScreenshot", false);
               $('#map >> canvas').cropper("destroy");
+              $("#screenshot-box-buttons").find("button").off('click');
+            });
+            $("#screenshot-box-buttons").find("button.facebook").on('click', function () {
+
+              var data = $('#map >> canvas').cropper("getCroppedCanvas").toDataURL('image/png');
+              var blob;
+              try {
+                var byteString = atob(data.split(',')[1]);
+                var ab = new ArrayBuffer(byteString.length);
+                var ia = new Uint8Array(ab);
+                for (var i = 0; i < byteString.length; i++) {
+                  ia[i] = byteString.charCodeAt(i);
+                }
+                blob = new Blob([ab], {type: 'image/png'});
+              } catch (e) {
+                console.log(e);
+              }
+              var fd = new FormData();
+              fd.append("source", blob);
+              var text = "Nom: " + $("#map-info-trail-name").text().trim();
+              text += "\nNiveau: " + $("#map-info-trail-level").text().trim();
+              text += "\nLongueur: " + $("#map-info-trail-length").text().trim();
+              text += "\nNombre d'objets: " + $("#map-info-trail-items").text().trim();
+              text += "\nGPS: " + $("#map-info-trail-location").text().trim();
+              fd.append("message", text);
+              FB.login(function(){
+                var auth = FB.getAuthResponse();
+                $.ajax({
+                  url:"https://graph.facebook.com/"+auth.userID+"/photos?access_token=" + auth.accessToken,
+                  type:"POST",
+                  data:fd,
+                  processData:false,
+                  contentType:false,
+                  cache:false,
+                  success:function(data){
+                    console.log("success " + data);
+                  },
+                  error:function(shr,status,data){
+                    console.log("error " + data + " Status " + shr.status);
+                  },
+                  complete:function(){
+                    console.log("Ajax Complete");
+                  }
+                });
+                $('#screenshot-box-buttons').appendTo("#container");
+                me.set("displayScreenshot", false);
+                $('#map >> canvas').cropper("destroy");
+                $("#screenshot-box-buttons").find("button").off('click');
+              }, {scope: 'publish_actions'});
             });
             me.set("isScreenshotLoading", false);
             console.log("screenshot loaded");
           }
         });
-      }, 1);
+      });
     }
   }
 });
