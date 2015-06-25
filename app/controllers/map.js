@@ -16,11 +16,25 @@ export default Ember.Controller.extend({
   isScreenshotLoading: false,
 
   bindCommand: function () {
-    this.command.register(this, 'map.view.extent.fit', function(options) {
+    var me = this;
+    this.command.register(this, 'map.view.extent.fit', function (options) {
       var map = this.get('map');
       var layer = this.get('currentLayer');
       return new Promise(function (resolve, error) {
-        map.getView().fitExtent( layer.getSource().getExtent(), (map.getSize()));
+        map.getView().fitExtent(layer.getSource().getExtent(), (map.getSize()));
+        resolve(true);
+      });
+    });
+    this.command.register(this, 'map.screenshot.data.get', function (options) {
+      return new Promise(function (resolve, error) {
+        var data = $('#map >> canvas').cropper("getCroppedCanvas").toDataURL('image/png');
+        resolve(data);
+      });
+    });
+    this.command.register(this, 'map.screenshot.complete', function (options) {
+      return new Promise(function (resolve, error) {
+        me.set("displayScreenshot", false);
+        $('#map >> canvas').cropper("destroy");
         resolve(true);
       });
     });
@@ -81,17 +95,17 @@ export default Ember.Controller.extend({
       var vectors = [];
       if (map.getLayers().get('length') !== 0) {
         // Save current vecotr used for drawing
-        map.getLayers().getArray().forEach(function(vector) {
+        map.getLayers().getArray().forEach(function (vector) {
           vectors.push(vector);
           map.removeLayer(vector);
         });
       }
       // set Tile layers
-      layers.forEach(function(layer) {
+      layers.forEach(function (layer) {
         map.addLayer(layer.layer);
       });
       // restore vectors
-      vectors.forEach(function(vector) {
+      vectors.forEach(function (vector) {
         map.addLayer(vector);
       });
       if (me.currentLayer !== null) {
@@ -101,7 +115,7 @@ export default Ember.Controller.extend({
   },
 
   actions: {
-    screenshot: function() {
+    screenshot: function () {
       var map = this.get('map');
       var me = this;
       console.log("screenshot loading");
@@ -112,7 +126,7 @@ export default Ember.Controller.extend({
           zoomable: false,
           mouseWheelZoom: false,
           built: function () {
-            document.addEventListener('keyup', function(event) {
+            document.addEventListener('keyup', function (event) {
               if (event.keyCode === 27) {
                 $('#screenshot-box-buttons').appendTo("#container");
                 me.set("displayScreenshot", false);
@@ -134,6 +148,7 @@ export default Ember.Controller.extend({
 
             me.set("displayScreenshot", true);
             $('#screenshot-box-buttons').appendTo(".cropper-crop-box");
+
             $("#screenshot-box-buttons").find("button.save").on('click', function () {
               var data = $('#map >> canvas').cropper("getCroppedCanvas").toDataURL('image/png');
               file.write(data, "carte", "png", "image/png");
@@ -141,54 +156,6 @@ export default Ember.Controller.extend({
               me.set("displayScreenshot", false);
               $('#map >> canvas').cropper("destroy");
               $("#screenshot-box-buttons").find("button").off('click');
-            });
-            $("#screenshot-box-buttons").find("button.facebook").on('click', function () {
-
-              var data = $('#map >> canvas').cropper("getCroppedCanvas").toDataURL('image/png');
-              var blob;
-              try {
-                var byteString = atob(data.split(',')[1]);
-                var ab = new ArrayBuffer(byteString.length);
-                var ia = new Uint8Array(ab);
-                for (var i = 0; i < byteString.length; i++) {
-                  ia[i] = byteString.charCodeAt(i);
-                }
-                blob = new Blob([ab], {type: 'image/png'});
-              } catch (e) {
-                console.log(e);
-              }
-              var fd = new FormData();
-              fd.append("source", blob);
-              var text = "Nom: " + $("#map-info-trail-name").text().trim();
-              text += "\nNiveau: " + $("#map-info-trail-level").text().trim();
-              text += "\nLongueur: " + $("#map-info-trail-length").text().trim();
-              text += "\nNombre d'objets: " + $("#map-info-trail-items").text().trim();
-              text += "\nGPS: " + $("#map-info-trail-location").text().trim();
-              fd.append("message", text);
-              FB.login(function(){
-                var auth = FB.getAuthResponse();
-                $.ajax({
-                  url:"https://graph.facebook.com/"+auth.userID+"/photos?access_token=" + auth.accessToken,
-                  type:"POST",
-                  data:fd,
-                  processData:false,
-                  contentType:false,
-                  cache:false,
-                  success:function(data){
-                    console.log("success " + data);
-                  },
-                  error:function(shr,status,data){
-                    console.log("error " + data + " Status " + shr.status);
-                  },
-                  complete:function(){
-                    console.log("Ajax Complete");
-                  }
-                });
-                $('#screenshot-box-buttons').appendTo("#container");
-                me.set("displayScreenshot", false);
-                $('#map >> canvas').cropper("destroy");
-                $("#screenshot-box-buttons").find("button").off('click');
-              }, {scope: 'publish_actions'});
             });
             me.set("isScreenshotLoading", false);
             console.log("screenshot loaded");

@@ -1,3 +1,11 @@
 {{#spinner-button length=3 radius=3 class="btn btn-default" action="screenshot" isSpinning=isScreenshotLoading}}
   <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
 {{/spinner-button}}
+<div id="container" class="hidden">
+    <div id='screenshot-box-buttons' class={{if displayScreenshot "visible" "hidden"}}>
+        <button class="btn btn-default save">
+            <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+        </button>
+        {{#facebook-share map=map}}{{/facebook-share}}
+    </div>
+</div>

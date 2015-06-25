@@ -7,6 +7,7 @@ export default({
     application.register('map-command:main', MapCmd, { instantiate: true });
     application.inject('controller', 'command', 'map-command:main');
     application.inject('model', 'command', 'map-command:main');
+    application.inject('component', 'command', 'map-command:main');
   }
 });
 
