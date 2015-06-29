@@ -89,7 +89,7 @@ export default Ember.Controller.extend({
 
   initSelectAndModify: function () {
     var map = this.get('map');
-    if (map !== null) {
+    if (!Ember.isEmpty(map)) {
       map.addInteraction(this.get('select'));
       map.addInteraction(this.get('modify'));
       this.changeCursorOnFeature();
@@ -98,12 +98,12 @@ export default Ember.Controller.extend({
 
   onGeometryChange: function () {
     var map = this.get('map');
-    if (map == null) {
+    if (Ember.isEmpty(map)) {
       return;
     }
     map.removeInteraction(this.get('olDraw'));
     $('#map').off('mouseup');
-    if (this.get('mtgDrawState') !== null) {
+    if (!Ember.isEmpty(this.get('mtgDrawState'))) {
       this.createDraw();
       map.addInteraction(this.get('olDraw'));
     }
@@ -147,7 +147,7 @@ export default Ember.Controller.extend({
   select: Ember.computed({
     get: function () {
       var me = this;
-      if (this.get('selectCache') !== undefined) {
+      if (!Ember.isEmpty(this.get('selectCache'))) {
         return this.get('selectCache');
       }
       var select = new ol.interaction.Select();
@@ -174,7 +174,7 @@ export default Ember.Controller.extend({
 
   modify: Ember.computed({
     get: function () {
-      if (this.get('modifyCache') !== undefined) {
+      if (!Ember.isEmpty(this.get('modifyCache'))) {
         return this.get('modifyCache');
       }
       var select = this.get('select');
@@ -233,7 +233,7 @@ export default Ember.Controller.extend({
             this.command.send('map.linestring.change', {feature: e.currentTarget});
           }, this);
         }
-        if (this.get('onDrawStart') !== null) {
+        if (!Ember.isEmpty(this.get('onDrawStart'))) {
           this.get('onDrawStart')(feature);
         }
         this.set('sketch', feature);
@@ -266,7 +266,7 @@ export default Ember.Controller.extend({
       this.set('mtgDrawState', null);
       $('#map').off('mouseup');
       document.removeEventListener('keyup', this.removeLastPoint);
-      if (this.get('onDrawEnd') !== null) {
+      if (!Ember.isEmpty(this.get('onDrawEnd'))) {
         this.get('onDrawEnd')(feature);
       }
     }, this);
@@ -285,7 +285,7 @@ export default Ember.Controller.extend({
   handleSketchFinish: function () {
     var sketch = this.get('sketch');
     // Wait for sketch to be drawn
-    if (sketch === null) {
+    if (Ember.isEmpty(sketch)) {
       sketch = this.get('sketchLastState');
       var popup;
       if (this.get('mtgDrawState') === consts.MARKER || this.get('mtgDrawState') === consts.LOCATION) {
@@ -319,7 +319,7 @@ export default Ember.Controller.extend({
     me.set('mtgDrawState', consts.POINT);
     me.set('onDrawEnd', function (feature) {
       options.type = consts.POINT;
-      if (me.get('color') !== null) {
+      if (!Ember.isEmpty(me.get('color'))) {
         feature.set('color', me.get('color'));
       }
       feature.set('extensions', options.style);
@@ -331,10 +331,10 @@ export default Ember.Controller.extend({
   drawPoint: function (options) {
     var me = this;
     return new Promise(function (resolve) {
-      if (options !== undefined && options.removeFeature !== undefined) {
+      if (!Ember.isEmpty(options) && !Ember.isEmpty(options.removeFeature)) {
         me.get('currentLayer').getSource().removeFeature(options.removeFeature);
       }
-      if (options.location !== undefined) {
+      if (!Ember.isEmpty(options.location)) {
         me.drawPointAtLocation(me, resolve, options);
       } else {
         me.drawPointUI(me, resolve, options);
@@ -345,15 +345,15 @@ export default Ember.Controller.extend({
   draw: function (what, labelFunction, options) {
     var me = this;
     return new Promise(function (resolve) {
-      if (options !== undefined && options.removeFeature !== undefined) {
+      if (!Ember.isEmpty(options) && !Ember.isEmpty(options.removeFeature)) {
         me.get('currentLayer').getSource().removeFeature(options.removeFeature);
       }
       me.set('mtgDrawState', what);
       me.set('onDrawStart', function (feature) {
-        if (options.type === undefined) {
+        if (Ember.isEmpty(options.type)) {
           options.type = what;
         }
-        if (me.get('color') !== null) {
+        if (!Ember.isEmpty(me.get('color'))) {
           feature.set('color', me.get('color'));
         }
         feature.set('extensions', options);

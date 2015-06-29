@@ -25,7 +25,7 @@ export default Ember.Controller.extend({
         layer: options.layer
       });
       var last = selectedTrail.get(type);
-      if (last !== null) {
+      if (!Ember.isEmpty(last)) {
         last.removeFromMap(selectedTrail.layer);
         last.deleteRecord();
       }
@@ -128,7 +128,7 @@ export default Ember.Controller.extend({
     var me = this;
     file.read('gpx', function(gpx) {
       var mapLineString = trail.get(type);
-      if (mapLineString === null) {
+      if (Ember.isEmpty(mapLineString)) {
         mapLineString = me.store.createRecord('mapLinestring');
         trail.set(type, mapLineString);
       }

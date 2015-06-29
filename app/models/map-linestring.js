@@ -48,7 +48,7 @@ export default GeoJSON.extend({
       $xml.find(where).append("<extensions></extensions>");
       $extensions = $xml.find( "extensions" );
     }
-    if (value !== undefined) {
+    if (!Ember.isEmpty(value)) {
       $($extensions[0]).empty();
       $($extensions[0]).append(json2xml(value));
       return $xml;
@@ -66,7 +66,7 @@ export default GeoJSON.extend({
       var format = new ol.format.GPX();
       var gpx = format.writeFeatures([me.feature], {featureProjection: "EPSG:3857"});
       var extensions = me.feature.get('extensions');
-      if (extensions !== undefined) {
+      if (!Ember.isEmpty(extensions)) {
         gpx = me.extensions(gpx, extensions);
       }
       // we want the gpx as string format
@@ -109,8 +109,8 @@ export default GeoJSON.extend({
   importGPX: function(gpx, extensions) {
     var me = this;
     return new Promise(function(resolve) {
-      if (gpx !== undefined && gpx !== null) {
-        if (extensions !== undefined) {
+      if (!Ember.isEmpty(gpx)) {
+        if (!Ember.isEmpty(extensions)) {
           gpx = me.extensions(gpx, extensions);
         }
         // we want the gpx as string format

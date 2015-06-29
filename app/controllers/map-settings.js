@@ -63,7 +63,7 @@ export default Ember.Controller.extend({
   init: function () {
     this._super();
     var style = this.store.find('mtgStyle');
-    if (style === null) {
+    if (Ember.isEmpty(style)) {
       var lineString = this.initLineString();
       style = this.store.createRecord('mtgStyle', {LineString: lineString}).save();
 

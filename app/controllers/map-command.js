@@ -29,11 +29,11 @@ export default Ember.Controller.extend({
       if (command.key === register.what) {
         register.command.apply(register.who, [command.options])
           .then(function (result) {
-            if (command.resolve !== undefined) {
+            if (!Ember.isEmpty(command.resolve)) {
               command.resolve(result);
             }
           }, function (reason) {
-            if (command.failure !== undefined) {
+            if (!Ember.isEmpty(command.failure)) {
               command.failure(reason);
             }
           });

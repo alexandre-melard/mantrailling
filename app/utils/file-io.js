@@ -3,7 +3,7 @@
  */
 export default {
   write: function (data, fileName, format, mime) {
-    if (mime === undefined) {
+    if (Ember.isEmpty(mime)) {
       mime = 'application/mantralling';
     }
     var a = document.createElement("a");

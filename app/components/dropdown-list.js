@@ -14,7 +14,7 @@ export default Ember.Component.extend({
   title: function (key, value) {
     if (arguments.length > 1) {
       var trans = t(value);
-      if (trans === undefined) {
+      if (Ember.isEmpty(trans)) {
         trans = value;
       }
       this.set('tTitle', trans);

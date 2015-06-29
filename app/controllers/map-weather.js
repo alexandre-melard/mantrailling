@@ -29,7 +29,7 @@ export default Ember.Controller.extend({
 
   isVisible: Ember.computed('weather', {
     get: function () {
-      return (this.weather.tempC !== null);
+      return (!Ember.isEmpty(this.weather.tempC));
     }
   }),
 
@@ -82,7 +82,7 @@ export default Ember.Controller.extend({
 
         // Work with the response
         success: function (response) {
-          if (response.data.weather !== undefined) {
+          if (!Ember.isEmpty(response.data.weather)) {
             var result = response.data.weather.get("firstObject").hourly[time.key];
             result.weatherIconUrl = result.weatherIconUrl.get("firstObject").value;
             var rotation = result.winddirDegree;

@@ -46,7 +46,7 @@ let MapDraw = DS.Model.extend({
     return Promise.all(
       ['lineStrings', 'points', 'polygons'].map(function (type) {
         var items = me.get(type);
-        if (items !== null) {
+        if (!Ember.isEmpty(items)) {
           items.forEach(function (item) {
             return item.loadGeoJSON(layer);
           });
@@ -58,7 +58,7 @@ let MapDraw = DS.Model.extend({
     return Promise.all(
       ['lineStrings', 'points', 'polygons'].map(function (type) {
         var items = me.get(type);
-        if (items !== null) {
+        if (!Ember.isEmpty(items)) {
           items.forEach(function (item) {
             item.exportGeoJSON();
             return item;
@@ -69,7 +69,7 @@ let MapDraw = DS.Model.extend({
   import: function (json) {
     var me = this;
     var lineStrings = json[type];
-    if (lineStrings !== undefined && lineStrings !== null) {
+    if (!Ember.isEmpty(lineStrings)) {
       lineStrings.forEach(function (lineString) {
         me.store.find('mapLinestring', lineString.id).then(function (lineString) {
           me.get('lineStrings').pushObject(lineString);
@@ -81,7 +81,7 @@ let MapDraw = DS.Model.extend({
       });
     }
     var points = json[type];
-    if (points !== undefined && points !== null) {
+    if (!Ember.isEmpty(points)) {
       points.forEach(function (pointJSON) {
         me.store.find('mapPoint', pointJSON.id).then(function (point) {
           me.get('points').pushObject(point);
@@ -94,7 +94,7 @@ let MapDraw = DS.Model.extend({
       });
     }
     var polygons = json[type];
-    if (polygons !== undefined && polygons !== null) {
+    if (!Ember.isEmpty(polygons)) {
       polygons.forEach(function (polygon) {
         me.store.find('mapPolygon', polygon.id).then(function (polygon) {
           me.get('polygons').pushObject(polygon);
@@ -116,7 +116,7 @@ let MapDraw = DS.Model.extend({
     ['lineStrings', 'points', 'polygons'].forEach(function (type) {
       data[type] = [];
       var items = me.get(type);
-      if (items !== null) {
+      if (!Ember.isEmpty(items)) {
         items.forEach(function (item) {
           data[type].pushObject(item.get('geoJSON'));
         });

@@ -20,7 +20,7 @@ export default Ember.Controller.extend({
     var me = this;
     return new Promise(function (resolve) {
       var md = me.get('selectedTrail').get('mapDraw');
-      if (md === null) {
+      if (Ember.isEmpty(md)) {
         var mapDraw = me.store.createRecord('mapDraw', {});
         me.get('selectedTrail').set('mapDraw', mapDraw);
         resolve(mapDraw);
@@ -182,7 +182,7 @@ export default Ember.Controller.extend({
 
   changeActiveTrail: function (trail, context) {
     var me = context;
-    if (context === undefined || context === null) {
+    if (Ember.isEmpty(context)) {
       me = this;
     }
     var mapCtrl = me.get('controllers.map');

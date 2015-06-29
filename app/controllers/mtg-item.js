@@ -56,7 +56,7 @@ export default Ember.Controller.extend({
     this.command.send('map.draw.point', options,
       function (feature) {
         var mapPoint = item.get('location');
-        if (mapPoint === null) {
+        if (Ember.isEmpty(mapPoint)) {
           mapPoint = me.store.createRecord('mapPoint');
           item.set('location', mapPoint);
         }
@@ -85,13 +85,13 @@ export default Ember.Controller.extend({
       if (currentIndex > indexToDel) {
         currentItem.set("index", (currentIndex - 1));
         var mapPoint = currentItem.get('location');
-        if (mapPoint !== null) {
+        if (!Ember.isEmpty(mapPoint)) {
           mapPoint.set('label', currentItem.get('index') + currentItem.get('position'));
         }
       }
     });
     var mapPoint = itemToDel.get('location');
-    if (mapPoint !== null) {
+    if (!Ember.isEmpty(mapPoint)) {
       mapPoint.removeFromMap(this.get('mtgTrail').get('layer'));
       mapPoint.deleteRecord();
     }

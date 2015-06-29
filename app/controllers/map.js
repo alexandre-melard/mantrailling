@@ -53,7 +53,7 @@ export default Ember.Controller.extend({
 
   createVectorSource: function (features) {
     var vectorSource = null;
-    if (features !== undefined && features !== null) {
+    if (!Ember.isEmpty(features)) {
       vectorSource = new ol.source.GPX({object: features});
     } else {
       vectorSource = new ol.source.Vector();
@@ -68,15 +68,15 @@ export default Ember.Controller.extend({
   },
 
   changeCurrentLayer: function (layer) {
-    if (layer === undefined || layer === null) {
+    if (Ember.isEmpty(layer)) {
       var source = this.createVectorSource();
       layer = this.createVector(source);
       layer.setStyle(getStyleFunction(this.command, this.i18n));
-    } else if (this.map !== null) {
+    } else if (!Ember.isEmpty(this.map)) {
       this.map.removeLayer(this.currentLayer);
     }
-    if (this.map !== null) {
-      if (this.currentLayer !== null) {
+    if (!Ember.isEmpty(this.map)) {
+      if (!Ember.isEmpty(this.currentLayer)) {
         this.map.removeLayer(this.currentLayer);
       }
       this.map.addLayer(layer);
@@ -108,7 +108,7 @@ export default Ember.Controller.extend({
       vectors.forEach(function (vector) {
         map.addLayer(vector);
       });
-      if (me.currentLayer !== null) {
+      if (!Ember.isEmpty(me.currentLayer)) {
         me.changeCurrentLayer(me.currentLayer);
       }
     });

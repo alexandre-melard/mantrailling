@@ -29,7 +29,7 @@ export default DS.Model.extend({
     },
     set(key, value) {
       this.set('_visible', value);
-      if (this.get('layer') !== null) {
+      if (!Ember.isEmpty(this.get('layer'))) {
         this.get('layer').setVisible(value);
       }
       this.save();
@@ -42,7 +42,7 @@ export default DS.Model.extend({
     },
     set(key, value) {
       this.set('_opacity', value);
-      if (this.get('layer') !== null) {
+      if (!Ember.isEmpty(this.get('layer'))) {
         this.get('layer').setOpacity(value);
       }
       this.save();

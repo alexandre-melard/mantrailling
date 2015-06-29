@@ -8,7 +8,7 @@ export default function (geometry, feature) {
   var label = feature.get('label');
   var style = feature.get('extensions');
   var color = feature.get('color');
-  if (color !== undefined && color !== null) {
+  if (!Ember.isEmpty(color)) {
     style.fill.color.hexa = color;
     style.stroke.color.hexa = color;
     style.text.fill.color.hexa = color;
