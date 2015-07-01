@@ -60,13 +60,9 @@ export default Ember.Component.extend({
             // request, and the time the access token
             // and signed request each expire
             resolve({userID: response.authResponse.userID, accessToken: response.authResponse.accessToken});
-          } else if (response.status === 'not_authorized') {
-            // the user is logged in to Facebook,
-            // but has not authenticated your app
-            fail("not authorized");
           } else {
-            FB.login(function () {
-              resolve(FB.getAuthResponse());
+            FB.login(function (response) {
+              resolve({userID: response.authResponse.userID, accessToken: response.authResponse.accessToken});
             }, {scope: 'publish_actions'});
           }
         });
