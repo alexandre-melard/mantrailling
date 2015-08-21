@@ -21,7 +21,7 @@ export default Ember.Controller.extend({
       var map = this.get('map');
       var layer = this.get('currentLayer');
       return new Promise(function (resolve, error) {
-        map.getView().fitExtent(layer.getSource().getExtent(), (map.getSize()));
+        map.getView().fit(layer.getSource().getExtent(), (map.getSize()));
         resolve(true);
       });
     });
@@ -151,11 +151,13 @@ export default Ember.Controller.extend({
 
             $("#screenshot-box-buttons").find("button.save").on('click', function () {
               var data = $('#map >> canvas').cropper("getCroppedCanvas").toDataURL('image/png');
-              file.write(data, "carte", "png", "image/png");
-              $('#screenshot-box-buttons').appendTo("#container");
-              me.set("displayScreenshot", false);
-              $('#map >> canvas').cropper("destroy");
-              $("#screenshot-box-buttons").find("button").off('click');
+              me.command.send("map.trails.selected.name.get", null, function(name) {
+                file.write(data, name, "png", "image/png");
+                $('#screenshot-box-buttons').appendTo("#container");
+                me.set("displayScreenshot", false);
+                $('#map >> canvas').cropper("destroy");
+                $("#screenshot-box-buttons").find("button").off('click');
+              });
             });
             me.set("isScreenshotLoading", false);
             console.log("screenshot loaded");

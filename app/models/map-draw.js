@@ -71,7 +71,7 @@ let MapDraw = DS.Model.extend({
     var lineStrings = json[type];
     if (!Ember.isEmpty(lineStrings)) {
       lineStrings.forEach(function (lineString) {
-        me.store.find('mapLinestring', lineString.id).then(function (lineString) {
+        me.store.query('mapLinestring', lineString.id).then(function (lineString) {
           me.get('lineStrings').pushObject(lineString);
         }, function () {
           var lineString = me.store.createRecord('mapLinestring', lineString);
@@ -83,7 +83,7 @@ let MapDraw = DS.Model.extend({
     var points = json[type];
     if (!Ember.isEmpty(points)) {
       points.forEach(function (pointJSON) {
-        me.store.find('mapPoint', pointJSON.id).then(function (point) {
+        me.store.query('mapPoint', pointJSON.id).then(function (point) {
           me.get('points').pushObject(point);
         }, function () {
           var pointRecord = me.store.createRecord('mapPoint');
@@ -96,7 +96,7 @@ let MapDraw = DS.Model.extend({
     var polygons = json[type];
     if (!Ember.isEmpty(polygons)) {
       polygons.forEach(function (polygon) {
-        me.store.find('mapPolygon', polygon.id).then(function (polygon) {
+        me.store.query('mapPolygon', polygon.id).then(function (polygon) {
           me.get('polygons').pushObject(polygon);
         }, function () {
           var polygon = me.store.createRecord('mapPolygon', polygon);

@@ -2,7 +2,6 @@
  * Created by alex on 04/04/2015.
  */
 import Ember from 'ember';
-import { translationMacro as t } from "ember-i18n";
 
 export default Ember.Controller.extend({
 
@@ -11,7 +10,9 @@ export default Ember.Controller.extend({
   date: null,
   time: [],
   selectedTime: null,
-  error: t("map.weather.result.tips"),
+  error: function() {
+    return this.get('i18n').t("map.weather.result.tips");
+  }.property(),
   weather: {
     tempC: null,
     winddir16Point: null,
@@ -45,7 +46,7 @@ export default Ember.Controller.extend({
         }, function (reason) {
           console.log('failed loading weather: ' + reason);
           me.set('weather', null);
-          me.set('error', t("map.weather.result.error"));
+          me.set('error', me.get('i18n').t("map.weather.result.error"));
           fail(reason);
         });
       });

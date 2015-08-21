@@ -48,7 +48,7 @@ export default Ember.Controller.extend({
         var result = parser.read(response);
         Promise.all(result.Contents.Layer.reverse().map(function (desc) {
           var tile = createWMTSLayer(desc, result.Contents.TileMatrixSet[0]);
-          return store.find('mapLayer', {identifier: desc.Identifier}).then(function (layers) {
+          return store.query('mapLayer', {identifier: desc.Identifier}).then(function (layers) {
             var layer = layers.get('firstObject');
             layer.layer = tile;
             return layer;

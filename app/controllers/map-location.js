@@ -5,7 +5,6 @@ import Ember from 'ember';
 import getLatLng from '../utils/google-geocoder-latlng';
 import geoLoc from '../utils/geocoding-watch-position';
 import consts from '../utils/map-constants';
-import { translationMacro as t } from "ember-i18n";
 
 export default Ember.Controller.extend({
   needs: ['map'],
@@ -32,7 +31,7 @@ export default Ember.Controller.extend({
     this.command.register(this, 'actions.map.location.coordinates', function (options) {
       return new Promise(function (resolve) {
         me.command.send('map.draw.location', {
-          tooltip: t("map.location.coordinates.tooltip")
+          tooltip: me.get('i18n').t("map.location.coordinates.tooltip")
         });
       });
     });

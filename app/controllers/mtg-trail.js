@@ -68,6 +68,12 @@ export default Ember.Controller.extend({
         });
       });
     });
+    this.command.register(this, 'map.trails.selected.name.get', function () {
+      var trail = me.get('selectedTrail');
+      return new Promise(function (resolve) {
+        resolve(trail.get('name'));
+      });
+    });
   },
 
   /**
@@ -125,7 +131,7 @@ export default Ember.Controller.extend({
       name: this.get('addTrailName')
     });
     trail.set('selected', true);
-    trail.set('level', this.store.find('mtgLevel', {index: 0}));
+    trail.set('level', this.store.query('mtgLevel', {index: 0}));
     trail = this.changeActiveTrail(trail);
     this.trails.pushObject(trail);
     return trail;
@@ -143,7 +149,7 @@ export default Ember.Controller.extend({
     var trails = this.get('trails');
     file.read('cmp', function (data) {
       var json = JSON.parse(data);
-      me.store.find('mtgTrail', json.id).then(function (mtgTrail) {
+      me.store.query('mtgTrail', json.id).then(function (mtgTrail) {
         console.log('trail exists already');
       }, function () {
         var trail = me.store.createRecord('mtgTrail');

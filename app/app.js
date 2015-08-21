@@ -26,7 +26,7 @@ Ember.Route.reopen({
       'mtgItem',
       'mtgLevel',
       'mtgTrail'].forEach(function(model) {
-        me.store.find(model);
+//        me.store.query(model);
       });
   }
 });

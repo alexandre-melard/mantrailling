@@ -35,7 +35,7 @@ export default DS.Model.extend({
     return new Promise(function(resolve) {
       var mapPoint = me.get('location');
       if (!Ember.isEmpty(mapPoint)) {
-        me.store.find('mapPoint', mapPoint.id).then(function (mp) {
+        me.store.query('mapPoint', mapPoint.id).then(function (mp) {
          resolve(mp.loadGeoJSON(layer));
         });
       }
@@ -59,7 +59,7 @@ export default DS.Model.extend({
     var me = this;
     this.set("index", json.index);
     if (!Ember.isEmpty(json.location)) {
-      me.store.find('mapPoint', json.location.id).then(function (mapPoint) {
+      me.store.query('mapPoint', json.location.id).then(function (mapPoint) {
         me.set('location', mapPoint);
         mapPoint.loadGeoJSON(layer);
       }, function () {

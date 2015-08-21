@@ -1,5 +1,6 @@
 import DS from 'ember-data';
 import * as consts from '../utils/map-constants';
+import Ember from 'ember';
 
 /**
  * Created by alex on 31/03/2015.
@@ -139,19 +140,19 @@ let Trail = DS.Model.extend({
 
       json.levels.forEach(function (l) {
         if (!Ember.isEmpty(l.name) && !Ember.isEmpty(l.index)) {
-          me.store.find('mtgLevel', {name: l.name}).then(function () {
+          me.store.query('mtgLevel', {name: l.name}).then(function () {
           }, function () {
             // Create level if not exists
             me.command.send('mtg.levels.create', {name: l.name, index: l.index}, function(level) {
               level.save();
             });
           }).finally(function () {
-            me.set("level", me.store.find('mtgLevel', {name: json.level}));
+            me.set("level", me.store.query('mtgLevel', {name: json.level}));
           });
         }
       });
       json.items.forEach(function (i) {
-        me.store.find('mtgItem', i.id).then(function (item) {
+        me.store.query('mtgItem', i.id).then(function (item) {
           me.get('items').pushObject(item);
         }, function () {
           var item = me.store.createRecord('mtgItem');
@@ -161,7 +162,7 @@ let Trail = DS.Model.extend({
         });
       });
       if (!Ember.isEmpty(json.mapDraw)) {
-        me.store.find('mapDraw', json.mapDraw.id).then(function (mapDraw) {
+        me.store.query('mapDraw', json.mapDraw.id).then(function (mapDraw) {
           me.set('mapDraw', mapDraw);
         }, function () {
           var mapDraw = me.store.createRecord('mapDraw');
@@ -172,7 +173,7 @@ let Trail = DS.Model.extend({
       }
       [consts.TRAILER, consts.TEAM].map(function (type) {
         if (!Ember.isEmpty(json[type])) {
-          me.store.find('mapLinestring', json[type].id).then(function (mapLinestring) {
+          me.store.query('mapLinestring', json[type].id).then(function (mapLinestring) {
             me.set(type, mapLinestring);
           }, function () {
             var mapLinestring = me.store.createRecord('mapLinestring');
@@ -209,7 +210,7 @@ let Trail = DS.Model.extend({
       data.name = me.get("name");
       data.level = me.get("level").get('name');
       data.levels = [];
-      me.store.find("mtgLevel").then(function (levels) {
+      me.store.query("mtgLevel").then(function (levels) {
         levels.forEach(function (l) {
           data.levels.pushObject(l.serialize());
         });

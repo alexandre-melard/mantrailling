@@ -2,7 +2,6 @@
  * Created by alex on 04/04/2015.
  */
 import Ember from 'ember';
-import { translationMacro as t } from "ember-i18n";
 
 export default Ember.Component.extend({
   i18n: Ember.inject.service(),

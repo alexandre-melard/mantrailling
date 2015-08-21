@@ -2,7 +2,6 @@
  * Created by alex on 04/04/2015.
  */
 import Ember from 'ember';
-import { translationMacro as t } from "ember-i18n";
 
 export default Ember.Component.extend({
   classNames: ['btn-group', 'dropdown-list'],
@@ -13,7 +12,7 @@ export default Ember.Component.extend({
   tTitle: null,
   title: function (key, value) {
     if (arguments.length > 1) {
-      var trans = t(value);
+      var trans = this.get('i18n').t(value);
       if (Ember.isEmpty(trans)) {
         trans = value;
       }
