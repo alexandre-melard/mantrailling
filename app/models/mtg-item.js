@@ -20,7 +20,7 @@ export default DS.Model.extend({
     this.command.register(this, 'mtg.item.remove', function (options) {
       return new Promise(function (resolve) {
         console.log("deleting mtg item");
-        if (me.get('location') !== null) {
+        if (!Ember.isEmpty(me.get('location'))) {
           me.get('location').removeFromMap(options.layer);
           me.get('location').deleteRecord();
         }
@@ -31,19 +31,22 @@ export default DS.Model.extend({
   }.on('init'),
 
   load: function (layer) {
-    var mapPoint = this.get('location');
-    if (mapPoint !== null) {
-      this.store.find('mapPoint', mapPoint.id).then(function (mp) {
-        mp.loadGeoJSON(layer);
-      });
-    }
+    var me = this;
+    return new Promise(function(resolve) {
+      var mapPoint = me.get('location');
+      if (!Ember.isEmpty(mapPoint)) {
+        me.store.find('mapPoint', mapPoint.id).then(function (mp) {
+         resolve(mp.loadGeoJSON(layer));
+        });
+      }
+    });
   },
 
   serialize: function () {
     var data = {};
     data.id = this.id;
     data.index = this.get('index');
-    if (this.get('location') !== null) {
+    if (!Ember.isEmpty(this.get('location'))) {
       data.location = this.get('location').serialize();
     }
     data.position = this.get('position');
@@ -55,7 +58,7 @@ export default DS.Model.extend({
   unserialize: function (json, layer) {
     var me = this;
     this.set("index", json.index);
-    if (json.location !== undefined) {
+    if (!Ember.isEmpty(json.location)) {
       me.store.find('mapPoint', json.location.id).then(function (mapPoint) {
         me.set('location', mapPoint);
         mapPoint.loadGeoJSON(layer);

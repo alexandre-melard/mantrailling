@@ -1,6 +1,6 @@
 <button type="button" data-toggle={{if toggle toggle ""}} title={{if tTitle tTitle ""}} {{bind-attr class=":btn btnColorName :dropdown-toggle btnClassName btnRadius"}} {{action "toggle"}}>
 {{#if icon}}
-  <span {{bind-attr class=":glyphicon glyphicon"}} aria-hidden="true"></span>
+  <span class="glyphicon {{glyphicon}}" aria-hidden="true"></span>
 {{else}}
   {{#if img}}
     <img {{bind-attr src="img"}} width="16" height="16"/>

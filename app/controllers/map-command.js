@@ -6,17 +6,15 @@ import Ember from 'ember';
 export default Ember.Controller.extend({
   commands: [],
   registered: [],
+  store: Ember.inject.service('store'),
 
-  loadStore: function () {
-    this.set('store', this.container.lookup('store:main'));
-  }.on('init'),
-
-  register: function (who, what, callback) {
+  register: function (who, what, command, rollback) {
     var registered = this.get('registered');
     registered.pushObject({
       who: who,
       what: what,
-      callback: callback
+      command: command,
+      rollback: rollback
     });
   },
 
@@ -26,13 +24,13 @@ export default Ember.Controller.extend({
     var command = commands.objectAt(commands.get('length') - 1);
     registered.forEach(function (register) {
       if (command.key === register.what) {
-        register.callback.apply(register.who, [command.options])
+        register.command.apply(register.who, [command.options])
           .then(function (result) {
-            if (command.resolve !== undefined) {
+            if (!Ember.isEmpty(command.resolve)) {
               command.resolve(result);
             }
           }, function (reason) {
-            if (command.failure !== undefined) {
+            if (!Ember.isEmpty(command.failure)) {
               command.failure(reason);
             }
           });

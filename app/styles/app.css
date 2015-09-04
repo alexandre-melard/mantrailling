@@ -169,6 +169,14 @@ ul.mtg-trail-trails-dropdown, ul.mtg-trail-level-dropdown {
   width: 370px;
 }
 
+.mtg-trail-trails-select {
+  width: 45px;
+}
+
+.mtg-trail-trails-name {
+  width: 180px;
+}
+
 .mtg-trail-tools-buttons {
  text-align: right;
 }
@@ -332,6 +340,32 @@ label.mtg-item-position input[type="radio"] {
   padding-right: 5px;
 }
 
+.btn-facebook:hover, .btn-facebook:focus, .btn-facebook:active, .btn-facebook.active, .open>.dropdown-toggle.btn-facebook {
+  color: #fff;
+  background-color: #2d4373;
+  border-color: rgba(0,0,0,0.2);
+}
+
+.fa {
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transform: translate(0, 0);
+}
+
+.fa-facebook-f:before, .fa-facebook:before {
+  content: "\f09a";
+}
+
+.btn-facebook {
+  color: #fff;
+  background-color: #3b5998;
+  border-color: rgba(0,0,0,0.2);
+}
+
 .btn-pink {
   background-color: hsl(312, 80%, 43%) !important;
   background-repeat: repeat-x;
@@ -467,4 +501,8 @@ label.mtg-item-position input[type="radio"] {
 
 .width-full {
   width: 100%;
+}
+
+#screenshot-box-buttons {
+  float: right;
 }

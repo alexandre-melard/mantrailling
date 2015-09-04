@@ -6,15 +6,11 @@ import getRGBColor from "../utils/color-get-rgb";
 import t from "../utils/i18n-utils";
 
 export default function (command, i18n, geometry, feature) {
-  // mise à jour de la longeur de piste dans le trail et de la position de piste dans le trail
-  feature.on('change', function (e) {
-    command.send('map.linestring.change', {feature: e.currentTarget});
-  });
   var styles = [];
   var label = feature.get('label');
   var style = feature.get('extensions');
   var color = feature.get('color');
-  if (color !== undefined && color !== null) {
+  if (!Ember.isEmpty(color)) {
     style.stroke.color.hexa = color;
     style.text.fill.color.hexa = color;
     style.text.stroke.color.hexa = color;
@@ -47,7 +43,7 @@ export default function (command, i18n, geometry, feature) {
   var getLineStringExtremityStyle = function (pos, style) {
     var rgb = getRGBColor(style.color);
     var text = null;
-    if (style.text !== undefined) {
+    if (!Ember.isEmpty(style.text)) {
       text = new ol.style.Text({
         offsetX: parseInt(style.text.offset.x) || 0,
         offsetY: parseInt(style.text.offset.y) || 0,
@@ -77,16 +73,16 @@ export default function (command, i18n, geometry, feature) {
       })
     }));
   };
-  if (style.start !== undefined || style.end !== undefined) {
+  if (!Ember.isEmpty(style.start) || !Ember.isEmpty(style.end)) {
     geometry.forEachSegment(function (start, end) {
       var startLine = geometry.getFirstCoordinate();
       var endLine = geometry.getLastCoordinate();
-      if (style.start !== undefined) {
+      if (!Ember.isEmpty(style.start)) {
         if (start[0] === startLine[0] && start[1] === startLine[1]) {
           getLineStringExtremityStyle(start, style.start);
         }
       }
-      if (style.end !== undefined) {
+      if (!Ember.isEmpty(style.end)) {
         if (end[0] === endLine[0] && end[1] === endLine[1]) {
           getLineStringExtremityStyle(end, style.end);
         }

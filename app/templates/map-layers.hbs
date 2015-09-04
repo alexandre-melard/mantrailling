@@ -9,7 +9,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {{#each tileLayers as |layer|}}
+                {{#each tileLayers key="@index" as |layer|}}
 
                     <tr {{bind-attr id=layer.model.identifier}}>
                         <td class="layer-id">

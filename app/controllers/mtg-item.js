@@ -3,7 +3,6 @@
  */
 import Ember from 'ember';
 import consts from '../utils/map-constants';
-import { translationMacro as t } from "ember-i18n";
 
 export default Ember.Controller.extend({
   needs: ["mtgTrail"],
@@ -13,12 +12,24 @@ export default Ember.Controller.extend({
   itemTypes: [],
   currentItem: null,
 
-  tGround: t("map.menu.mtg.trail.items.item.ground"),
-  tCloth: t("map.menu.mtg.trail.items.item.cloth"),
-  tLeather: t("map.menu.mtg.trail.items.item.leather"),
-  tCardboard: t("map.menu.mtg.trail.items.item.cardboard"),
-  tPlastic: t("map.menu.mtg.trail.items.item.plastic"),
-  tWood: t("map.menu.mtg.trail.items.item.wood"),
+  tGround: function() {
+    return this.get('i18n').t("map.menu.mtg.trail.items.item.ground");
+  }.property(),
+  tCloth: function() {
+    return this.get('i18n').t("map.menu.mtg.trail.items.item.cloth");
+  }.property(),
+  tLeather: function() {
+    return this.get('i18n').t("map.menu.mtg.trail.items.item.leather");
+  }.property(),
+  tCardboard: function() {
+    return this.get('i18n').t("map.menu.mtg.trail.items.item.cardboard");
+  }.property(),
+  tPlastic: function() {
+    return this.get('i18n').t("map.menu.mtg.trail.items.item.plastic");
+  }.property(),
+  tWood: function() {
+    return this.get('i18n').t("map.menu.mtg.trail.items.item.wood");
+  }.property(),
 
   loadItems: function() {
     var types = this.get('itemTypes');
@@ -29,6 +40,45 @@ export default Ember.Controller.extend({
     types.pushObject(this.get('tWood'));
     this.set('currentItem', {position: this.get('tGround'), type: this.get("tCloth"), description: null});
   }.on('init'),
+
+  bindActions: function () {
+    var me = this;
+    this.command.register(this, 'actions.mtg.item.position', function (item) {
+      return new Promise(function (resolve) {
+        me.command.send('mtg.item.position', item, function (item) {
+          console.log("item positionned");
+          me.command.send('mtg.item.positioned', item, resolve);
+        });
+      });
+    });
+  }.on('init'),
+
+  bindCommand: function () {
+    this.command.register(this, 'mtg.item.position', this.positionItem);
+  }.on('init'),
+
+  positionItem: function(item) {
+    var me = this;
+
+    var options = {
+      style: consts.style[consts.ITEM],
+      removeFeature: item.get("feature")
+    };
+    this.command.send('map.draw.point', options,
+      function (feature) {
+        var mapPoint = item.get('location');
+        if (Ember.isEmpty(mapPoint)) {
+          mapPoint = me.store.createRecord('mapPoint');
+          item.set('location', mapPoint);
+        }
+        mapPoint.set('feature', feature);
+        mapPoint.set('label', item.get('index') + item.get('position'));
+        mapPoint.exportGeoJSON();
+      },
+      function (reason) {
+        console.log('could not create item icon: ' + reason);
+      });
+  },
 
   addItem: function () {
     var items = this.get('items');
@@ -46,13 +96,13 @@ export default Ember.Controller.extend({
       if (currentIndex > indexToDel) {
         currentItem.set("index", (currentIndex - 1));
         var mapPoint = currentItem.get('location');
-        if (mapPoint !== null) {
+        if (!Ember.isEmpty(mapPoint)) {
           mapPoint.set('label', currentItem.get('index') + currentItem.get('position'));
         }
       }
     });
     var mapPoint = itemToDel.get('location');
-    if (mapPoint !== null) {
+    if (!Ember.isEmpty(mapPoint)) {
       mapPoint.removeFromMap(this.get('mtgTrail').get('layer'));
       mapPoint.deleteRecord();
     }
@@ -62,25 +112,7 @@ export default Ember.Controller.extend({
 
   actions: {
     positionItem: function (item) {
-      var me = this;
-      var options = {
-        style: consts.style[consts.ITEM],
-        removeFeature: item.get("feature")
-      };
-      this.command.send('map.draw.point', options,
-        function (feature) {
-          var mapPoint = item.get('location');
-          if (mapPoint === null) {
-            mapPoint = me.store.createRecord('mapPoint');
-            item.set('location', mapPoint);
-          }
-          mapPoint.set('feature', feature);
-          mapPoint.set('label', item.get('index') + item.get('position'));
-          mapPoint.exportGeoJSON();
-        },
-        function (reason) {
-          console.log('could not create item icon: ' + reason);
-        });
+      this.command.send('actions.mtg.item.position', item);
     },
     addItem: function () {
       this.addItem();

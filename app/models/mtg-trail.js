@@ -1,5 +1,6 @@
 import DS from 'ember-data';
 import * as consts from '../utils/map-constants';
+import Ember from 'ember';
 
 /**
  * Created by alex on 31/03/2015.
@@ -38,21 +39,21 @@ let Trail = DS.Model.extend({
       return new Promise(function (resolve) {
         if (id === me.id) {
           console.log("removing trail:" + me.get('name'));
-          if (layer !== undefined && map != undefined) {
+          if (!Ember.isEmpty(layer) && !Ember.isEmpty(map)) {
             map.removeLayer(layer);
           }
-          if (me.get('Trailer') !== null && me.get('Trailer').feature !== null) {
+          if (!Ember.isEmpty(me.get('Trailer')) && !Ember.isEmpty(me.get('Trailer').feature)) {
             me.command.send("map.feature.remove", {feature: me.get('Trailer').feature});
           }
-          if (me.get('Team') !== null && me.get('Team').feature !== null) {
+          if (!Ember.isEmpty(me.get('Team')) && !Ember.isEmpty(me.get('Team').feature)) {
             me.command.send("map.feature.remove", {feature: me.get('Team').feature});
           }
-          if (me.get('mapDraw') !== null) {
+          if (!Ember.isEmpty(me.get('mapDraw'))) {
             me.command.send("mtg.draw.remove", {id: me.get('mapDraw').id});
           }
           //TODO montrer ça à un expert !
           me.deleteRecord();
-          if (me.get('items') !== null) {
+          if (!Ember.isEmpty(me.get('items'))) {
             Promise.all(me.get("items").map(function (i) {
               me.command.send("mtg.item.remove", {id: i.id, layer: layer}, function() {
                 console.log("item deleted");
@@ -71,6 +72,7 @@ let Trail = DS.Model.extend({
 
   load: function () {
     var me = this;
+    var promises = [];
     var layer = this.layer;
     if (this.get('version') !== consts.VERSION) {
       console.log("major version change, deleting model");
@@ -78,19 +80,21 @@ let Trail = DS.Model.extend({
       localStorage.clear();
       location.reload();
     }
-    if (me.get('items') !== null) {
+    if (!Ember.isEmpty(me.get('items'))) {
       me.get("items").forEach(function (i) {
-        i.load(me.get('layer'));
+        promises.pushObject(i.load(me.get('layer')));
       });
     }
     var mapDraw = this.get('mapDraw');
-    if (mapDraw !== null) {
-      mapDraw.load(layer);
+    if (!Ember.isEmpty(mapDraw)) {
+      promises.pushObject(mapDraw.load(layer));
     }
     [consts.TRAILER, consts.TEAM].map(function (type) {
       var item = me.get(type);
-      if (item !== null) {
-        item.loadGPX().then(function (feature) {
+      if (!Ember.isEmpty(item)) {
+        var loadGPXPromise = item.loadGPX();
+        promises.pushObject(loadGPXPromise);
+        loadGPXPromise.then(function (feature) {
           feature.get('extensions').type = type;
 
           // add the feature to the feature's layer
@@ -107,42 +111,45 @@ let Trail = DS.Model.extend({
         });
       }
     });
+    return Promise.all(promises);
   },
 
   export: function () {
     var me = this;
     var layer = this.layer;
     var mapDraw = this.get('mapDraw');
-    if (mapDraw !== null) {
+    if (!Ember.isEmpty(mapDraw)) {
       mapDraw.export();
     }
     [consts.TRAILER, consts.TEAM].map(function (type) {
       var item = me.get(type);
-      if (item !== null) {
+      if (!Ember.isEmpty(item)) {
         return item.exportToGPX();
       }
     });
   },
 
-  unserialize: function (json, layer) {
+  unserialize: function (json) {
     var me = this;
     return new Promise(function (resolve) {
-      me.layer = layer;
+      var layer = me.layer;
 
       me.set("version", json.version);
       me.set("name", json.name);
       me.set("selected", true);
 
       json.levels.forEach(function (l) {
-        me.store.find('mtgLevel', l.id).then(function () {
-        }, function () {
-          // Create level if not exists
-          var level = me.store.createRecord('mtgLevel');
-          level.unserialize(l);
-          level.save();
-        }).finally(function () {
-          me.set("level", me.store.find('mtgLevel', {name: json.level}));
-        });
+        if (!Ember.isEmpty(l.name) && !Ember.isEmpty(l.index)) {
+          me.store.find('mtgLevel', {name: l.name}).then(function () {
+          }, function () {
+            // Create level if not exists
+            me.command.send('mtg.levels.create', {name: l.name, index: l.index}, function(level) {
+              level.save();
+            });
+          }).finally(function () {
+            me.set("level", me.store.find('mtgLevel', {name: json.level}));
+          });
+        }
       });
       json.items.forEach(function (i) {
         me.store.find('mtgItem', i.id).then(function (item) {
@@ -154,7 +161,7 @@ let Trail = DS.Model.extend({
           me.get('items').pushObject(item);
         });
       });
-      if (json.mapDraw !== undefined) {
+      if (!Ember.isEmpty(json.mapDraw)) {
         me.store.find('mapDraw', json.mapDraw.id).then(function (mapDraw) {
           me.set('mapDraw', mapDraw);
         }, function () {
@@ -165,7 +172,7 @@ let Trail = DS.Model.extend({
         });
       }
       [consts.TRAILER, consts.TEAM].map(function (type) {
-        if (json[type] !== undefined) {
+        if (!Ember.isEmpty(json[type])) {
           me.store.find('mapLinestring', json[type].id).then(function (mapLinestring) {
             me.set(type, mapLinestring);
           }, function () {
@@ -203,7 +210,7 @@ let Trail = DS.Model.extend({
       data.name = me.get("name");
       data.level = me.get("level").get('name');
       data.levels = [];
-      me.store.find("mtgLevel").then(function (levels) {
+      me.store.peekAll("mtgLevel").then(function (levels) {
         levels.forEach(function (l) {
           data.levels.pushObject(l.serialize());
         });
@@ -214,12 +221,12 @@ let Trail = DS.Model.extend({
         });
 
         var mapDraw = me.get('mapDraw');
-        if (mapDraw !== null) {
+        if (!Ember.isEmpty(mapDraw)) {
           data.mapDraw = mapDraw.serialize();
         }
         [consts.TRAILER, consts.TEAM].map(function (type) {
           var item = me.get(type);
-          if (item !== null) {
+          if (!Ember.isEmpty(item)) {
             data[type] = {id: item.id, gpx: item.get('gpx')};
           }
         });

@@ -29,13 +29,57 @@ export default Ember.Controller.extend({
   popups: [],
   followPathMode: false,
 
+  bindActions: function () {
+    var me = this;
+    this.command.register(this, 'actions.map.draw.point', function (options) {
+      var me = this;
+      return new Promise(function (resolve) {
+        me.command.send('map.draw.point', {style: consts.style[consts.POINT]}, function (feature) {
+          console.log("point created");
+          me.command.send('map.draw.point.created', {feature: feature});
+        });
+      });
+    });
+    this.command.register(this, 'actions.map.draw.polygon', function (options) {
+      var me = this;
+      return new Promise(function (resolve) {
+        me.command.send('map.draw.polygon', consts.style[consts.POLYGON], function (feature) {
+          console.log("polygon created");
+          me.command.send('map.draw.polygon.created', {feature: feature});
+        });
+      });
+    });
+    this.command.register(this, 'actions.map.draw.linestring', function (options) {
+      var me = this;
+      return new Promise(function (resolve) {
+        $(".map-draw-linestring").addClass('hidden');
+        $(".map-draw-follow-path").removeClass('hidden');
+        me.command.send('map.draw.linestring', consts.style[consts.LINE_STRING], function (feature) {
+          console.log("line string created");
+          me.command.send('map.draw.linestring.created', {feature: feature}, function () {
+            $(".map-draw-follow-path").addClass('hidden');
+            $(".map-draw-linestring").removeClass('hidden');
+            resolve(this);
+          });
+        });
+      });
+    });
+    this.command.register(this, 'actions.map.draw.color', function (color) {
+      var me = this;
+      return new Promise(function (resolve) {
+        me.changeColor(color);
+        resolve(this);
+      });
+    });
+  }.on('init'),
+
   bindCommand: function () {
     var me = this;
     this.command.register(this, 'map.draw.point', this.drawPoint);
     this.command.register(this, 'map.draw.location', this.drawLocation);
     this.command.register(this, 'map.draw.linestring', this.drawLineString);
     this.command.register(this, 'map.draw.polygon', this.drawPolygon);
-    this.command.register(this, 'map.draw.linestring.mode', function(options) {
+    this.command.register(this, 'map.draw.linestring.mode', function (options) {
       return new Promise(function (resolve) {
         me.followPathMode = options.followPathMode;
         resolve(true);
@@ -43,9 +87,9 @@ export default Ember.Controller.extend({
     });
   }.on('init'),
 
-  initSelectAndModify: function() {
+  initSelectAndModify: function () {
     var map = this.get('map');
-    if (map !== null) {
+    if (!Ember.isEmpty(map)) {
       map.addInteraction(this.get('select'));
       map.addInteraction(this.get('modify'));
       this.changeCursorOnFeature();
@@ -54,12 +98,12 @@ export default Ember.Controller.extend({
 
   onGeometryChange: function () {
     var map = this.get('map');
-    if (map == null) {
+    if (Ember.isEmpty(map)) {
       return;
     }
     map.removeInteraction(this.get('olDraw'));
     $('#map').off('mouseup');
-    if (this.get('mtgDrawState') !== null) {
+    if (!Ember.isEmpty(this.get('mtgDrawState'))) {
       this.createDraw();
       map.addInteraction(this.get('olDraw'));
     }
@@ -80,10 +124,30 @@ export default Ember.Controller.extend({
     });
   },
 
+  deleteSelectionFactory: function (features, vector, me) {
+    var me = this;
+    this.deleteSelection = function (event) {
+      if (event.keyCode === 46) {
+        // remove all selected features from select and vector
+        features.forEach(function (feature) {
+          features.remove(feature);
+          var vectorFeatures = vector.getSource().getFeatures();
+          vectorFeatures.forEach(function (sourceFeature) {
+            if (sourceFeature === feature) {
+              vector.getSource().removeFeature(sourceFeature);
+              me.command.send('map.feature.remove', {feature: sourceFeature});
+            }
+          });
+        });
+      }
+    };
+    return this.deleteSelection;
+  },
+
   select: Ember.computed({
     get: function () {
       var me = this;
-      if (this.get('selectCache') !== undefined) {
+      if (!Ember.isEmpty(this.get('selectCache'))) {
         return this.get('selectCache');
       }
       var select = new ol.interaction.Select();
@@ -94,27 +158,12 @@ export default Ember.Controller.extend({
       // when a feature is selected...
       features.on('add', function () {
         var vector = this.get('currentLayer');
-
         // listen to pressing of delete key, then delete selected features
-        $(document).on('keyup', function (event) {
-          if (event.keyCode === 46) {
-
-            // remove all selected features from select and vector
-            features.forEach(function (feature) {
-              features.remove(feature);
-              var vectorFeatures = vector.getSource().getFeatures();
-              vectorFeatures.forEach(function (sourceFeature) {
-                if (sourceFeature === feature) {
-                  vector.getSource().removeFeature(sourceFeature);
-                  me.command.send('map.feature.remove', {feature: sourceFeature});
-                }
-              });
-            });
-          }
-        });
+        document.addEventListener('keyup', this.deleteSelectionFactory(features, vector, me));
       }, this);
 
       features.on('remove', function () {
+        document.removeEventListener('keyup', this.deleteSelection);
         this.command.send('map.draw.change', {features: features});
       }, this);
 
@@ -125,7 +174,7 @@ export default Ember.Controller.extend({
 
   modify: Ember.computed({
     get: function () {
-      if (this.get('modifyCache') !== undefined) {
+      if (!Ember.isEmpty(this.get('modifyCache'))) {
         return this.get('modifyCache');
       }
       var select = this.get('select');
@@ -144,6 +193,21 @@ export default Ember.Controller.extend({
       return modify;
     }
   }),
+
+  removeLastPointFactory: function (geom) {
+    this.removeLastPoint = function (event) {
+      if (event.keyCode === 27) {
+        if (geom.getType() === consts.LINE_STRING) {
+          var coords = geom.getCoordinates();
+          var len = coords.length;
+          if (len > 1) {
+            geom.setCoordinates(geom.getCoordinates().slice(0, len - 1));
+          }
+        }
+      }
+    };
+    return this.removeLastPoint;
+  },
 
   createDraw: function () {
     var currentLayer = this.get('currentLayer');
@@ -164,18 +228,17 @@ export default Ember.Controller.extend({
         var feature = evt.feature;
         var geom = feature.getGeometry();
 
-        if (this.get('onDrawStart') !== null) {
+        if (geom.getType() === consts.LINE_STRING) {
+          feature.on('change', function (e) {
+            this.command.send('map.linestring.change', {feature: e.currentTarget});
+          }, this);
+        }
+        if (!Ember.isEmpty(this.get('onDrawStart'))) {
           this.get('onDrawStart')(feature);
         }
         this.set('sketch', feature);
         tooltip.sketch = feature;
-        $('#map').on('keyup', function (event) {
-          if (event.keyCode === 27) {
-            if (geom.getType() === consts.LINE_STRING) {
-              geom.setCoordinates(geom.getCoordinates().slice(0, geom.getCoordinates().length - 1));
-            }
-          }
-        });
+        document.addEventListener('keyup', this.removeLastPointFactory(geom));
         var me = this;
         $('#map').on('mouseup', function () {
           if (geom.getType() === consts.LINE_STRING && me.followPathMode) {
@@ -195,14 +258,16 @@ export default Ember.Controller.extend({
       }, this);
 
     this.get('olDraw').on('drawend', function (e) {
+      var feature = e.feature;
+      var geom = feature.getGeometry();
       tooltip.deleteTooltips(this.get('map'));
       this.set('sketch', null);
       tooltip.sketch = null;
       this.set('mtgDrawState', null);
       $('#map').off('mouseup');
-      $('#map').off('keyup');
-      if (this.get('onDrawEnd') !== null) {
-        this.get('onDrawEnd')(e.feature);
+      document.removeEventListener('keyup', this.removeLastPoint);
+      if (!Ember.isEmpty(this.get('onDrawEnd'))) {
+        this.get('onDrawEnd')(feature);
       }
     }, this);
     return this.get('olDraw');
@@ -220,7 +285,7 @@ export default Ember.Controller.extend({
   handleSketchFinish: function () {
     var sketch = this.get('sketch');
     // Wait for sketch to be drawn
-    if (sketch === null) {
+    if (Ember.isEmpty(sketch)) {
       sketch = this.get('sketchLastState');
       var popup;
       if (this.get('mtgDrawState') === consts.MARKER || this.get('mtgDrawState') === consts.LOCATION) {
@@ -254,7 +319,7 @@ export default Ember.Controller.extend({
     me.set('mtgDrawState', consts.POINT);
     me.set('onDrawEnd', function (feature) {
       options.type = consts.POINT;
-      if (me.get('color') !== null) {
+      if (!Ember.isEmpty(me.get('color'))) {
         feature.set('color', me.get('color'));
       }
       feature.set('extensions', options.style);
@@ -266,10 +331,10 @@ export default Ember.Controller.extend({
   drawPoint: function (options) {
     var me = this;
     return new Promise(function (resolve) {
-      if (options !== undefined && options.removeFeature !== undefined) {
+      if (!Ember.isEmpty(options) && !Ember.isEmpty(options.removeFeature)) {
         me.get('currentLayer').getSource().removeFeature(options.removeFeature);
       }
-      if (options.location !== undefined) {
+      if (!Ember.isEmpty(options.location)) {
         me.drawPointAtLocation(me, resolve, options);
       } else {
         me.drawPointUI(me, resolve, options);
@@ -280,24 +345,24 @@ export default Ember.Controller.extend({
   draw: function (what, labelFunction, options) {
     var me = this;
     return new Promise(function (resolve) {
-      if (options !== undefined && options.removeFeature !== undefined) {
+      if (!Ember.isEmpty(options) && !Ember.isEmpty(options.removeFeature)) {
         me.get('currentLayer').getSource().removeFeature(options.removeFeature);
       }
       me.set('mtgDrawState', what);
-      me.set('onDrawStart', function () {
+      me.set('onDrawStart', function (feature) {
+        if (Ember.isEmpty(options.type)) {
+          options.type = what;
+        }
+        if (!Ember.isEmpty(me.get('color'))) {
+          feature.set('color', me.get('color'));
+        }
+        feature.set('extensions', options);
         me.set('onDrawStart', null);
       });
       me.set('onDrawEnd', function (feature) {
         var geometry = feature.getGeometry();
         var label = labelFunction(me.get('map').getView().getProjection(), geometry);
         feature.set('label', label);
-        if (options.type === undefined) {
-          options.type = what;
-        }
-        if (me.get('color') !== null) {
-          feature.set('color', me.get('color'));
-        }
-        feature.set('extensions', options);
         me.set('onDrawEnd', null);
         resolve(feature);
       });
@@ -341,34 +406,17 @@ export default Ember.Controller.extend({
   },
 
   actions: {
-    drawLineStringAction: function() {
-      var me = this;
-      $(".map-draw-linestring").addClass('hidden');
-      $(".map-draw-follow-path").removeClass('hidden');
-      this.drawLineString(consts.style[consts.LINE_STRING]).then(function (feature) {
-        console.log("line string created");
-        me.command.send('map.draw.linestring.create', {feature: feature}, function() {
-          $(".map-draw-follow-path").addClass('hidden');
-          $(".map-draw-linestring").removeClass('hidden');
-        });
-      });
+    drawLineStringAction: function () {
+      this.command.send('actions.map.draw.linestring');
     },
-    drawPolygonAction: function() {
-      var me = this;
-      this.drawPolygon(consts.style[consts.POLYGON]).then(function (feature) {
-        console.log("polygon created");
-        me.command.send('map.draw.polygon.create', {feature: feature});
-      });
+    drawPolygonAction: function () {
+      this.command.send('actions.map.draw.polygon');
     },
-    drawPointAction: function() {
-      var me = this;
-      this.drawPoint({style: consts.style[consts.POINT]}).then(function (feature) {
-        console.log("point created");
-        me.command.send('map.draw.point.create', {feature: feature});
-      });
+    drawPointAction: function () {
+      this.command.send('actions.map.draw.point');
     },
     changeColor: function (color) {
-      this.changeColor(color);
+      this.command.send('actions.map.draw.color', color);
     }
   }
 });

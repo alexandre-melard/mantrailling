@@ -72,7 +72,7 @@ export default {
   },
 
   createTooltip: function (map, tooltipDom, tooltipOverlay, options) {
-    if (tooltipDom !== null) {
+    if (!Ember.isEmpty(tooltipDom)) {
       tooltipDom.parentNode.removeChild(tooltipDom);
     }
     tooltipDom = document.createElement('div');
@@ -120,13 +120,13 @@ export default {
   },
 
   deleteTooltip: function (map, tooltipDom, tooltipOverlay, moveListenerKey) {
-    if (tooltipDom !== undefined && tooltipDom !== null) {
+    if (!Ember.isEmpty(tooltipDom)) {
       tooltipDom.parentNode.removeChild(tooltipDom);
     }
-    if (tooltipOverlay !== undefined && tooltipOverlay !== null) {
+    if (!Ember.isEmpty(tooltipOverlay)) {
       map.removeOverlay(tooltipOverlay);
     }
-    if (moveListenerKey !== undefined) {
+    if (!Ember.isEmpty(moveListenerKey)) {
       map.unByKey(moveListenerKey);
     }
   },

@@ -6,6 +6,13 @@ import Ember from 'ember';
 export default Ember.Controller.extend({
   tileLayers: [],
 
+  initLayer: function() {
+    this.tileLayers.forEach(function (tileLayer) {
+      tileLayer.layer.setVisible(tileLayer.get('visible'));
+      tileLayer.layer.setOpacity(tileLayer.get('opacity'));
+    });
+  }.observes("tileLayers.@each"),
+
   createWMTSLayer: function (layer, tms) {
     var attribution = "&copy; <a href='http://www.ign.fr'>IGN</a>";
     var projection = ol.proj.get(tms.SupportedCRS);
@@ -19,6 +26,7 @@ export default Ember.Controller.extend({
 
     var tile = new ol.layer.Tile({
       source: new ol.source.WMTS({
+        crossOrigin: "Anonymous",
         attribution: attribution,
         url: 'http://wxs.ign.fr/6i88pkdxubzayoady4upbkjg/geoportail/wmts',
         layer: layer.Identifier,

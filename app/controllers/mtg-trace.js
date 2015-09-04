@@ -25,7 +25,7 @@ export default Ember.Controller.extend({
         layer: options.layer
       });
       var last = selectedTrail.get(type);
-      if (last !== null) {
+      if (!Ember.isEmpty(last)) {
         last.removeFromMap(selectedTrail.layer);
         last.deleteRecord();
       }
@@ -45,7 +45,7 @@ export default Ember.Controller.extend({
 
   bindCommand: function () {
     var me = this;
-    this.command.register(this, 'map.draw.linestring.create', function (options) {
+    this.command.register(this, 'map.draw.linestring.created', function (options) {
       var feature = options.feature;
       var trail = me.get('mtgTrail').get('selectedTrail');
       return new Promise(function (resolve) {
@@ -57,6 +57,20 @@ export default Ember.Controller.extend({
           mapDraw.get('lineStrings').pushObject(ls);
           resolve(ls);
         });
+      });
+    });
+    this.command.register(this, 'map.linestring.remove', function (options) {
+      var me = this;
+      return new Promise(function () {
+        if (options.feature.get('extensions').type === consts.TRAILER) {
+          me.command.send('map.info.length', {
+            length: 0
+          });
+          me.command.send('map.info.location', {
+            location: ""
+          });
+        }
+
       });
     });
     this.command.register(this, 'map.linestring.change', function (options) {
@@ -114,7 +128,7 @@ export default Ember.Controller.extend({
     var me = this;
     file.read('gpx', function(gpx) {
       var mapLineString = trail.get(type);
-      if (mapLineString === null) {
+      if (Ember.isEmpty(mapLineString)) {
         mapLineString = me.store.createRecord('mapLinestring');
         trail.set(type, mapLineString);
       }

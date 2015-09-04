@@ -37,7 +37,7 @@ export default DS.Model.extend({
   }.on('init'),
 
   removeFromMap: function (layer) {
-    if (layer !== null && this.feature !== null) {
+    if (!Ember.isEmpty(layer) && !Ember.isEmpty(this.feature)) {
       layer.getSource().removeFeature(this.feature);
       this.set('feature', null);
       this.set('geoJSON', null);
@@ -87,9 +87,9 @@ export default DS.Model.extend({
       if (typeof geoJSON === 'string') {
         geoJSON = JSON.parse(geoJSON);
       }
-      if (geoJSON !== undefined && geoJSON !== null) {
-        if (extensions !== undefined) {
-          if (geoJSON.properties === undefined) {
+      if (!Ember.isEmpty(geoJSON)) {
+        if (!Ember.isEmpty(extensions)) {
+          if (Ember.isEmpty(geoJSON.properties)) {
             geoJSON.properties = {};
           }
           geoJSON.properties.extensions = extensions;
@@ -110,12 +110,12 @@ export default DS.Model.extend({
 
   label: Ember.computed('feature', {
     get(key) {
-      if (this.get('feature') !== null) {
+      if (!Ember.isEmpty(this.get('feature'))) {
         return this.get('feature').get('label');
       }
     },
     set(key, value) {
-      if (this.get('feature') !== null) {
+      if (!Ember.isEmpty(this.get('feature'))) {
         this.get('feature').set('label', value);
       }
     }

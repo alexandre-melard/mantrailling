@@ -30,6 +30,7 @@ export const COLORS = [
 ];
 
 export const style = {
+  Level: ["#E50BD6", "#1515E8", "#0AF612", "#F6E500"],
   LineString: {
     stroke: {
       color: {

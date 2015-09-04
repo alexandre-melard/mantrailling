@@ -13,9 +13,13 @@ export default Ember.View.extend({
   },
 
   afterRenderEvent: function() {
-    $('[data-toggle="tooltip"]').tooltip({
+    $('body').tooltip({
+      selector: '[data-toggle="tooltip"]',
       container: 'body',
       placement: 'bottom'
+    });
+    $('button').on("click", function() {
+      $(this).tooltip('toggle');
     });
   }
 });

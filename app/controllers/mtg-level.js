@@ -3,18 +3,42 @@
  */
 import Ember from 'ember';
 import * as consts from '../utils/map-constants';
-import { translationMacro as t } from "ember-i18n";
 
 export default Ember.Controller.extend({
   needs: ["mtgTrail"],
   mtgLevel: Ember.computed.alias("controllers.mtgLevel"),
   selectedTrail: Ember.computed.alias("controllers.mtgTrail.selectedTrail"),
   addLevelName: "",
-  tBrevet: t("map.menu.mtg.trail.levels.level.basic"),
-  tLevel1: t("map.menu.mtg.trail.levels.level.intermediate"),
-  tLevel2: t("map.menu.mtg.trail.levels.level.advanced"),
-  tLevel3: t("map.menu.mtg.trail.levels.level.master"),
+  tBrevet: function() {
+    return this.get('i18n').t("map.menu.mtg.trail.levels.level.basic");
+  }.property(),
+  tLevel1: function() {
+    return this.get('i18n').t("map.menu.mtg.trail.levels.level.intermediate");
+  }.property(),
+  tLevel2: function() {
+    return this.get('i18n').t("map.menu.mtg.trail.levels.level.advanced");
+  }.property(),
+  tLevel3: function() {
+    return this.get('i18n').t("map.menu.mtg.trail.levels.level.master");
+  }.property(),
   levels: [],
+
+  bindCommand: function () {
+    var me = this;
+    this.command.register(this, 'mtg.levels.create', this.createLevel);
+  }.on('init'),
+
+  createLevel: function (options) {
+    var me = this;
+    return new Promise(function (resolve) {
+      var level = me.store.createRecord('mtgLevel', {
+        name: options.name,
+        index: options.index
+      });
+      me.levels.pushObject(level);
+      resolve(level);
+    });
+  },
 
   /**
    * Return the selected Level in Levels' array.
@@ -67,20 +91,20 @@ export default Ember.Controller.extend({
     return value;
   }.property('levels.@each.selected'),
 
-  onSelectLevel: function() {
+  onSelectLevel: function () {
     var selectedTrail = this.get('selectedTrail');
-    if (selectedTrail === null) {
+    if (Ember.isEmpty(selectedTrail)) {
       return;
     }
     selectedTrail.set('level', this.get('selectedLevel'));
   }.observes('selectedLevel'),
 
-  onSelectTrail: function() {
+  onSelectTrail: function () {
     var selectedTrail = this.get('selectedTrail');
-    if (selectedTrail === null) {
+    if (Ember.isEmpty(selectedTrail)) {
       return;
     }
-    if (selectedTrail.get('level') !== null) {
+    if (!Ember.isEmpty(selectedTrail.get('level'))) {
       this.set('selectedLevel', selectedTrail.get('level'));
     } else {
       selectedTrail.set('level', this.get('levels').objectAt(0));
@@ -89,7 +113,7 @@ export default Ember.Controller.extend({
 
   loadLevels: function () {
     var me = this;
-    this.store.find('mtgLevel').then(function (storedLevels) {
+    this.store.findAll('mtgLevel').then(function (storedLevels) {
       if (storedLevels.get('length') === 0) {
         var brevet = me.store.createRecord('mtgLevel', {name: me.get("tBrevet"), index: 0, selected: true});
         var lvl1 = me.store.createRecord('mtgLevel', {name: me.get("tLevel1"), index: 1, selected: false});
@@ -100,7 +124,7 @@ export default Ember.Controller.extend({
           lvl1.save(),
           lvl2.save(),
           lvl3.save()
-        ]).then(function() {
+        ]).then(function () {
           me.get('levels').pushObject(brevet);
           me.get('levels').pushObject(lvl1);
           me.get('levels').pushObject(lvl2);
@@ -116,15 +140,15 @@ export default Ember.Controller.extend({
     changeLevel: function (level) {
       this.set('selectedLevel', level);
     },
-    addLevel: function() {
-      var level = this.store.createRecord('mtgLevel', {
+    addLevel: function () {
+      this.createLevel({
         name: this.get('addLevelName'),
         index: this.levels.get('length')
+      }).then(function (level) {
+        this.set('selectedLevel', level);
       });
-      this.levels.pushObject(level);
-      this.set('selectedLevel', level);
     },
-    deleteLevel: function(level) {
+    deleteLevel: function (level) {
       console.log("level deleted: " + level.get('name'));
       this.get('levels').removeObject(level);
       this.set('selectedLevel', this.get('levels').get('firstObject'));

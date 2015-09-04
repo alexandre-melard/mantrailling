@@ -17,7 +17,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {{#each levels as |level|}}
+                {{#each levels key="@index" as |level|}}
                     <tr class={{if level.selected 'success' ''}}>
                         <td {{action 'changeLevel' level }}>
                           {{level.name}}

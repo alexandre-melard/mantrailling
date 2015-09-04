@@ -20,7 +20,7 @@ export default Ember.Controller.extend({
     var me = this;
     return new Promise(function (resolve) {
       var md = me.get('selectedTrail').get('mapDraw');
-      if (md === null) {
+      if (Ember.isEmpty(md)) {
         var mapDraw = me.store.createRecord('mapDraw', {});
         me.get('selectedTrail').set('mapDraw', mapDraw);
         resolve(mapDraw);
@@ -40,7 +40,7 @@ export default Ember.Controller.extend({
         resolve(true);
       });
     });
-    this.command.register(this, 'map.draw.polygon.create', function (options) {
+    this.command.register(this, 'map.draw.polygon.created', function (options) {
       var feature = options.feature;
       var trail = me.get('selectedTrail');
       return new Promise(function (resolve) {
@@ -54,7 +54,7 @@ export default Ember.Controller.extend({
         });
       });
     });
-    this.command.register(this, 'map.draw.point.create', function (options) {
+    this.command.register(this, 'map.draw.point.created', function (options) {
       var feature = options.feature;
       var trail = me.get('selectedTrail');
       return new Promise(function (resolve) {
@@ -66,6 +66,12 @@ export default Ember.Controller.extend({
           mapDraw.get('points').pushObject(point);
           resolve(point);
         });
+      });
+    });
+    this.command.register(this, 'map.trails.selected.name.get', function () {
+      var trail = me.get('selectedTrail');
+      return new Promise(function (resolve) {
+        resolve(trail.get('name'));
       });
     });
   },
@@ -139,15 +145,24 @@ export default Ember.Controller.extend({
 
   importTrail: function (options) {
     var me = this;
+    var mapController = this.get('controllers.map');
+    var trails = this.get('trails');
     file.read('cmp', function (data) {
       var json = JSON.parse(data);
       me.store.find('mtgTrail', json.id).then(function (mtgTrail) {
         console.log('trail exists already');
       }, function () {
-        me.store.createRecord('mtgTrail').unserialize(json, me.get("layer")).then(function (mtgTrail) {
-          mtgTrail.save();
-          me.get('trails').pushObject(mtgTrail);
-          me.set("selectedTrail", mtgTrail);
+        var trail = me.store.createRecord('mtgTrail');
+        var vectorSource = mapController.createVectorSource();
+        var vectorLayer = mapController.createVector(vectorSource);
+        vectorLayer.setStyle(getStyleFunction(me.command, me.i18n));
+        trail.layer = vectorLayer;
+        trail.unserialize(json).then(function () {
+          trail.save();
+          if (trail.get('selected')) {
+            me.changeActiveTrail(trail, me);
+          }
+          trails.pushObject(trail);
         });
       });
     });
@@ -158,21 +173,26 @@ export default Ember.Controller.extend({
     var mapController = this.get('controllers.map');
     var trails = this.get('trails');
     this.store.all('mtgTrail').forEach(function (trail) {
-      var vectorSource = mapController.createVectorSource();
-      var vectorLayer = mapController.createVector(vectorSource);
-      vectorLayer.setStyle(getStyleFunction(me.command, me.i18n));
-      trail.layer = vectorLayer;
-      trail.load();
-      if (trail.get('selected')) {
-        me.changeActiveTrail(trail, me);
+      if (trail.get('name') !== "all") {
+        var vectorSource = mapController.createVectorSource();
+        var vectorLayer = mapController.createVector(vectorSource);
+        vectorLayer.setStyle(getStyleFunction(me.command, me.i18n));
+        trail.layer = vectorLayer;
+        trails.pushObject(trail);
+        trail.load().then(function() {
+          if (trail.get('selected')) {
+            me.changeActiveTrail(trail, me);
+          }
+        });
+      } else {
+        me.deleteTrail(trail);
       }
-      trails.pushObject(trail);
     });
   },
 
   changeActiveTrail: function (trail, context) {
     var me = context;
-    if (context === undefined || context === null) {
+    if (Ember.isEmpty(context)) {
       me = this;
     }
     var mapCtrl = me.get('controllers.map');
@@ -182,6 +202,31 @@ export default Ember.Controller.extend({
       this.command.send('map.view.extent.fit');
     }
     return trail;
+  },
+
+  showTrails: function() {
+    var me = this;
+    var trail = this.store.createRecord('mtgTrail', {
+      name: "all"
+    });
+    trail = this.changeActiveTrail(trail);
+    var layer = trail.layer;
+    this.trails.forEach(function(t) {
+      var item = t.get('Trailer');
+      item.loadGPX().then(function (feature) {
+        feature.get('extensions').type = consts.TRAILER;
+        feature.set('color', consts.style.Level[t.get('level').get('index')]);
+
+        // add the feature to the feature's layer
+        layer.getSource().addFeature(feature);
+
+        var options = {
+          layer: layer
+        };
+        me.command.send('map.view.extent.fit', options);
+      });
+
+    })
   },
 
   deleteTrail: function (trail) {
@@ -212,6 +257,18 @@ export default Ember.Controller.extend({
     addTrailAction: function () {
       this.addTrail();
     },
+    renameTrailAction: function (trail) {
+      $("#" + trail.id).editable({
+        type: 'text',
+        title: 'Entrez le nom de la piste',
+        toggle: 'manual',
+        success: function (response, newValue) {
+          trail.set('name', newValue);
+          console.log("renamed trail:" + newValue);
+        }
+      });
+      $("#" + trail.id).editable('toggle');
+    },
     deleteTrailAction: function (trail) {
       this.deleteTrail(trail);
     },
@@ -221,18 +278,11 @@ export default Ember.Controller.extend({
     exportTrailAction: function (trail) {
       this.exportTrail(trail);
     },
-    command: function (command, options) {
-      if (command === "trail.add") {
-        this.addTrail();
-      } else if (command === "trail.open") {
-        this.importTrail(options);
-      } else if (command === "trail.delete") {
-      } else if (command === "trail.export") {
-        this.exportTrail(options);
-      }
-    },
     changeTrack: function (trail) {
       this.changeActiveTrail(trail);
+    },
+    showTrails: function (trail) {
+      this.showTrails();
     },
     save: function (trail) {
       this.command.send('save', null, function () {
