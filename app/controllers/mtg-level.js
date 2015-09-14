@@ -92,11 +92,16 @@ export default Ember.Controller.extend({
   }.property('levels.@each.selected'),
 
   onSelectLevel: function () {
+    var me = this;
     var selectedTrail = this.get('selectedTrail');
     if (Ember.isEmpty(selectedTrail)) {
       return;
     }
     selectedTrail.set('level', this.get('selectedLevel'));
+    this.command.send('map.draw.color.change', {
+      feature: selectedTrail.get('Trailer').get('feature'),
+      color: consts.style.Level[me.get('selectedLevel').get('index')]
+    });
   }.observes('selectedLevel'),
 
   onSelectTrail: function () {

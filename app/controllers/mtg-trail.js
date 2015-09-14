@@ -215,17 +215,23 @@ export default Ember.Controller.extend({
       var item = t.get('Trailer');
       item.loadGPX().then(function (feature) {
         feature.get('extensions').type = consts.TRAILER;
-        feature.set('color', consts.style.Level[t.get('level').get('index')]);
-
-        // add the feature to the feature's layer
-        layer.getSource().addFeature(feature);
-
-        var options = {
-          layer: layer
-        };
-        me.command.send('map.view.extent.fit', options);
+        me.command.send("map.draw.color.change",
+          {
+            feature: feature,
+            color: consts.style.Level[t.get('level').get('index')]
+          },
+          function(feature) {
+            // add the feature to the feature's layer
+            layer.getSource().addFeature(feature);
+            me.command.send(
+              'map.view.extent.fit',
+              {
+                layer: layer
+              }
+            );
+          }
+        );
       });
-
     })
   },
 

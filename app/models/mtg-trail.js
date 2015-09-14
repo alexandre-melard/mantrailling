@@ -210,7 +210,7 @@ let Trail = DS.Model.extend({
       data.name = me.get("name");
       data.level = me.get("level").get('name');
       data.levels = [];
-      me.store.peekAll("mtgLevel").then(function (levels) {
+      me.store.find("mtgLevel").then(function (levels) {
         levels.forEach(function (l) {
           data.levels.pushObject(l.serialize());
         });
