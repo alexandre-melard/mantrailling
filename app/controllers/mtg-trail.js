@@ -68,6 +68,12 @@ export default Ember.Controller.extend({
         });
       });
     });
+    this.command.register(this, 'map.trails.selected.name.get', function () {
+      var trail = me.get('selectedTrail');
+      return new Promise(function (resolve) {
+        resolve(trail.get('name'));
+      });
+    });
   },
 
   /**
@@ -167,16 +173,20 @@ export default Ember.Controller.extend({
     var mapController = this.get('controllers.map');
     var trails = this.get('trails');
     this.store.all('mtgTrail').forEach(function (trail) {
-      var vectorSource = mapController.createVectorSource();
-      var vectorLayer = mapController.createVector(vectorSource);
-      vectorLayer.setStyle(getStyleFunction(me.command, me.i18n));
-      trail.layer = vectorLayer;
-      trails.pushObject(trail);
-      trail.load().then(function() {
-        if (trail.get('selected')) {
-          me.changeActiveTrail(trail, me);
-        }
-      });
+      if (trail.get('name') !== "all") {
+        var vectorSource = mapController.createVectorSource();
+        var vectorLayer = mapController.createVector(vectorSource);
+        vectorLayer.setStyle(getStyleFunction(me.command, me.i18n));
+        trail.layer = vectorLayer;
+        trails.pushObject(trail);
+        trail.load().then(function() {
+          if (trail.get('selected')) {
+            me.changeActiveTrail(trail, me);
+          }
+        });
+      } else {
+        me.deleteTrail(trail);
+      }
     });
   },
 
@@ -192,6 +202,37 @@ export default Ember.Controller.extend({
       this.command.send('map.view.extent.fit');
     }
     return trail;
+  },
+
+  showTrails: function() {
+    var me = this;
+    var trail = this.store.createRecord('mtgTrail', {
+      name: "all"
+    });
+    trail = this.changeActiveTrail(trail);
+    var layer = trail.layer;
+    this.trails.forEach(function(t) {
+      var item = t.get('Trailer');
+      item.loadGPX().then(function (feature) {
+        feature.get('extensions').type = consts.TRAILER;
+        me.command.send("map.draw.color.change",
+          {
+            feature: feature,
+            color: consts.style.Level[t.get('level').get('index')]
+          },
+          function(feature) {
+            // add the feature to the feature's layer
+            layer.getSource().addFeature(feature);
+            me.command.send(
+              'map.view.extent.fit',
+              {
+                layer: layer
+              }
+            );
+          }
+        );
+      });
+    })
   },
 
   deleteTrail: function (trail) {
@@ -245,6 +286,9 @@ export default Ember.Controller.extend({
     },
     changeTrack: function (trail) {
       this.changeActiveTrail(trail);
+    },
+    showTrails: function (trail) {
+      this.showTrails();
     },
     save: function (trail) {
       this.command.send('save', null, function () {

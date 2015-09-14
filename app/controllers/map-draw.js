@@ -79,6 +79,16 @@ export default Ember.Controller.extend({
     this.command.register(this, 'map.draw.location', this.drawLocation);
     this.command.register(this, 'map.draw.linestring', this.drawLineString);
     this.command.register(this, 'map.draw.polygon', this.drawPolygon);
+    this.command.register(this, 'map.draw.color.change', function (options) {
+      var me = this;
+      return new Promise(function (resolve) {
+        var feature = options.feature;
+        var color = options.color;
+        console.log("change color to:" + color);
+        feature.set('color', color);
+        resolve(feature);
+      });
+    });
     this.command.register(this, 'map.draw.linestring.mode', function (options) {
       return new Promise(function (resolve) {
         me.followPathMode = options.followPathMode;

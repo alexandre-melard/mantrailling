@@ -6,10 +6,7 @@ import Ember from 'ember';
 export default Ember.Controller.extend({
   commands: [],
   registered: [],
-
-  loadStore: function () {
-    this.set('store', this.container.lookup('store:main'));
-  }.on('init'),
+  store: Ember.inject.service('store'),
 
   register: function (who, what, command, rollback) {
     var registered = this.get('registered');

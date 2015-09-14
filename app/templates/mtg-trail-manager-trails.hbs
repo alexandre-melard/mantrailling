@@ -33,3 +33,14 @@
         </td>
     </tr>
 {{/each}}
+<tr class={{if trail.selected 'success' ''}}>
+    <td class="mtg-trail-trails-select">
+        <button type="button"
+                data-toggle="tooltip"
+                title={{t "map.menu.mtg.trail.select.all.tooltip" }}
+                        class="btn btn-default" {{action 'showTrails'}}>
+        <span class="glyphicon glyphicon-hand-up" aria-hidden="true"></span>
+        </button>
+    </td>
+    <td class="mtg-trail-trails-name" colspan="2">{{t "map.menu.mtg.trail.select.all" }}</td>
+</tr>

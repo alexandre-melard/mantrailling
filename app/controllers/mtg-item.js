@@ -3,7 +3,6 @@
  */
 import Ember from 'ember';
 import consts from '../utils/map-constants';
-import { translationMacro as t } from "ember-i18n";
 
 export default Ember.Controller.extend({
   needs: ["mtgTrail"],
@@ -13,12 +12,24 @@ export default Ember.Controller.extend({
   itemTypes: [],
   currentItem: null,
 
-  tGround: t("map.menu.mtg.trail.items.item.ground"),
-  tCloth: t("map.menu.mtg.trail.items.item.cloth"),
-  tLeather: t("map.menu.mtg.trail.items.item.leather"),
-  tCardboard: t("map.menu.mtg.trail.items.item.cardboard"),
-  tPlastic: t("map.menu.mtg.trail.items.item.plastic"),
-  tWood: t("map.menu.mtg.trail.items.item.wood"),
+  tGround: function() {
+    return this.get('i18n').t("map.menu.mtg.trail.items.item.ground");
+  }.property(),
+  tCloth: function() {
+    return this.get('i18n').t("map.menu.mtg.trail.items.item.cloth");
+  }.property(),
+  tLeather: function() {
+    return this.get('i18n').t("map.menu.mtg.trail.items.item.leather");
+  }.property(),
+  tCardboard: function() {
+    return this.get('i18n').t("map.menu.mtg.trail.items.item.cardboard");
+  }.property(),
+  tPlastic: function() {
+    return this.get('i18n').t("map.menu.mtg.trail.items.item.plastic");
+  }.property(),
+  tWood: function() {
+    return this.get('i18n').t("map.menu.mtg.trail.items.item.wood");
+  }.property(),
 
   loadItems: function() {
     var types = this.get('itemTypes');

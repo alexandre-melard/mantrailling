@@ -18,5 +18,8 @@ export default Ember.View.extend({
       container: 'body',
       placement: 'bottom'
     });
+    $('button').on("click", function() {
+      $(this).tooltip('toggle');
+    });
   }
 });

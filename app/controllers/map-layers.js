@@ -6,6 +6,13 @@ import Ember from 'ember';
 export default Ember.Controller.extend({
   tileLayers: [],
 
+  initLayer: function() {
+    this.tileLayers.forEach(function (tileLayer) {
+      tileLayer.layer.setVisible(tileLayer.get('visible'));
+      tileLayer.layer.setOpacity(tileLayer.get('opacity'));
+    });
+  }.observes("tileLayers.@each"),
+
   createWMTSLayer: function (layer, tms) {
     var attribution = "&copy; <a href='http://www.ign.fr'>IGN</a>";
     var projection = ol.proj.get(tms.SupportedCRS);

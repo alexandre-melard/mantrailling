@@ -1,5 +1,6 @@
 import DS from 'ember-data';
 import * as consts from '../utils/map-constants';
+import Ember from 'ember';
 
 /**
  * Created by alex on 31/03/2015.
