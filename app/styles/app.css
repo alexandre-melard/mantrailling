@@ -166,7 +166,8 @@ ul.dropdown-menu {
 }
 
 ul.mtg-trail-trails-dropdown, ul.mtg-trail-level-dropdown {
-  width: 370px;
+  width: 480px;
+  overflow-y: scroll;
 }
 
 .mtg-trail-trails-select {

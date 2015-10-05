@@ -232,7 +232,7 @@ export default Ember.Controller.extend({
           }
         );
       });
-    })
+    });
   },
 
   deleteTrail: function (trail) {
@@ -268,6 +268,7 @@ export default Ember.Controller.extend({
         type: 'text',
         title: 'Entrez le nom de la piste',
         toggle: 'manual',
+        mode: 'inline',
         success: function (response, newValue) {
           trail.set('name', newValue);
           console.log("renamed trail:" + newValue);
