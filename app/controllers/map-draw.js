@@ -204,22 +204,8 @@ export default Ember.Controller.extend({
     }
   }),
 
-  removeLastPointFactory: function (geom) {
-    this.removeLastPoint = function (event) {
-      if (event.keyCode === 27) {
-        if (geom.getType() === consts.LINE_STRING) {
-          var coords = geom.getCoordinates();
-          var len = coords.length;
-          if (len > 1) {
-            geom.setCoordinates(geom.getCoordinates().slice(0, len - 1));
-          }
-        }
-      }
-    };
-    return this.removeLastPoint;
-  },
-
   createDraw: function () {
+    var me = this;
     var currentLayer = this.get('currentLayer');
     var source = currentLayer.getSource();
     var geometry = this.get('mtgDrawState');
@@ -228,7 +214,14 @@ export default Ember.Controller.extend({
     }
     this.set('olDraw', new ol.interaction.Draw({
       source: source,
-      type: geometry
+      type: geometry,
+      geometryFunction: function(coordinates, geometry) {
+        if (!geometry) {
+          geometry = new ol.geom.LineString(null);
+        }
+        geometry.setCoordinates(coordinates);
+        return geometry;
+      }
     }));
     tooltip.createTooltips(this.get('map'), this.get('sketch'), this.get('mtgDrawState'));
 
@@ -248,7 +241,7 @@ export default Ember.Controller.extend({
         }
         this.set('sketch', feature);
         tooltip.sketch = feature;
-        document.addEventListener('keyup', this.removeLastPointFactory(geom));
+        document.addEventListener('keyup', this.get('olDraw').removeLastPoint);
         var me = this;
         $('#map').on('mouseup', function () {
           if (geom.getType() === consts.LINE_STRING && me.followPathMode) {
@@ -258,9 +251,16 @@ export default Ember.Controller.extend({
               var start = coords[len - 2];
               var end = coords[len - 1];
               getRoute(start, end).then(function (route) {
-                coords = coords.slice(0, len - 1);
-                coords = coords.concat(route);
-                geom.setCoordinates(coords);
+                me.get('olDraw').finishDrawing();
+                geom.setCoordinates(coords.slice(0,-1).concat(route));
+                //me.get('olDraw').sketchCoords_ = me.get('olDraw').sketchCoords_.slice(0,-2).concat(route);
+                //me.get('olDraw').updateSketchFeatures_();
+                //route.forEach(function(point) {
+                //  event = {coordinate: point};
+                //  me.get('olDraw').addToDrawing_(event);
+                //});
+                //geom.setCoordinates(coords.concat(route));
+                //me.get('olDraw').sketchCoords_ = me.get('olDraw').sketchCoords_.concat(route);
               });
             }
           }

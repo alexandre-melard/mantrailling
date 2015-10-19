@@ -31,38 +31,6 @@ export default Ember.Controller.extend({
     this.command.register(this, 'actions.map.location.coordinates', function (options) {
       return new Promise(function (resolve) {
         me.command.send('map.draw.location', {
-          tooltip: me.get('i18n').t("map.location.coordinates.tooltip")
-        });
-      });
-    });
-  }.on('init'),
-
-  bindCommand: function () {
-    this.command.register(this, 'map.location.find', this.findLocation);
-    this.command.register(this, 'map.location.gps.watch', this.gpsLocation);
-  }.on('init'),
-
-  bindActions: function () {
-    var me = this;
-    this.command.register(this, 'actions.map.location.find', function (options) {
-      return new Promise(function (resolve) {
-        me.command.send('map.location.find', me.get('locationSearch'), function (options) {
-          console.log("location found");
-          me.command.send('map.location.found', options, resolve);
-        });
-      });
-    });
-    this.command.register(this, 'actions.map.location.gps.watch', function (options) {
-      return new Promise(function (resolve) {
-        me.command.send('map.location.gps.watch', null, function (options) {
-          console.log("gps found");
-          me.command.send('map.location.gps.watching', options, resolve);
-        });
-      });
-    });
-    this.command.register(this, 'actions.map.location.coordinates', function (options) {
-      return new Promise(function (resolve) {
-        me.command.send('map.draw.location', {
           tooltip: t("map.location.coordinates.tooltip")
         });
       });

@@ -23,6 +23,7 @@ module.exports = function(defaults) {
 
   app.import('bower_components/bootstrap/js/tooltip.js');
   app.import('bower_components/bootstrap/js/popover.js');
+  app.import('bower_components/bootstrap/js/modal.js');
   app.import('bower_components/x-editable/dist/bootstrap3-editable/js/bootstrap-editable.js');
 
   app.import('bower_components/x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css');

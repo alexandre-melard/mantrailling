@@ -9,13 +9,30 @@
   {{render "mapScreenshot" controller="map"}}
   {{render "mapWeather" controller="mapWeather"}}
   {{render "mapLayers" controller="mapLayers"}}
+  {{render "mapLegend"}}
   <div class="mtg-mode">
-      <a role="button" class="btn btn-success radius-right" data-toggle="tooltip"
-         title={{t "map.menu.switch.basic.tooltip"}} {{bind-attr href=basicURL}}>
-        {{t "map.menu.switch.basic"}}
-      </a>
+    <a role="button" class="btn btn-success radius-right" data-toggle="tooltip"
+       title={{t "map.menu.switch.basic.tooltip"}} {{bind-attr href=basicURL}}>
+      {{t "map.menu.switch.basic"}}
+    </a>
   </div>
 </div>
 {{render "mtgInfo" controller="mtgTrail"}}
 <input type="file" id="input-file-cmp" class="hidden" accept=".cmp"/>
 <input type="file" id="input-file-gpx" class="hidden" accept=".gpx"/>
+<div class="modal fade" id="legend">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Légende</h4>
+            </div>
+            <div class="modal-body">
+                <img src="assets/images/legende.gif"/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

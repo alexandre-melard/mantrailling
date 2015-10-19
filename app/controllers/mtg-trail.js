@@ -212,9 +212,9 @@ export default Ember.Controller.extend({
     trail = this.changeActiveTrail(trail);
     var layer = trail.layer;
     this.trails.forEach(function(t) {
-      var item = t.get('Trailer');
-      item.loadGPX().then(function (feature) {
+      t.get('Trailer').loadGPX().then(function (feature) {
         feature.get('extensions').type = consts.TRAILER;
+        feature.set('label', t.get('name'));
         me.command.send("map.draw.color.change",
           {
             feature: feature,

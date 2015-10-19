@@ -436,11 +436,11 @@ label.mtg-item-position input[type="radio"] {
 }
 .map-popup {
   position: absolute;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.5);
   -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
   filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
-  padding: 15px;
-  border-radius: 10px;
+  padding-right: 10px;
+  border-radius: 4px;
   border: 1px solid #cccccc;
   bottom: 12px;
   left: -50px;
@@ -474,8 +474,8 @@ label.mtg-item-position input[type="radio"] {
   cursor: pointer;
   text-decoration: none;
   position: absolute;
-  top: 2px;
-  right: 8px;
+  top: 0px;
+  right: 4px;
 }
 
 .popup-closer:after {
@@ -506,4 +506,9 @@ label.mtg-item-position input[type="radio"] {
 
 #screenshot-box-buttons {
   float: right;
+}
+
+.modal .modal-body {
+  max-height: 550px;
+  overflow-y: auto;
 }
